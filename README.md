@@ -13,6 +13,16 @@ notebooks/        01_raw_eda (data understanding) · 02_processed_eda (location 
 docs/             proposal and report material
 ```
 
+## Getting started (teammates)
+1. VS Code → Command Palette (⇧⌘P) → **Git: Clone** → paste the repo URL → open the folder, then open `SG-HomeFit.code-workspace`.
+2. **Terminal → Run Task → "0 · Set up Python environment"**, then **"Install modelling libraries"**.
+3. Rebuild the local data (about 2 minutes, no internet needed): run tasks **1, 1b, 3, 4, 4b, 5** in order.
+   Skip task 2: the geocode cache is already in the repo, so geocoding has nothing left to do.
+4. Notebooks in `notebooks/` are saved with their outputs, so you can read them without re-running.
+
+**Team rules:** pull before you start, push when you stop (Source Control panel). Edit only your own files and notebooks;
+shared files (`src/config.py`, profile bands, handover formats) change only after the team agrees.
+
 ## First-time setup (VS Code)
 1. Open `SG-HomeFit.code-workspace` (File → Open Workspace from File…). Install the recommended extensions if prompted.
 2. **Terminal → Run Task… → "0 · Set up Python environment"**, which creates `.venv` and installs `requirements.txt`.
