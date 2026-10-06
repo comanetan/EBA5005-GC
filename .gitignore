@@ -1,0 +1,16 @@
+# Python environment (each person creates their own with the "Set up Python environment" task)
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+
+# Interim files rebuild in seconds (steps 1, 1b, 3), except the geocode cache, which took ~4 hours of OneMap lookups
+data/interim/*
+!data/interim/geocode_cache.csv
+
+# Processed tables rebuild in about a minute (steps 4, 4b) or with notebook 03
+data/processed/
+
+# Local secrets, never commit
+onemap_token.txt
+*.env

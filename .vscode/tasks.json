@@ -1,0 +1,71 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "0 \u00b7 Set up Python environment",
+      "type": "shell",
+      "command": "python3 -m venv .venv && .venv/bin/pip install --upgrade pip && .venv/bin/pip install -r requirements.txt",
+      "problemMatcher": []
+    },
+    {
+      "label": "Install modelling libraries (LightGBM, SHAP, lifelines, statsmodels, PuLP, Streamlit)",
+      "type": "shell",
+      "command": ".venv/bin/pip install -r requirements-models.txt",
+      "problemMatcher": []
+    },
+    {
+      "label": "1 \u00b7 Unique addresses (offline)",
+      "type": "shell",
+      "command": ".venv/bin/python src/01_unique_addresses.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "1b \u00b7 Clean + validate resale data (offline)",
+      "type": "shell",
+      "command": ".venv/bin/python src/01b_clean_resale.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "2 \u00b7 Geocode with OneMap (needs internet, ~45 min, resumable)",
+      "type": "shell",
+      "command": ".venv/bin/python src/02_geocode_onemap.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "3 \u00b7 Amenity points (offline)",
+      "type": "shell",
+      "command": ".venv/bin/python src/03_amenity_points.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "4 \u00b7 Build features + profiles (after step 2)",
+      "type": "shell",
+      "command": ".venv/bin/python src/04_build_features.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "4b \u00b7 Validate geocoding + features (offline)",
+      "type": "shell",
+      "command": ".venv/bin/python src/04b_validate_features.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "5 \u00b7 Price index v0 (offline)",
+      "type": "shell",
+      "command": ".venv/bin/python src/05_price_index_v0.py",
+      "problemMatcher": []
+    },
+    {
+      "label": "Run steps 1 \u2192 4 in order",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "1 \u00b7 Unique addresses (offline)",
+        "1b \u00b7 Clean + validate resale data (offline)",
+        "2 \u00b7 Geocode with OneMap (needs internet, ~45 min, resumable)",
+        "3 \u00b7 Amenity points (offline)",
+        "4 \u00b7 Build features + profiles (after step 2)"
+      ],
+      "problemMatcher": []
+    }
+  ]
+}

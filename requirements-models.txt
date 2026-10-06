@@ -1,0 +1,9 @@
+# Modelling libraries, install when each workstream starts:  .venv/bin/pip install -r requirements-models.txt
+scikit-learn      # hedonic baselines, metrics
+lightgbm          # hedonic gradient-boosting model
+shap              # explainability (hedonic + LSTM)
+statsmodels       # SARIMAX; conditional logit for the conjoint
+lifelines         # Kaplan-Meier, Cox PH
+pulp              # mathematical / goal programming
+streamlit         # what-if dashboard
+# LSTM: add either torch or tensorflow when the Forecasting Lead picks one

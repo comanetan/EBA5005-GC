@@ -1,0 +1,45 @@
+station,line,opened,in_exit_file,lat,lon,note
+Gul Circle,EWL,2017-06-18,Y,,,Tuas West Extension
+Tuas Crescent,EWL,2017-06-18,Y,,,Tuas West Extension
+Tuas West Road,EWL,2017-06-18,Y,,,Tuas West Extension
+Tuas Link,EWL,2017-06-18,Y,,,Tuas West Extension
+Fort Canning,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Bencoolen,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Jalan Besar,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Bendemeer,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Geylang Bahru,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Mattar,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Ubi,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Kaki Bukit,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Bedok North,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Bedok Reservoir,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Tampines West,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Tampines East,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Upper Changi,DTL,2017-10-21,Y,,,Downtown Line stage 3
+Canberra,NSL,2019-11-02,Y,,,infill station
+Woodlands North,TEL,2020-01-31,Y,,,Thomson-East Coast Line stage 1
+Woodlands South,TEL,2020-01-31,Y,,,Thomson-East Coast Line stage 1
+Springleaf,TEL,2021-08-28,Y,,,Thomson-East Coast Line stage 2
+Lentor,TEL,2021-08-28,Y,,,Thomson-East Coast Line stage 2
+Mayflower,TEL,2021-08-28,Y,,,Thomson-East Coast Line stage 2
+Bright Hill,TEL,2021-08-28,Y,,,Thomson-East Coast Line stage 2
+Upper Thomson,TEL,2021-08-28,Y,,,Thomson-East Coast Line stage 2
+Napier,TEL,2022-11-13,Y,,,Thomson-East Coast Line stage 3
+Orchard Boulevard,TEL,2022-11-13,Y,,,Thomson-East Coast Line stage 3
+Great World,TEL,2022-11-13,Y,,,Thomson-East Coast Line stage 3
+Havelock,TEL,2022-11-13,Y,,,Thomson-East Coast Line stage 3
+Maxwell,TEL,2022-11-13,Y,,,Thomson-East Coast Line stage 3
+Shenton Way,TEL,2022-11-13,Y,,,Thomson-East Coast Line stage 3
+Gardens By The Bay,TEL,2022-11-13,Y,,,Thomson-East Coast Line stage 3
+Tanjong Rhu,TEL,2024-06-23,Y,,,Thomson-East Coast Line stage 4
+Katong Park,TEL,2024-06-23,Y,,,Thomson-East Coast Line stage 4
+Tanjong Katong,TEL,2024-06-23,Y,,,Thomson-East Coast Line stage 4
+Marine Parade,TEL,2024-06-23,Y,,,Thomson-East Coast Line stage 4
+Marine Terrace,TEL,2024-06-23,Y,,,Thomson-East Coast Line stage 4
+Siglap,TEL,2024-06-23,Y,,,Thomson-East Coast Line stage 4
+Bayshore,TEL,2024-06-23,Y,,,Thomson-East Coast Line stage 4
+Punggol Coast,NEL,2024-12-10,Y,1.414927333886055,103.9101663881767,in LTA exit file under its station code
+Hume,DTL,2025-02-28,Y,1.354595323950304,103.7691188518866,in LTA exit file under its station code
+Keppel,CCL,2026-07-12,Y,1.269772201244406,103.8300314595233,in LTA exit file under its station code; date from Wikipedia - verify
+Cantonment,CCL,2026-07-12,Y,1.27287214563204,103.8370623137639,in LTA exit file under its station code; date from Wikipedia - verify
+Prince Edward Road,CCL,2026-07-12,Y,1.273156936360872,103.847097123745,in LTA exit file under its station code; date from Wikipedia - verify
