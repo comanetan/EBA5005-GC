@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SG HomeFit Optimiser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ef; --surface:#ffffff; --border:#d9d3c6; --fg:#232017; --fg-muted:#6b6557;
+  --accent:#2f5496; --accent-ink:#ffffff; --amber:#bf8f00; --good:#548235; --bad:#c00000;
+  --font-display:'IBM Plex Sans',system-ui,sans-serif; --font-mono:'IBM Plex Mono',ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#1b1a16; --surface:#242219; --border:#3a372c; --fg:#ece7da; --fg-muted:#a39c89;
+    --accent:#7fa6e6; --accent-ink:#13213a; --amber:#e0b94a; --good:#86c27b; --bad:#e98a8a; }
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--font-display);margin:0;padding-inline:16px;line-height:1.45}
+.wrap{max-width:900px;margin:0 auto;padding-block:28px 60px}
+h1{font-size:clamp(22px,5vw,30px);margin:0 0 6px}
+.sub{color:var(--fg-muted);font-size:14.5px;max-width:68ch;margin:0 0 6px}
+.apistatus{font-size:12px;font-family:var(--font-mono);color:var(--fg-muted);margin:0 0 20px}
+.apistatus.ok{color:var(--good)} .apistatus.err{color:var(--bad)}
+.headerbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.guidebtn{font-weight:600;font-size:13px;background:var(--surface);color:var(--accent);border:1px solid var(--accent);
+  border-radius:7px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.tabbar{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:22px;flex-wrap:wrap}
+.tabbtn{font-weight:600;font-size:13.5px;background:none;border:none;color:var(--fg-muted);padding:10px 14px;
+  cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabbtn[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+section.panel[hidden]{display:none}
+section.panel{display:flex;flex-direction:column;gap:18px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.card h2{font-size:16px;margin:0 0 8px} .card h3{font-size:13px;margin:16px 0 8px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.04em}
+.note{font-size:13px;color:var(--fg-muted);margin:4px 0 0}
+.methodbadge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--accent);
+  border:1px solid var(--accent);border-radius:999px;padding:3px 10px;margin-bottom:10px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px}
+.field{display:flex;flex-direction:column;gap:3px;min-width:0}
+.field label{font-size:12px;color:var(--fg-muted)}
+.field input,.field select{font-family:var(--font-mono);font-size:13.5px;background:var(--bg);color:var(--fg);
+  border:1px solid var(--border);border-radius:6px;padding:6px 8px;width:100%}
+.hint{font-size:11.5px;color:var(--fg-muted);line-height:1.3}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{text-align:left;font-weight:600;color:var(--fg-muted);font-size:11px;text-transform:uppercase;letter-spacing:.03em;
+  padding:6px 8px;border-bottom:1px solid var(--border)}
+td{padding:6px 8px;border-bottom:1px solid var(--border)}
+tr.best td{background:color-mix(in srgb, var(--good) 14%, transparent);font-weight:600}
+.tablewrap{overflow-x:auto}
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.kpi{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px}
+.kpi .v{font-family:var(--font-mono);font-weight:600;font-size:18px}
+.kpi .k{font-size:11px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.03em}
+.quickcard{border:1px dashed var(--accent);border-radius:10px;padding:14px 16px;background:color-mix(in srgb, var(--accent) 6%, transparent)}
+.run{font-weight:600;font-size:13.5px;background:var(--accent);color:var(--accent-ink);border:none;border-radius:7px;
+  padding:9px 16px;cursor:pointer}
+.flex-end{display:flex;justify-content:flex-end;gap:8px}
+.mapbox{border-left:3px solid var(--amber);padding:8px 12px;background:color-mix(in srgb, var(--amber) 10%, transparent);
+  border-radius:0 6px 6px 0;font-size:13px}
+.smallbtn{font-size:12px;padding:3px 9px;border-radius:6px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;
+  padding:40px 16px;z-index:50;overflow-y:auto}
+.modal-backdrop[hidden]{display:none}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;max-width:640px;width:100%;padding:22px 24px 26px;position:relative}
+.modal-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:20px;color:var(--fg-muted);cursor:pointer}
+code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="headerbar">
+    <div>
+      <h1>SG HomeFit Optimiser</h1>
+      <p class="sub">Backed by the real pipeline: search queries the project's actual 712-profile export, and the final recommender calls <code>recommender_v2.solve()</code> directly — the genuine PuLP 0-1 program, not a client-side approximation.</p>
+    </div>
+    <button class="guidebtn" id="guide_open">? User Guide</button>
+  </div>
+  <p class="apistatus" id="api_status">Connecting to API…</p>
+
+  <div class="modal-backdrop" id="guide_backdrop" hidden>
+    <div class="modal">
+      <button class="modal-close" id="guide_close">&times;</button>
+      <h2>How to use this tool</h2>
+      <h3>Viewing-Time Allocation</h3>
+      <p>Use the Quick-estimate box: asking price, your fair-value guess, similar sales in the last year, one-way commute. Press the button and it computes the LP inputs for you.</p>
+      <h3>Stretch-Budget Allocation</h3>
+      <p>Market rates are pulled live from <code>/api/meta</code> (the project's own pricing model). Set your stretch budget, targets, and priority.</p>
+      <h3>Final Recommender</h3>
+      <p>Search real profiles and solve the actual 0-1 program the project runs in production. Choose <b>Weighted-sum</b> (default, trades goals off in dollars) or <b>Preemptive</b> (a strict ranking — a higher goal is never sacrificed for a lower one, no matter the $ saving). An optional <b>chance-constraint alpha</b> swaps the budget rule for a Monte-Carlo "P(price stays in budget) ≥ alpha" check instead of the default empirical band.</p>
+      <h3>Trade-off Frontier</h3>
+      <p>Instead of one shortlist, traces the whole curve of "how much more surplus would I get if I accepted $X more compromise" — answers "what would relaxing a requirement be worth" directly, without re-running anything.</p>
+    </div>
+  </div>
+
+  <div class="tabbar" role="tablist">
+    <button class="tabbtn" aria-selected="true" data-tab="lp">Viewing-Time Allocation</button>
+    <button class="tabbtn" aria-selected="false" data-tab="gp">Stretch-Budget Allocation</button>
+    <button class="tabbtn" aria-selected="false" data-tab="applied">Final Recommender</button>
+    <button class="tabbtn" aria-selected="false" data-tab="pareto">Trade-off Frontier</button>
+  </div>
+
+  <!-- ===== LP ===== -->
+  <section class="panel" id="panel-lp">
+    <div class="card">
+      <span class="methodbadge">Methodology — Linear Programming (corner-point, shadow price &amp; reduced cost)</span>
+      <h2>Where to spend this month's viewing hours</h2>
+    </div>
+    <div class="quickcard">
+      <h3>Quick estimate</h3>
+      <div class="grid">
+        <div class="field"><label>Profile A — asking price ($)</label><input type="number" id="qe_priceA" value="520000" step="1000"></div>
+        <div class="field"><label>Profile A — fair-value estimate ($)</label><input type="number" id="qe_fairA" value="560000" step="1000"></div>
+        <div class="field"><label>Profile A — similar sales, 12mo</label><input type="number" id="qe_salesA" value="6"></div>
+        <div class="field"><label>Profile A — one-way commute (min)</label><input type="number" id="qe_commuteA" value="25"></div>
+        <div class="field"><label>Profile B — asking price ($)</label><input type="number" id="qe_priceB" value="430000" step="1000"></div>
+        <div class="field"><label>Profile B — fair-value estimate ($)</label><input type="number" id="qe_fairB" value="445000" step="1000"></div>
+        <div class="field"><label>Profile B — similar sales, 12mo</label><input type="number" id="qe_salesB" value="24"></div>
+        <div class="field"><label>Profile B — one-way commute (min)</label><input type="number" id="qe_commuteB" value="45"></div>
+        <div class="field"><label>Hours per deal</label><input type="number" id="qe_hoursPerDeal" value="10"></div>
+        <div class="field"><label>Value of your time ($/hr)</label><input type="number" id="qe_timeValue" value="50"></div>
+      </div>
+      <div class="flex-end" style="margin-top:10px"><button class="run" id="qe_run">Fill in the fields below</button></div>
+    </div>
+    <div class="card">
+      <h3>Viewing-time inputs</h3>
+      <div class="grid">
+        <div class="field"><label>A — $/hr value</label><input type="number" id="lp_valA" value="1800"></div>
+        <div class="field"><label>A — $/hr cost</label><input type="number" id="lp_costA" value="200"></div>
+        <div class="field"><label>B — $/hr value</label><input type="number" id="lp_valB" value="900"></div>
+        <div class="field"><label>B — $/hr cost</label><input type="number" id="lp_costB" value="100"></div>
+        <div class="field"><label>A — liquidity cap (hrs)</label><input type="number" id="lp_capA" value="20"></div>
+        <div class="field"><label>B — liquidity cap (hrs)</label><input type="number" id="lp_capB" value="40"></div>
+        <div class="field"><label>Hrs/unit A (commute)</label><input type="number" id="lp_hrsA" value="1.2" step="0.1"></div>
+        <div class="field"><label>Hrs/unit B (commute)</label><input type="number" id="lp_hrsB" value="1.0" step="0.1"></div>
+        <div class="field"><label>Monthly hours budget</label><input type="number" id="lp_hrsBudget" value="30"></div>
+        <div class="field"><label>Slots/hr A</label><input type="number" id="lp_slotsA" value="0.5" step="0.01"></div>
+        <div class="field"><label>Slots/hr B</label><input type="number" id="lp_slotsB" value="0.3" step="0.01"></div>
+        <div class="field"><label>Slots available</label><input type="number" id="lp_slotsCap" value="16"></div>
+      </div>
+      <div class="flex-end" style="margin-top:10px"><button class="run" id="lp_run">Solve</button></div>
+      <h3>Corner points</h3>
+      <p class="note">The best split of hours is always at a "corner" of what's allowed — one constraint or another is fully used up. The solver only has to check these points, not every possible split. The highlighted row is the winner.</p>
+      <div class="tablewrap"><table id="lp_corners"></table></div>
+      <h3>Sensitivity — shadow price &amp; reduced cost</h3>
+      <p class="note"><b>Shadow price</b>: if that row's constraint says "binding," it's fully used up — one more unit of it (one more liquidity-cap hour, one more agent slot) would be worth the $ amount shown. A "slack" constraint has room to spare, so one more unit of it is worth $0 — don't bother trying to loosen it. <b>Reduced cost</b>: shown only for a profile that got zero hours — it's how much that profile's hourly value would need to rise before any effort on it would pay off.</p>
+      <div class="tablewrap"><table id="lp_sens"></table></div>
+      <h3>Result</h3>
+      <p class="note">"On A" / "On B" is how many hours to spend on each profile this month. "Value captured" is the total expected $ benefit of that split, net of your own time cost.</p>
+      <div class="kpi-row" id="lp_kpis"></div>
+    </div>
+  </section>
+
+  <!-- ===== GP ===== -->
+  <section class="panel" id="panel-gp" hidden>
+    <div class="card">
+      <span class="methodbadge">Methodology — Goal Programming (preemptive priorities, d&#8314;/d&#8315;)</span>
+      <h2>Spending a stretch budget on two competing goals</h2>
+      <div class="grid">
+        <div class="field"><label>$/km closer to MRT</label><input type="number" id="gp_a" value="60000" step="1000">
+          <span class="hint" id="gp_a_hint">loading market rate…</span></div>
+        <div class="field"><label>$/extra lease-year</label><input type="number" id="gp_b" value="3000" step="100"></div>
+        <div class="field"><label>Stretch budget ($)</label><input type="number" id="gp_c" value="50000" step="1000"></div>
+        <div class="field"><label>Target: km closer wanted</label><input type="number" id="gp_t1" value="0.5" step="0.1"></div>
+        <div class="field"><label>Target: extra lease-yrs wanted</label><input type="number" id="gp_t2" value="15"></div>
+        <div class="field"><label>Top priority</label><select id="gp_priority"><option value="1">MRT proximity</option><option value="2">Lease length</option></select></div>
+      </div>
+      <div class="flex-end" style="margin-top:10px"><button class="run" id="gp_run">Solve</button></div>
+      <h3>Result</h3>
+      <p class="note">"MRT bought" / "Lease bought" is how much of each goal your stretch budget actually funds. A <b>shortfall &gt; 0</b> on a goal means it wasn't fully reachable — the budget ran out before that target was met. If the <em>top-priority</em> goal has a shortfall, your stretch budget can't even fully cover it alone; if only the <em>second</em> goal has one, that's the deliberate trade-off of giving the first goal priority. To close a shortfall: raise the stretch budget, lower that goal's target, or accept the gap.</p>
+      <div class="kpi-row" id="gp_kpis"></div>
+    </div>
+  </section>
+
+  <!-- ===== APPLIED ===== -->
+  <section class="panel" id="panel-applied" hidden>
+    <div class="card">
+      <span class="methodbadge">Methodology — 0-1 Integer Programming + weighted goal programming (the real solver)</span>
+      <h2>The final shortlist recommender</h2>
+      <div class="grid">
+        <div class="field"><label>Budget ($)</label><input type="number" id="ap_budget" value="750000" step="1000"></div>
+        <div class="field"><label>Min lease (yrs)</label><input type="number" id="ap_lease" value="60"></div>
+        <div class="field"><label>Target MRT (km)</label><input type="number" id="ap_mrt" value="0.5" step="0.1"></div>
+        <div class="field"><label>Picks, k</label><input type="number" id="ap_k" value="3" min="1" max="8"></div>
+        <div class="field"><label>MRT weight</label><input type="number" id="ap_weight" value="1.0" step="0.1"></div>
+        <div class="field"><label>Needs primary school</label><select id="ap_school"><option value="false">No</option><option value="true">Yes</option></select></div>
+        <div class="field"><label>Goal-programming mode</label><select id="ap_mode">
+          <option value="weighted">Weighted-sum (default)</option>
+          <option value="preemptive">Preemptive (strict ranking)</option>
+        </select></div>
+        <div class="field"><label>Chance-constraint alpha (optional)</label><input type="number" id="ap_alpha" step="0.01" min="0" max="1" placeholder="blank = empirical band"></div>
+        <div class="field"><label>Min distance from expressway (km, optional)</label><input type="number" id="ap_expwy" step="0.05" min="0" placeholder="blank = no goal"></div>
+      </div>
+      <div id="ap_priority_wrap" hidden style="margin-top:4px">
+        <h3>Priority order (preemptive mode) — 1st is never traded away for any lower goal</h3>
+        <div class="grid">
+          <div class="field"><label>1st priority</label><select class="ap_pri">
+            <option value="dev_mrt" selected>MRT distance</option><option value="dev_school">School access</option>
+            <option value="dev_storey">Storey</option><option value="dev_wait">Wait time</option><option value="dev_essentials">Essentials nearby</option></select></div>
+          <div class="field"><label>2nd priority</label><select class="ap_pri">
+            <option value="dev_mrt">MRT distance</option><option value="dev_school" selected>School access</option>
+            <option value="dev_storey">Storey</option><option value="dev_wait">Wait time</option><option value="dev_essentials">Essentials nearby</option></select></div>
+          <div class="field"><label>3rd priority</label><select class="ap_pri">
+            <option value="dev_mrt">MRT distance</option><option value="dev_school">School access</option>
+            <option value="dev_storey" selected>Storey</option><option value="dev_wait">Wait time</option><option value="dev_essentials">Essentials nearby</option></select></div>
+          <div class="field"><label>4th priority</label><select class="ap_pri">
+            <option value="dev_mrt">MRT distance</option><option value="dev_school">School access</option>
+            <option value="dev_storey">Storey</option><option value="dev_wait" selected>Wait time</option><option value="dev_essentials">Essentials nearby</option></select></div>
+          <div class="field"><label>5th priority</label><select class="ap_pri">
+            <option value="dev_mrt">MRT distance</option><option value="dev_school">School access</option>
+            <option value="dev_storey">Storey</option><option value="dev_wait">Wait time</option><option value="dev_essentials" selected>Essentials nearby</option></select></div>
+        </div>
+      </div>
+      <div class="flex-end" style="margin-top:10px"><button class="run" id="ap_run">Solve the real 0-1 program</button></div>
+    </div>
+    <div class="card">
+      <h3>Search profiles (optional — browse what's available)</h3>
+      <div class="grid">
+        <div class="field"><label>Town</label><select id="s_town"><option value="">Any</option></select></div>
+        <div class="field"><label>Flat type</label><select id="s_flat"><option value="">Any</option></select></div>
+        <div class="field"><label>Max price ($)</label><input type="number" id="s_price" value="800000" step="10000"></div>
+        <div class="field"><label>Max MRT (km)</label><input type="number" id="s_mrt" value="1.0" step="0.1"></div>
+        <div class="field"><label>Min lease (yrs)</label><input type="number" id="s_lease" value="0"></div>
+        <div class="field"><label>Min liquidity</label><input type="number" id="s_liq" value="0"></div>
+        <div class="field"><label>Max secondary school (km)</label><input type="number" id="s_sec" step="0.1" placeholder="any"></div>
+        <div class="field"><label>Max to nearest job node (km)</label><input type="number" id="s_job" step="0.5" placeholder="any"></div>
+        <div class="field"><label>Needs carpark nearby</label><select id="s_carpark"><option value="false">No preference</option><option value="true">Yes</option></select></div>
+        <div class="field"><label>Avoid flood-prone areas</label><select id="s_flood"><option value="false">No preference</option><option value="true">Yes</option></select></div>
+      </div>
+      <div class="flex-end" style="margin-top:10px"><button class="run" id="s_run">Search</button></div>
+      <div class="tablewrap"><table id="s_results"></table></div>
+    </div>
+    <div class="card" id="ap_results" hidden>
+      <h3>How to read this</h3>
+      <p class="note">The solver picked the <code>k</code> profiles (at most one per town) that together score highest on <b>Net</b> = Surplus &minus; Deviation. Ranked best first.</p>
+      <ul class="note" style="margin:4px 0 0;padding-left:18px">
+        <li><b>Surplus</b> — how much of a bargain this profile is: the market value of its attributes (location, size, age) minus what it actually costs. Higher is better; it's money the hedonic model says you're not paying for what you're getting.</li>
+        <li><b>Deviation</b> — the $ cost of every way this pick falls short of what you asked for (mainly: farther from your MRT target than you wanted, priced at the market rate for that distance). Lower is better; $0 means it meets your stated goals exactly.</li>
+        <li><b>Net</b> — Surplus minus Deviation. This is the actual number the solver maximises; it's why the shortlist is sorted this way.</li>
+        <li><b>Wait (mo)</b> — expected months before a matching flat is likely to come up for sale, estimated from how often this exact profile (town + flat type + storey + MRT band) has sold in the past year. A low number means a liquid, fast-moving profile; a high number means a thin market where you may need to wait.</li>
+      </ul>
+      <h3>Shortlist</h3>
+      <div class="tablewrap"><table id="ap_table"></table></div>
+      <h3>Solve summary</h3>
+      <ul class="note" style="margin:4px 0 10px;padding-left:18px">
+        <li><b>Solver status</b> — "Optimal" means the solver proved this is the best possible shortlist given your constraints, not just a good guess. Anything else (e.g. "Infeasible") means no shortlist satisfies every constraint — usually the budget or lease floor is too tight.</li>
+        <li><b>Candidates considered</b> — how many of the 712 real profiles were even eligible (within budget, meeting the lease floor) before picking the best <code>k</code> among them.</li>
+        <li><b>Objective achieved</b> — the total Net (Surplus &minus; Deviation) summed across every pick in the shortlist — the single number the solver was maximising.</li>
+        <li><b>Full k satisfied</b> — "Yes" means a complete shortlist of <code>k</code> distinct-town picks was found; "No" means fewer towns had an eligible profile than you asked for picks, so the shortlist is shorter than <code>k</code>.</li>
+      </ul>
+      <div class="kpi-row" id="ap_kpis"></div>
+      <div id="ap_stage_wrap" hidden>
+        <h3>Preemptive stages — each locked before the next goal is even considered</h3>
+        <p class="note">Read top to bottom in priority order. A stage's $ value is the total shortfall the shortlist still has on that goal <i>after</i> every higher goal above it was already minimised as far as possible — later stages can only spend what earlier ones left behind.</p>
+        <div class="kpi-row" id="ap_stage_kpis"></div>
+      </div>
+      <div class="mapbox" style="margin-top:10px"><b>This is the real solve.</b> <code>status</code>, <code>surplus</code>, <code>dev_mrt</code>/<code>dev_school</code>/<code>dev_storey</code>/<code>dev_wait</code> and <code>net_objective_value</code> above come straight out of <code>recommender_v2.solve()</code> / <code>solve_preemptive()</code> — the exact functions the production pipeline calls.</div>
+    </div>
+  </section>
+
+  <!-- ===== PARETO / TRADE-OFF FRONTIER ===== -->
+  <section class="panel" id="panel-pareto" hidden>
+    <div class="card">
+      <span class="methodbadge">Methodology — &#949;-constraint multi-objective optimisation (Pareto frontier)</span>
+      <h2>What would relaxing your requirements actually be worth?</h2>
+      <p class="note">The Final Recommender's "Weighted-sum" mode picks <i>one</i> point on this curve implicitly (wherever its $-for-$ trade-off happens to land). This traces the <b>whole curve</b>: at each allowed level of total goal compromise, the most surplus a shortlist could possibly capture.</p>
+      <h3>What "Surplus" and "Deviation" actually add up</h3>
+      <ul class="note" style="margin:4px 0 10px;padding-left:18px">
+        <li><b>Surplus</b> (bigger = more of a bargain) = <b>shrunk value gap</b> — the hedonic model's "market value of this profile's attributes minus what it actually sells for," pulled toward $0 for profiles with few recent sales so a thin profile can't fake a huge bargain — <b>plus a preference tilt</b>: extra $ value only for attributes (MRT, hawker, supermarket, clinic, park distance) where <i>your</i> stated weighting differs from how the market already prices them. Weighting something exactly like the market (multiplier 1.0, the default) contributes $0 tilt — you only gain or lose here by caring more or less than the market does.</li>
+        <li><b>Deviation</b> (bigger = falls further short of your goals) = the sum of every dollar-priced shortfall vs. a goal you set: MRT distance beyond your target, missing walkable essentials (supermarket/hawker/clinic/park/school within their threshold), school-tier shortfall, storey below your target, expected wait beyond your target (priced at that town's real rent), and — if you set a minimum expressway distance on the Final Recommender tab — being closer than that. A pick that meets every goal exactly scores $0 deviation; there's no credit for exceeding a goal.</li>
+        <li>Each row below is clickable — it expands to show the <b>exact profiles</b> (real town/flat-type/storey/MRT-band combinations) behind that point on the curve, with this same $ breakdown per pick, not just the totals.</li>
+      </ul>
+      <div class="grid">
+        <div class="field"><label>Budget ($)</label><input type="number" id="pf_budget" value="650000" step="1000"></div>
+        <div class="field"><label>Min lease (yrs)</label><input type="number" id="pf_lease" value="60"></div>
+        <div class="field"><label>Target MRT (km)</label><input type="number" id="pf_mrt" value="0.4" step="0.1"></div>
+        <div class="field"><label>Picks, k</label><input type="number" id="pf_k" value="5" min="1" max="8"></div>
+        <div class="field"><label>MRT weight</label><input type="number" id="pf_weight" value="1.5" step="0.1"></div>
+        <div class="field"><label>Needs primary school</label><select id="pf_school"><option value="false">No</option><option value="true" selected>Yes</option></select></div>
+        <div class="field"><label>Frontier points</label><input type="number" id="pf_points" value="8" min="3" max="15"></div>
+      </div>
+      <div class="flex-end" style="margin-top:10px"><button class="run" id="pf_run">Trace the frontier</button></div>
+      <h3>Frontier</h3>
+      <p class="note">The row closest to <b>Allowed deviation = current weighted-sum's own deviation</b> (highlighted) is roughly where the default solver already sits. Rows below it show what MORE surplus is reachable by accepting MORE compromise; "Infeasible" rows mean not even a full shortlist of <code>k</code> exists at that little compromise.</p>
+      <div class="tablewrap"><table id="pf_table"></table></div>
+      <h3>Current weighted-sum solve (for comparison)</h3>
+      <div class="kpi-row" id="pf_current_kpis"></div>
+      <div class="tablewrap" style="margin-top:10px"><table id="pf_current_picks"></table></div>
+    </div>
+  </section>
+</div>
+
+<script>
+const API = ""; // same-origin (FastAPI serves this file too); point elsewhere if split-hosting later
+const $ = (id)=>document.getElementById(id);
+const fmt = (n,d=0)=> (n===null||n===undefined||!isFinite(n)) ? "—" : Number(n).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
+const money = (n)=> (n===null||n===undefined||!isFinite(n)) ? "—" : "$"+fmt(n,0);
+
+document.querySelectorAll(".tabbtn").forEach(btn=>btn.addEventListener("click", ()=>{
+  document.querySelectorAll(".tabbtn").forEach(b=>b.setAttribute("aria-selected", b===btn?"true":"false"));
+  document.querySelectorAll("section.panel").forEach(p=>p.hidden = p.id!=="panel-"+btn.dataset.tab);
+}));
+$("guide_open").addEventListener("click", ()=>$("guide_backdrop").hidden=false);
+$("guide_close").addEventListener("click", ()=>$("guide_backdrop").hidden=true);
+$("guide_backdrop").addEventListener("click", e=>{ if(e.target===$("guide_backdrop")) $("guide_backdrop").hidden=true; });
+
+async function api(path, opts){
+  const res = await fetch(API+path, opts);
+  if (!res.ok) throw new Error((await res.json().catch(()=>({detail:res.statusText}))).detail || res.statusText);
+  return res.json();
+}
+
+/* ---- boot: check API, load meta (towns/flat types/market rates) ---- */
+async function boot(){
+  try{
+    const meta = await api("/api/meta");
+    $("api_status").textContent = `Connected — ${meta.n_profiles} real profiles across ${meta.towns.length} towns.`;
+    $("api_status").className = "apistatus ok";
+    $("s_town").innerHTML = '<option value="">Any</option>' + meta.towns.map(t=>`<option>${t}</option>`).join("");
+    $("s_flat").innerHTML = '<option value="">Any</option>' + meta.flat_types.map(t=>`<option>${t}</option>`).join("");
+    $("gp_a").value = meta.market_rate_mrt_per_km;
+    $("gp_a_hint").textContent = `from the project's hedonic model (as of ${new Date().toDateString()})`;
+  }catch(e){
+    $("api_status").textContent = "Could not reach the API at "+API+" — is the backend running? (uvicorn main:app --reload)";
+    $("api_status").className = "apistatus err";
+  }
+}
+boot();
+
+/* ---- Quick estimate -> LP fields ---- */
+$("qe_run").addEventListener("click", ()=>{
+  const priceA=+$("qe_priceA").value, fairA=+$("qe_fairA").value, salesA=+$("qe_salesA").value, commuteA=+$("qe_commuteA").value;
+  const priceB=+$("qe_priceB").value, fairB=+$("qe_fairB").value, salesB=+$("qe_salesB").value, commuteB=+$("qe_commuteB").value;
+  const hoursPerDeal=+$("qe_hoursPerDeal").value, timeValue=+$("qe_timeValue").value;
+  $("lp_valA").value = Math.round(Math.max(0,fairA-priceA)/hoursPerDeal);
+  $("lp_valB").value = Math.round(Math.max(0,fairB-priceB)/hoursPerDeal);
+  $("lp_costA").value = timeValue; $("lp_costB").value = timeValue;
+  $("lp_capA").value = Math.round((salesA/12)*hoursPerDeal*1.5*10)/10;
+  $("lp_capB").value = Math.round((salesB/12)*hoursPerDeal*1.5*10)/10;
+  $("lp_hrsA").value = Math.max(1, Math.round((commuteA*2/60)*10)/10);
+  $("lp_hrsB").value = Math.max(1, Math.round((commuteB*2/60)*10)/10);
+  runLP();
+});
+
+/* ---- LP: calls /api/lp/viewing-time ---- */
+async function runLP(){
+  const body = {
+    valA:+$("lp_valA").value, costA:+$("lp_costA").value, valB:+$("lp_valB").value, costB:+$("lp_costB").value,
+    capA:+$("lp_capA").value, capB:+$("lp_capB").value, hrsPerA:+$("lp_hrsA").value, hrsPerB:+$("lp_hrsB").value,
+    hrsBudget:+$("lp_hrsBudget").value, slotsPerA:+$("lp_slotsA").value, slotsPerB:+$("lp_slotsB").value, slotsCap:+$("lp_slotsCap").value,
+  };
+  let r; try{ r = await api("/api/lp/viewing-time", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}); }
+  catch(e){ $("lp_corners").innerHTML = `<tr><td>API error: ${e.message}</td></tr>`; return; }
+  $("lp_corners").innerHTML = "<tr><th>Corner</th><th>H_A</th><th>H_B</th><th>Z</th></tr>" +
+    r.corners.map(p=>`<tr class="${r.best&&p.tag===r.best.tag&&p.x===r.best.x?'best':''}"><td>${p.tag}</td><td>${fmt(p.x,1)}</td><td>${fmt(p.y,1)}</td><td>${money(p.z)}</td></tr>`).join("");
+  $("lp_sens").innerHTML = "<tr><th>Item</th><th>Value</th><th>Note</th></tr>" +
+    r.sensitivity.map(s=>`<tr><td>${s.kind==='constraint'?'Shadow price — ':'Reduced cost — '}${s.name}</td><td>${money(s.value)}</td><td>${s.note}</td></tr>`).join("");
+  if (r.best) $("lp_kpis").innerHTML = `<div class="kpi"><div class="v">${fmt(r.best.x,1)} hrs</div><div class="k">On A</div></div>
+    <div class="kpi"><div class="v">${fmt(r.best.y,1)} hrs</div><div class="k">On B</div></div>
+    <div class="kpi"><div class="v">${money(r.best.z)}</div><div class="k">Value captured</div></div>`;
+}
+$("lp_run").addEventListener("click", runLP);
+
+/* ---- GP: calls /api/gp/stretch-budget ---- */
+async function runGP(){
+  const body = {a:+$("gp_a").value, b:+$("gp_b").value, C:+$("gp_c").value, t1:+$("gp_t1").value, t2:+$("gp_t2").value, priority:+$("gp_priority").value};
+  let r; try{ r = await api("/api/gp/stretch-budget", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}); }
+  catch(e){ $("gp_kpis").innerHTML = `<div class="kpi"><div class="v">—</div><div class="k">API error: ${e.message}</div></div>`; return; }
+  $("gp_kpis").innerHTML = `<div class="kpi"><div class="v">${fmt(r.X1,2)} km</div><div class="k">MRT bought</div></div>
+    <div class="kpi"><div class="v">${fmt(r.X2,2)} yrs</div><div class="k">Lease bought</div></div>
+    <div class="kpi"><div class="v">${money(r.budget_used)}</div><div class="k">Budget used</div></div>
+    <div class="kpi"><div class="v">${fmt(r.d1_minus,2)} km</div><div class="k">MRT shortfall</div></div>
+    <div class="kpi"><div class="v">${fmt(r.d2_minus,2)} yrs</div><div class="k">Lease shortfall</div></div>`;
+}
+$("gp_run").addEventListener("click", runGP);
+
+/* ---- Search: calls /api/profiles/search ---- */
+async function runSearch(){
+  const params = new URLSearchParams({
+    town:$("s_town").value, flat_type:$("s_flat").value, max_price:$("s_price").value,
+    max_mrt_km:$("s_mrt").value, min_lease:$("s_lease").value, min_liquidity:$("s_liq").value,
+    avoid_flood_prone:$("s_flood").value, require_carpark:$("s_carpark").value,
+  });
+  if ($("s_sec").value) params.set("max_secondary_school_km", $("s_sec").value);
+  if ($("s_job").value) params.set("max_job_node_km", $("s_job").value);
+  let r; try{ r = await api("/api/profiles/search?"+params); } catch(e){ $("s_results").innerHTML = `<tr><td>API error: ${e.message}</td></tr>`; return; }
+  $("s_results").innerHTML = `<tr><th>Town</th><th>Flat type</th><th>MRT band</th><th>Price</th><th>MRT km</th><th>Lease</th><th>Liquidity</th>
+    <th title="Distance to nearest secondary school">Secondary (km)</th>
+    <th title="Carpark within 400m / Within 150-400m of an expressway or PUB flood-prone road">Carpark</th>
+    <th title="Nearest decentralised employment node and straight-line distance to it (not a transit travel time)">Nearest job node</th></tr>` +
+    (r.results.length ? r.results.map(p=>`<tr><td>${p.town}</td><td>${p.flat_type}</td><td>${p.mrt_band}</td><td>${money(p.price)}</td><td>${fmt(p.mrt_km,2)}</td><td>${fmt(p.lease,1)}</td><td>${p.liquidity_12m}</td>
+      <td>${fmt(p.secondary_school_km,2)}</td><td>${p.has_carpark?"Yes":"No"}${p.near_flood_prone?" ⚠ flood-listed":""}</td>
+      <td>${p.nearest_job_node?`${p.nearest_job_node.replace(/_/g," ")} (${fmt(p.job_node_km,1)}km)`:"—"}</td></tr>`).join("")
+      : '<tr><td colspan="10" class="note">No matches — loosen a filter.</td></tr>');
+}
+$("s_run").addEventListener("click", runSearch);
+
+/* ---- Final Recommender: calls /api/recommend (the REAL solver) ---- */
+const GOAL_LABEL = {dev_mrt:"MRT distance", dev_school:"School access", dev_storey:"Storey", dev_wait:"Wait time", dev_essentials:"Essentials nearby", dev_expressway:"Expressway distance"};
+$("ap_mode").addEventListener("change", ()=>{ $("ap_priority_wrap").hidden = $("ap_mode").value!=="preemptive"; });
+
+async function runApplied(){
+  const mode = $("ap_mode").value;
+  const alphaRaw = $("ap_alpha").value;
+  const body = {
+    budget:+$("ap_budget").value, min_lease_yrs:+$("ap_lease").value, target_mrt_km:+$("ap_mrt").value,
+    k:+$("ap_k").value, mrt_weight:+$("ap_weight").value, needs_primary_school: $("ap_school").value==="true",
+    mode, chance_alpha: alphaRaw===""?null:+alphaRaw,
+    target_expressway_km: $("ap_expwy").value===""?null:+$("ap_expwy").value,
+  };
+  if (mode==="preemptive") body.priority = Array.from(document.querySelectorAll(".ap_pri")).map(s=>s.value);
+  let r; try{ r = await api("/api/recommend", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}); }
+  catch(e){ $("ap_results").hidden=false; $("ap_table").innerHTML = `<tr><td>API error: ${e.message}</td></tr>`; return; }
+  $("ap_results").hidden = false;
+  if (!r.shortlist.length){
+    $("ap_table").innerHTML = `<tr><td>Status: ${r.status} — no feasible shortlist with these settings. Loosen the budget or lease floor.</td></tr>`;
+    $("ap_kpis").innerHTML = ""; $("ap_stage_wrap").hidden = true;
+    return;
+  }
+  $("ap_table").innerHTML = `<tr><th>#</th><th>Town</th><th>Flat</th><th>Storey</th><th>MRT band</th><th>Price</th>
+    <th title="Market value of its attributes minus what it actually costs — higher is a bigger bargain">Surplus</th>
+    <th title="$ cost of falling short of your stated goals (mainly MRT distance) — lower is better, $0 = meets your goals exactly">Deviation</th>
+    <th title="Surplus minus Deviation — the score the solver actually maximises">Net</th>
+    <th title="Expected months before a matching flat comes up for sale, from this profile's own recent sale frequency">Wait (mo)</th></tr>` +
+    r.shortlist.map(p=>`<tr><td>${p.rank}</td><td>${p.town}</td><td>${p.flat_type}</td><td>${p.storey_band}</td><td>${p.mrt_band}</td>
+      <td>${money(p.price_today)}</td><td>${money(p.surplus)}</td><td>${money(p.goal_deviation_total)}</td><td>${money(p.net_objective_value)}</td><td>${fmt(p.expected_wait_months,1)}</td></tr>`).join("");
+  $("ap_kpis").innerHTML = `<div class="kpi"><div class="v">${r.status}</div><div class="k">Solver status</div></div>
+    <div class="kpi"><div class="v">${fmt(r.n_candidates)}</div><div class="k">Candidates considered</div></div>
+    <div class="kpi"><div class="v">${money(r.objective)}</div><div class="k">Objective achieved</div></div>
+    <div class="kpi"><div class="v">${r.k_satisfied?"Yes":"No"}</div><div class="k">Full k satisfied</div></div>`;
+  if (mode==="preemptive" && r.stage_values){
+    $("ap_stage_wrap").hidden = false;
+    $("ap_stage_kpis").innerHTML = (r.priority_order||[]).map((col,i)=>
+      `<div class="kpi"><div class="v">${money(r.stage_values[col])}</div><div class="k">${i+1}. ${GOAL_LABEL[col]||col}</div></div>`).join("");
+  } else {
+    $("ap_stage_wrap").hidden = true;
+  }
+}
+$("ap_run").addEventListener("click", runApplied);
+
+/* ---- Trade-off Frontier: calls /api/pareto ---- */
+async function runPareto(){
+  const body = {
+    budget:+$("pf_budget").value, min_lease_yrs:+$("pf_lease").value, target_mrt_km:+$("pf_mrt").value,
+    k:+$("pf_k").value, mrt_weight:+$("pf_weight").value, needs_primary_school: $("pf_school").value==="true",
+    n_points:+$("pf_points").value,
+  };
+  let r; try{ r = await api("/api/pareto", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}); }
+  catch(e){ $("pf_table").innerHTML = `<tr><td>API error: ${e.message}</td></tr>`; return; }
+  const cur = r.current_weighted_sum;
+  const maxSurplus = Math.max(...r.frontier.map(p=>p.total_surplus||0), cur.total_surplus);
+  $("pf_table").innerHTML = `<tr><th>Allowed deviation ($)</th><th>Status</th><th>Total surplus ($)</th><th>Total deviation ($)</th><th>Surplus (relative)</th></tr>` +
+    r.frontier.map((p,i)=>{
+      const isCur = cur && p.total_deviation!=null && Math.abs(p.total_deviation-cur.total_deviation) <= (cur.total_deviation*0.05+1);
+      const barPct = p.total_surplus!=null ? Math.max(2, Math.round(100*p.total_surplus/maxSurplus)) : 0;
+      const row = `<tr class="${isCur?'best':''} ${(p.picks&&p.picks.length)?'clickable':''}" data-pf-row="${i}" style="${(p.picks&&p.picks.length)?'cursor:pointer':''}">
+        <td>${money(p.eps_max_deviation)}</td><td>${p.status}</td><td>${money(p.total_surplus)}</td><td>${money(p.total_deviation)}</td>
+        <td><div style="background:var(--accent);height:10px;border-radius:3px;width:${barPct}%"></div></td></tr>`;
+      const detail = `<tr id="pf_detail_${i}" hidden><td colspan="5">${picksTableHtml(p.picks)}</td></tr>`;
+      return row + detail;
+    }).join("");
+  document.querySelectorAll("[data-pf-row]").forEach(tr=>tr.addEventListener("click", ()=>{
+    const d = $("pf_detail_"+tr.dataset.pfRow);
+    if (d) d.hidden = !d.hidden;
+  }));
+  $("pf_current_kpis").innerHTML = `<div class="kpi"><div class="v">${money(cur.total_surplus)}</div><div class="k">Total surplus</div></div>
+    <div class="kpi"><div class="v">${money(cur.total_deviation)}</div><div class="k">Total deviation</div></div>
+    <div class="kpi"><div class="v">${money(cur.net_objective)}</div><div class="k">Net objective</div></div>`;
+  $("pf_current_picks").innerHTML = picksTableHtml(cur.picks);
+}
+$("pf_run").addEventListener("click", runPareto);
+
+/* ---- shared: render a Pareto pick's full $ breakdown as a mini table ---- */
+function picksTableHtml(picks){
+  if (!picks || !picks.length) return '<p class="note">No picks at this point.</p>';
+  return `<table><tr><th>Town</th><th>Flat</th><th>Storey</th><th>MRT band</th><th>Price</th>
+      <th title="Hedonic bargain gap, shrunk for thin data">Value gap</th>
+      <th title="Extra value only where you weight an attribute differently than the market does">Tilt</th>
+      <th>Surplus</th><th title="MRT">Dev: MRT</th><th title="School">Dev: School</th>
+      <th title="Essentials">Dev: Ess.</th><th title="Storey">Dev: Storey</th><th title="Wait">Dev: Wait</th>
+      <th title="Expressway, if a minimum distance goal was set">Dev: Expwy</th><th>Net</th></tr>` +
+    picks.map(p=>`<tr><td>${p.town}</td><td>${p.flat_type}</td><td>${p.storey_band}</td><td>${p.mrt_band}</td>
+      <td>${money(p.price_today)}</td><td>${money(p.shrunk_value_gap)}</td><td>${money(p.preference_tilt)}</td>
+      <td>${money(p.surplus)}</td><td>${money(p.dev_mrt)}</td><td>${money(p.dev_school)}</td>
+      <td>${money(p.dev_essentials)}</td><td>${money(p.dev_storey)}</td><td>${money(p.dev_wait)}</td>
+      <td>${p.dev_expressway!=null?money(p.dev_expressway):"—"}</td><td>${money(p.net_objective_value)}</td></tr>`).join("") +
+    "</table>";
+}
+
+/* initial render */
+runLP(); runSearch();
+</script>
+</body>
+</html>
