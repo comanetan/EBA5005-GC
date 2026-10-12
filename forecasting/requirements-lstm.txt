@@ -1,0 +1,4 @@
+# Optional CPU LSTM benchmark, tested with Python 3.12.
+# Install after requirements-tested.txt.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.1+cpu

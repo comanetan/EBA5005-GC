@@ -8,7 +8,7 @@ def main():
         segment_id=forecaster.available_segments()[0],
         horizon_months=12,
         confidence_level=0.90,
-        base_price_sgd=600000,  # Illustrative Comane price, not a real valuation.
+        base_price_sgd=600000,  # Illustrative price, not a real valuation.
         base_price_month=forecaster.metadata["origin"],
     )
     print(json.dumps(result, indent=2, allow_nan=False))

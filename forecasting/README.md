@@ -1,5 +1,65 @@
 # Yi Ling's preliminary HDB forecasting
 
+## Pooled LSTM benchmark
+
+The optional PyTorch experiment is now implemented and evaluated. See
+[LSTM_BENCHMARK.md](LSTM_BENCHMARK.md) for setup, results, lecture links and limitations.
+Run `python -m forecasting.compare_pooled_lstm` after the regional experiment.
+It does not replace the saved preliminary UI model. Later sections describing the
+original preliminary pipeline refer to that pipeline, not this separate experiment.
+
+## Regional location-adjusted experiment
+
+1. `python -m forecasting.build_location_inputs` reuses the team's feature scripts but
+   redirects all generated data, reports and handovers into `forecasting/outputs/location_inputs`.
+   It checks that existing shared output files are unchanged.
+2. `python -m forecasting.compare_regional_location` compares six forecasting specifications
+   across the five regions for 4-room flats, using four historical forecast origins.
+3. `python -m unittest forecasting.test_location_index -v` checks that changing future
+   transaction prices and location attributes cannot change the training index.
+
+Results live under `forecasting/outputs/regional_location`. Start with `aggregate_metrics.csv`,
+then `metrics_by_region.csv` and `validation_selected_models.csv`. The `manifest.json`
+records limitations. Aggregate errors weight each region equally, not by transaction volume.
+
+This is an origin-refitted v1-style hedonic index with area, lease, storey, town, flat model,
+MRT distance and amenity controls. It deliberately ignores full-year outlier flags. The
+current amenity snapshots are held fixed historically; they are not genuine as-of amenity
+histories. MRT uses supplied opening dates but current exit geometry. Therefore these
+are retrospective experiments, not fully vintage-correct live forecast simulations.
+
+All 120 model-origin-region runs completed in the first run. ARIMA with drift won earlier
+validation in every region (mean regional MAPE 1.43%), while naive performed best on
+average in the later-year check (0.83%, vs 3.41% for ARIMA with drift). SORA did not improve
+average validation error. Do not retrospectively switch winners using the later-year check.
+These results do not include other flat types or a pooled LSTM. The saved UI bundle remains
+the original preliminary model. Keep result scales distinct from the older SGD/m2 experiment.
+
+## New experiment: origin-refitted hedonic index and SORA
+
+Run `python -m forecasting.compare_sarimax_rates` from the repository root.
+This tests NORTH-EAST 4 ROOM with origin-refitted flat controls (v0), not the
+full-sample location-adjusted v1 index. It leaves the existing UI bundle unchanged.
+Outputs: `forecasting/outputs/sarimax_experiment/metrics.csv`, `predictions.csv`,
+`origin_specific_indices.csv`, `candidate_future_forecast.csv`, `fit_log.csv`,
+`final_fit.json` and `manifest.json`.
+
+Paired ARIMA/SARIMA specifications are compared with/without a one-month-lagged
+3-month compounded SORA rate. Future rates use the last known value held flat.
+Future realised rates never enter the forecast. The hedonic regression is refitted
+at each origin; evaluation uses frozen training characteristic coefficients.
+No full-year outlier screen or future-derived amenity adjustment is used.
+
+Test timing protections: `python -m unittest forecasting.test_sarimax_experiment -v`.
+These tests deliberately change future prices/rates and verify training/forecasts
+stay unchanged. This does not reconstruct historical data vintages, and the recent
+calendar year already appeared in earlier experiments, so it is labelled a later-period
+check rather than a pristine final project holdout. Exact 6/12-month results use only
+3 validation origins and 1 later-period origin; report that limitation.
+
+Next: location-aware historical features and v1 refits, more regional segments,
+pooled LSTM, uncertainty calibration, and the shared profile_id/p10/p50/p90 adapter.
+
 This folder contains the complete runnable Python script, not pseudocode.
 The shared OneDrive source is read only. All results are saved under `forecasting/outputs`.
 

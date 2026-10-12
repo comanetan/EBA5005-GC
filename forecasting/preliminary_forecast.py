@@ -63,7 +63,7 @@ def save_json(path, value):
     path.write_text(json.dumps(value, indent=2, default=str), encoding="utf-8")
 
 
-def read_and_aggregate():
+def read_and_aggregate(): #read transactions and construct monthly medians
     if not RAW_CSV.exists():
         raise FileNotFoundError(f"Data not found. Check RAW_CSV at the top:\n{RAW_CSV}")
     df = pd.read_csv(RAW_CSV)
@@ -102,7 +102,7 @@ def read_and_aggregate():
     return monthly, audit
 
 
-def choose_series(monthly, dates, initial_end):
+def choose_series(monthly, dates, initial_end): #Choose a supported example using early data coverage.
     rows = []
     for (town, flat), group in monthly.groupby(["town", "flat_type"]):
         counts = group.set_index("month").transaction_count.reindex(dates, fill_value=0)
@@ -134,7 +134,7 @@ def choose_series(monthly, dates, initial_end):
     return g, selected.town
 
 
-def forecast(train, name, steps, stage):
+def forecast(train, name, steps, stage): #Fit a specified model and generate predictions.
     """Fit on log prices. Back-transformed centre is a predictive MEDIAN, not mean."""
     z = np.log(train)
     result = None
@@ -172,7 +172,7 @@ def forecast(train, name, steps, stage):
     return frame, result
 
 
-def evaluate(train, actual, name, stage):
+def evaluate(train, actual, name, stage): #Put forecasts alongside actual values.
     pred, fitted = forecast(train, name, len(actual), stage)
     pred["actual_psm"] = actual
     pred["model"] = name
@@ -182,7 +182,7 @@ def evaluate(train, actual, name, stage):
     return pred.reset_index(), fitted
 
 
-def scores(pred):
+def scores(pred): #Calculate forecast errors and interval coverage.
     rows = []
     for name, group in pred.groupby("model"):
         for label, subset in [("months_1_to_6", group[group.horizon <= 6]),
@@ -200,7 +200,7 @@ def scores(pred):
     return pd.DataFrame(rows)
 
 
-def diagnostic_plots(series, initial_end, selected_name, fitted):
+def diagnostic_plots(series, initial_end, selected_name, fitted): #Produce stationarity and residual diagnostics.
     # Identification only uses the earliest training window; final holdout stays unseen.
     z = np.log(series.iloc[:initial_end])
     diff = z.diff().dropna()
