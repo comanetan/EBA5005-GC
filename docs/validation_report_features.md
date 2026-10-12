@@ -23,5 +23,10 @@
 | Sales whose nearest MRT opened after the sale | NOTE | 3.3% (their MRT distance at time of sale is longer than today's) |
 | Missing location features (in-scope sales) | NOTE | none |
 | Profile IDs unique | PASS |  |
-| Profiles with 5+ sales in the last 12 months | NOTE | 55% of 1,927 profiles, covering 95% of recent sales |
-| Profiles with 10+ sales in the last 12 months | NOTE | 37% of 1,927 profiles, covering 86% of recent sales |
+| Profiles with 5+ sales in the last 12 months | NOTE | 58% of 1,828 profiles, covering 95% of recent sales |
+| Profiles with 10+ sales in the last 12 months | NOTE | 39% of 1,828 profiles, covering 86% of recent sales |
+| Profiles with no sale in the last 12 months | NOTE | 275 (priced by the model; expect wider uncertainty) |
+| prices_today.csv covers exactly the profiles in profiles.csv | PASS |  |
+| prices_today.csv: no missing or non-positive price | PASS |  |
+| expected_wait.csv covers exactly the profiles in profiles.csv | PASS |  |
+| expected_wait.csv: no missing or non-positive wait_months | PASS |  |

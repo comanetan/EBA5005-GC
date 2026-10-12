@@ -2,9 +2,9 @@
 Outputs:
   data/processed/block_features.csv   one row per block: coordinates + distances/counts + HDB block attributes
   data/processed/resale_features.csv  one row per transaction, model-ready (hedonic, survival, backtest)
-  outputs/profiles.csv                shared handover: profile_id + band definitions (+ recent counts)
-  outputs/prices_today.csv            PLACEHOLDER for the rough version: median price per profile, last 12 months
-  outputs/expected_wait.csv           PLACEHOLDER: 12 / transactions in last 12 months (naive rate)"""
+  outputs/profiles.csv                shared handover: profiles that exist today (current stock), bands, units, recent sales
+  outputs/prices_today.csv            placeholder only if step 6 hasn't run (median price, last 12 months)
+  outputs/expected_wait.csv           placeholder only if step 7 hasn't run (12 / sales in last 12 months)"""
 import numpy as np, pandas as pd
 import config as C
 # Requires step 1b (cleaning) to have run: reads data/interim/resale_clean.csv
@@ -136,16 +136,14 @@ def main(geocode_cache=C.GEOCODE_CACHE, processed=C.PROCESSED, outputs=C.OUTPUTS
     print(f"Transactions with a profile: {df['profile_id'].notna().sum():,}/{len(df):,}")
 
     # --- shared handover files
-    last12 = sorted(df["month"].unique())[-13:-1]                 # 12 most recent COMPLETE months
-    recent = df[df["month"].isin(last12) & df["profile_id"].notna()]
-    prof = (df[df["profile_id"].notna()]
-              .groupby(["profile_id", "town", "flat_type", "lease_band", "mrt_band", "storey_band"])
-              .size().reset_index(name="n_transactions_all"))
-    stats = recent.groupby("profile_id").agg(n_last12=("resale_price", "size"),
-                                             median_price_last12=("resale_price", "median")).reset_index()
-    prof = prof.merge(stats, on="profile_id", how="left").fillna({"n_last12": 0})
+    # profiles.csv describes the flats a buyer could buy TODAY: current stock past MOP, lease and MRT bands as of the latest
+    # complete month (src/homefit/profiles.py). Past sales are counted under the profile their flat belongs to today.
+    from homefit import profiles as PR, common as K
+    K.sales.cache_clear(); K.blocks.cache_clear(); K.stock.cache_clear(); K._station_distances.cache_clear(); K.lease_start.cache_clear()
+    as_of = K.latest_complete_month()
+    prof = PR.current_profiles(as_of)
     prof.to_csv(outputs / "profiles.csv", index=False)
-    # Placeholders for the rough version: written only if the real model output doesn't exist yet
+    # Placeholders: written only if the model outputs (steps 6 and 7) don't exist yet
     if not (outputs / "prices_today.csv").exists():
         (prof.dropna(subset=["median_price_last12"])
              .rename(columns={"median_price_last12": "price"})[["profile_id", "price"]]
@@ -153,8 +151,9 @@ def main(geocode_cache=C.GEOCODE_CACHE, processed=C.PROCESSED, outputs=C.OUTPUTS
     if not (outputs / "expected_wait.csv").exists():
         prof.assign(wait_months=(12 / prof["n_last12"].clip(lower=1)).round(1))[["profile_id", "wait_months"]] \
             .to_csv(outputs / "expected_wait.csv", index=False)
-    print(f"{len(prof):,} profiles ({(prof['n_last12'] >= 5).sum():,} with 5+ sales in the last 12 months: "
-          f"{last12[0]} to {last12[-1]})")
+    print(f"{len(prof):,} profiles as of {as_of} from {prof['n_blocks'].sum():,} block-profile pairs "
+          f"({(prof['n_last12'] >= 5).sum():,} with 5+ sales in the last 12 months)")
+    print("Re-run steps 6 and 7 so prices_today.csv and expected_wait.csv match these profiles.")
     return b, df, prof
 
 if __name__ == "__main__":
