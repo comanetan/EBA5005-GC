@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "model_version": "preliminary-202609-3c3d8bf9b12a",
+  "segment_id": "SENGKANG::4 ROOM",
+  "model_name": "ARIMA_011_drift",
+  "backend": "statsmodels",
+  "origin": "2026-09",
+  "reference_value_psm": 6854.166666666667,
+  "max_horizon_months": 12,
+  "last_12_log_values": [
+    8.823669177883655,
+    8.862078479571732,
+    8.832710062861462,
+    8.840885701391052,
+    8.818284258856362,
+    8.855905154002498,
+    8.835168448649277,
+    8.852128148718563,
+    8.818085495604825,
+    8.815686179972234,
+    8.852128148718563,
+    8.832612018839619
+  ],
+  "naive_innovation_mse": 0.0005720455557719536,
+  "seasonal_innovation_mse": 0.005457660079267541,
+  "status": "preliminary_not_calibrated_for_affordability",
+  "target": "monthly_median_price_per_sqm",
+  "source_sha256": "3c3d8bf9b12adb88919fa74869922fe05cdb144f5f69d93a0de4345d047cc7d4",
+  "python_version": "3.12.14",
+  "statsmodels_version": "0.14.6",
+  "warnings": [
+    "Only the listed segment is supported; no silent substitution for other segments.",
+    "Median transaction SGD/m2 is not a hedonic index or an individual-flat valuation.",
+    "Bounds are conditional pointwise intervals, not joint price paths or affordability guarantees.",
+    "Growth factors assume a profile follows this segment from the same reference month.",
+    "Profile scenarios exclude current-price estimation uncertainty and future macro scenarios."
+  ]
+}

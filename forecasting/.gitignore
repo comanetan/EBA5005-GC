@@ -1,0 +1,6 @@
+.mplconfig/
+__pycache__/
+outputs/*
+!outputs/forecast_next_12_months.csv
+!outputs/holdout_metrics.csv
+!outputs/validation_metrics.csv
