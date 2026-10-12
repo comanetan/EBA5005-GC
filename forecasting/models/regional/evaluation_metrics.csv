@@ -1,0 +1,15 @@
+stage,model,mean_region_MAPE_pct,regions
+later_period_check,ARIMA_011_drift,3.4115210509179748,5
+later_period_check,ARIMA_011_drift_SORA,3.311690492763193,5
+later_period_check,SARIMA_110_100,1.7492136109012448,5
+later_period_check,SARIMA_110_100_SORA,1.8166924507450986,5
+later_period_check,naive,0.8319510727534416,5
+later_period_check,pooled_LSTM,3.735565989058449,5
+later_period_check,seasonal_naive,1.6179735793747594,5
+validation,ARIMA_011_drift,1.433888694613592,5
+validation,ARIMA_011_drift_SORA,1.4548905470225102,5
+validation,SARIMA_110_100,2.1579726583763352,5
+validation,SARIMA_110_100_SORA,2.309168036906441,5
+validation,naive,3.6766810632597666,5
+validation,pooled_LSTM,1.9853509460575232,5
+validation,seasonal_naive,7.4926142720504485,5

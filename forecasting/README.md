@@ -1,5 +1,13 @@
 # Yi Ling's preliminary HDB forecasting
 
+## Current dashboard handover
+
+Use [REGIONAL_HANDOVER.md](REGIONAL_HANDOVER.md) and `regional_api.RegionalForecaster`
+for the validation-selected regional model. `outputs/price_paths.csv` at repository
+root supplies the agreed four-room profile-price quantiles. See
+[EVALUATION.md](EVALUATION.md) for time splits and accuracy metrics.
+The original `model_api.Forecaster` remains as a legacy preliminary interface.
+
 ## Pooled LSTM benchmark
 
 The optional PyTorch experiment is now implemented and evaluated. See

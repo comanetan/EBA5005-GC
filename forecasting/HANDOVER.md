@@ -1,5 +1,8 @@
 # Forecasting interface for Daniel
 
+> Legacy preliminary interface. Use [REGIONAL_HANDOVER.md](REGIONAL_HANDOVER.md)
+> for the current five-region hedonic-index model and agreed profile-price CSV.
+
 ## Install and use
 
 Copy the `forecasting` package including `models/preliminary/manifest.json` and

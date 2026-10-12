@@ -1,0 +1,18 @@
+{
+  "base_price_month": "2026-09",
+  "base_price_date_evidence": "docs/model_validation.md: pricing as of Sep 2026",
+  "pricing_sha256": "dc05b5c3e204614d39525022fed42cb6118a9cdc4a2b21691b6f471d33614bd9",
+  "included_profiles": 492,
+  "excluded_unsupported_profiles": 1336,
+  "rows": 5904,
+  "model_version": "regional-202609-8eb83b372bad",
+  "quantile_meaning": "conditional marginal p10/p50/p90; central 80% interval, not joint paths",
+  "warnings": [
+    "Supports four-room profiles only; assumes each profile follows its regional index.",
+    "p10/p90 are conditional marginal model quantiles, not calibrated affordability guarantees.",
+    "Latest check had poor nominal 90% coverage; inspect models/regional/regional_metrics.csv.",
+    "Excludes profile valuation, hedonic-index estimation and model-selection uncertainty.",
+    "Static amenity snapshots and historical data vintages limit retrospective validity.",
+    "Joint temporal/cross-region simulation is not implemented."
+  ]
+}

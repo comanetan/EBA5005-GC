@@ -31,11 +31,14 @@ def main():
     # Keep the original shared geocode cache as a read-only input.
     previous = sys.modules.get("config")
     sys.modules["config"] = config
+    previous_path = list(sys.path)
+    sys.path.insert(0, str(ROOT / "src"))
     try:
         for script in ["01_unique_addresses.py", "01b_clean_resale.py", "03_amenity_points.py", "04_build_features.py"]:
             print(f"Building local copy: {script}", flush=True)
             runpy.run_path(str(ROOT / "src" / script), run_name="__main__")
     finally:
+        sys.path[:] = previous_path
         if previous is None: sys.modules.pop("config", None)
         else: sys.modules["config"] = previous
     after = {str(p): hashlib.sha256(p.read_bytes()).hexdigest() for p in shared if p.is_file()}
