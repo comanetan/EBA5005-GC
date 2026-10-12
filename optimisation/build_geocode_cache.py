@@ -34,7 +34,8 @@ import os
 import pandas as pd
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-PROC = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\data\processed"
+ROOT = os.path.dirname(os.path.dirname(HERE))  # .../Project, portable across machines
+PROC = os.path.join(ROOT, "data", "processed")
 OUT = os.path.join(HERE, "data")
 
 COLUMNS = ["key", "kind", "lat", "lon", "postal", "matched_blk", "onemap_address", "match_quality"]

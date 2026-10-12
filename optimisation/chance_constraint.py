@@ -58,7 +58,7 @@ if __name__ == "__main__":
     import os
     from recommender import load_candidate_table, attach_forecast, compute_wtp_value, compute_goal_deviations_sgd, HouseholdQuery
 
-    DATA_DIR = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\notebooks\optimization_lead\data"
+    DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
     df, fcast, prefs = load_candidate_table()
     df = attach_forecast(df, fcast, horizon_months=12)
 

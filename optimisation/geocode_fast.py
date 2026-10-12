@@ -17,7 +17,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import pandas as pd
 
-PROC = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\data\processed"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # .../Project, portable across machines
+PROC = os.path.join(ROOT, "data", "processed")
 
 
 def geocode_one(postal, timeout=5):
@@ -76,7 +77,7 @@ def geocode_batch(postals, cache_name, max_workers=6, checkpoint_every=100, time
 
 
 if __name__ == "__main__":
-    GEO_DIR = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\data\geospatial"
+    GEO_DIR = os.path.join(ROOT, "data", "geospatial")
 
     childcare = pd.read_csv(os.path.join(GEO_DIR, "Childcare_Kindergarten_Centres_ECDA.csv"))
     postals = childcare["postal_code"].astype(str).str.extract(r"(\d{6})")[0].dropna().tolist()

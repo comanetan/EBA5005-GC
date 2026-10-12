@@ -32,7 +32,7 @@ import pulp
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
-ROOT = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project"
+ROOT = os.path.dirname(os.path.dirname(HERE))  # .../Project, portable across machines
 
 ATTR_COLS = {"mrt": "dist_mrt_exit_km_p50", "hawker": "dist_hawker_km_p50",
              "supermarket": "dist_supermarket_km_p50", "clinic": "dist_chas_clinic_km_p50",

@@ -16,7 +16,7 @@ import os
 import numpy as np
 import pandas as pd
 
-DATA_DIR = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\notebooks\optimization_lead\data"
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 # Stand-in macro regimes: (probability, price-growth multiplier on the mean,
 # volatility multiplier, availability multiplier). Approximates "interest-rate

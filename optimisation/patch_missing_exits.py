@@ -14,7 +14,8 @@ import time
 import urllib.parse
 import urllib.request
 
-GEO = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\data\geospatial"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # .../Project, portable across machines
+GEO = os.path.join(ROOT, "data", "geospatial")
 
 
 def onemap(q):

@@ -15,7 +15,7 @@ import os
 
 import pandas as pd
 
-DATA_DIR = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\notebooks\optimization_lead\data"
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
 
 def rough_rank(budget, min_lease_yrs=60, k=5):

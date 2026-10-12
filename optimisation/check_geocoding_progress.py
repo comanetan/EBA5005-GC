@@ -4,8 +4,8 @@ Usage: python check_geocoding_progress.py"""
 import os
 import pandas as pd
 
-PROC = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\data\processed"
-ROOT = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # .../Project, portable across machines
+PROC = os.path.join(ROOT, "data", "processed")
 GEO_DIR = os.path.join(ROOT, "data", "geospatial")
 
 TARGETS = [

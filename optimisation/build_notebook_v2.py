@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 """Builds Optimisation_Lead_Pipeline_v2_BlockLevel.ipynb."""
+import os
+
 import nbformat as nbf
 
 nb = nbf.v4.new_notebook()
@@ -545,5 +547,6 @@ md("""## 10. Conclusions, limitations, handoff notes
 """)
 
 nb["cells"] = cells
-nbf.write(nb, open(r"C:\\Users\\Daniel Loh\\Documents\\NUS-ISS_EBAC\\SPMF\\Project\\notebooks\\optimization_lead\\Optimisation_Lead_Pipeline_v2_BlockLevel.ipynb", "w", encoding="utf-8"))
+out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Optimisation_Lead_Pipeline_v2_BlockLevel.ipynb")
+nbf.write(nb, open(out_path, "w", encoding="utf-8"))
 print("written", len(cells), "cells")

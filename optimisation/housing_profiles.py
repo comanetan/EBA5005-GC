@@ -17,7 +17,7 @@ import sys
 import numpy as np
 import pandas as pd
 
-ROOT = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # .../Project, portable across machines
 OUT_DIR = os.path.join(ROOT, "notebooks", "optimization_lead", "data")
 os.makedirs(OUT_DIR, exist_ok=True)
 sys.path.insert(0, os.path.join(ROOT, "notebooks"))

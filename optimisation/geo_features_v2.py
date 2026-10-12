@@ -15,7 +15,7 @@ import urllib.request
 import pandas as pd
 from shapely.geometry import shape, Point
 
-ROOT = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # .../Project, portable across machines
 GEO_DIR = os.path.join(ROOT, "data", "geospatial")
 PROC = os.path.join(ROOT, "data", "processed")
 OUT_DIR = os.path.join(ROOT, "notebooks", "optimization_lead", "data")

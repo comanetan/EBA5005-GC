@@ -24,7 +24,9 @@ import urllib.request
 
 import pandas as pd
 
-PROC = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\data\processed"
+HERE = os.path.dirname(os.path.abspath(__file__))
+ROOT = os.path.dirname(os.path.dirname(HERE))  # .../Project, portable across machines
+PROC = os.path.join(ROOT, "data", "processed")
 
 
 def geocode_query(query, timeout=8, max_retries=5):
@@ -112,7 +114,7 @@ if __name__ == "__main__":
     target = sys.argv[1] if len(sys.argv) > 1 else "facilities"
 
     if target == "facilities":
-        GEO_DIR = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\data\geospatial"
+        GEO_DIR = os.path.join(ROOT, "data", "geospatial")
 
         childcare = pd.read_csv(os.path.join(GEO_DIR, "Childcare_Kindergarten_Centres_ECDA.csv"))
         childcare["postal_code"] = childcare["postal_code"].astype(str).str.extract(r"(\d{6})")[0]
@@ -129,7 +131,7 @@ if __name__ == "__main__":
                                     delay=0.3, max_area_seconds=60, max_total_seconds=300)
 
     elif target == "schools":
-        GEO_DIR = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\data\geospatial"
+        GEO_DIR = os.path.join(ROOT, "data", "geospatial")
         schools = pd.read_csv(os.path.join(GEO_DIR, "General_Information_of_Schools.csv"))
         schools["postal_code"] = schools["postal_code"].astype(str).str.zfill(6)
         schools["area"] = schools["postal_code"].str[:2]
@@ -137,7 +139,6 @@ if __name__ == "__main__":
                                     delay=0.3, max_area_seconds=60, max_total_seconds=600)
 
     elif target == "blocks":
-        ROOT = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project"
         blocks = pd.read_csv(os.path.join(ROOT, "HDBPropertyInformation.csv"))
         blocks["query"] = blocks["blk_no"].astype(str) + " " + blocks["street"]
         geocode_dataframe_by_area(blocks, "query", "bldg_contract_town", "hdb_blocks_geocoded.csv",

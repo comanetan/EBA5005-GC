@@ -298,6 +298,7 @@ md("""## Summary & handback to the team
 """)
 
 nb["cells"] = cells
-with open(r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project\notebooks\optimization_lead\Optimisation_Lead_Pipeline.ipynb", "w", encoding="utf-8") as f:
+out_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Optimisation_Lead_Pipeline.ipynb")
+with open(out_path, "w", encoding="utf-8") as f:
     nbf.write(nb, f)
 print("Notebook written,", len(cells), "cells")

@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 import statsmodels.formula.api as smf
 
-ROOT = r"C:\Users\Daniel Loh\Documents\NUS-ISS_EBAC\SPMF\Project"
+ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # .../Project, portable across machines
 OUT = os.path.join(ROOT, "notebooks", "optimization_lead", "data")
 
 HEDONIC_MRT = "dist_mrt_exit_km_at_sale"  # station must be open in the month of sale

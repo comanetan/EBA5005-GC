@@ -26,12 +26,19 @@ for sources that pipeline needed but weren't already shared (carpark info, flood
 areas, bus stops, planned rail, community clubs, childcare, polyclinics — see the README
 in each `daniel_add/` folder for exactly what and why).
 
-**Known limitation, not yet fixed**: every script's file paths (`ROOT`/`GEO`/`PROC`
-constants near the top of `block_accessibility.py`, `block_analysis.py`,
-`recommender_v2.py` etc.) are still hardcoded to the author's own machine, not relative
-to this repo. Cloning this branch and running `rebuild_v2.py` won't work out of the box
-on another machine yet — message me if you want to actually run this and I'll either
-walk through it or take the time to make the paths portable.
+**Partially fixed, one layer of the limitation remains**: every script's `ROOT`/`GEO`/
+`PROC`/`DATA_DIR` constants (2026-10-12) are now derived from the script's own file
+location (`os.path.dirname(os.path.abspath(__file__))`-style), not hardcoded to the
+author's machine/username — portable in that sense. What's NOT yet bridged: they still
+expect the author's *original* project layout (a `Project/` folder one level above
+`notebooks/optimization_lead/`, with `Project/data/geospatial/`, `Project/data/processed/`
+and root-level raw CSVs named exactly as on the author's machine) rather than *this
+repo's* own `data/raw/` + `data/interim/` layout (different folder names, several
+files renamed — see `data/raw/daniel_add/README.md`). Cloning just this branch and
+running `rebuild_v2.py` still won't work out of the box yet for that reason — the
+remaining fix is remapping these scripts onto this repo's own `data/` layout, not just
+making the paths relative, and hasn't been done (bigger, riskier change, deferred
+rather than rushed). Message me if you want this finished.
 
 ## Real data from the other leads
 
