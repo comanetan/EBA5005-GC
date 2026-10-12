@@ -71,6 +71,14 @@ for k in [5, 10]:
     note(f"Profiles with {k}+ sales in the last 12 months",
          f"{(p['n_last12'] >= k).mean():.0%} of {len(p):,} profiles, covering {p.loc[p['n_last12'] >= k, 'n_last12'].sum() / p['n_last12'].sum():.0%} of recent sales")
 
+note("Profiles with no sale in the last 12 months", f"{(p['n_last12'] == 0).sum():,} (priced by the model; expect wider uncertainty)")
+for f, col in [("prices_today.csv", "price"), ("expected_wait.csv", "wait_months")]:
+    o = pd.read_csv(C.OUTPUTS / f)
+    check(f"{f} covers exactly the profiles in profiles.csv", set(o["profile_id"]) == set(p["profile_id"]),
+          f"{len(set(p['profile_id']) - set(o['profile_id']))} missing, {len(set(o['profile_id']) - set(p['profile_id']))} extra "
+          "(re-run steps 6 and 7 after step 4)")
+    check(f"{f}: no missing or non-positive {col}", o[col].notna().all() and (o[col] > 0).all())
+
 lines = ["# Geocoding and feature validation report", "",
          "| Check | Result | Detail |", "|---|---|---|"] + [f"| {c} | {r} | {d_} |" for c, r, d_ in checks]
 (C.ROOT / "docs" / "validation_report_features.md").write_text("\n".join(lines) + "\n")

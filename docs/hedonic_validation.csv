@@ -1,0 +1,3 @@
+,MAPE,median_APE,within_10pct,R2_log,MAPE_last12m
+lightgbm,0.039,0.03,0.9404,0.9766,0.0382
+linear_baseline,0.0663,0.0537,0.7802,0.9371,0.0656
