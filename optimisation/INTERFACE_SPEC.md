@@ -85,6 +85,26 @@
 > goal (mirror of `target_mrt_km`'s maximum-distance goal), producing `dev_expressway` in the shortlist and
 > `goal_deviation_total`. Exposed in the web app's Final Recommender tab. Backtest re-run after this change:
 > 98.8% within-budget reliability, unchanged from the pre-change baseline.
+>
+> **v2.4 real adapters for Pricing/Availability and Forecasting** (2026-10-12, see OPTIMISER_METHODOLOGY_REPORT.md
+> §10): `pricing_today.csv` / `availability.csv` / `price_forecast_live.csv` are no longer stubs — built by
+> `pricing_availability_adapter.py` / `forecasting_adapter.py` from the other leads' REAL branches (`main` /
+> `forecasting` in comanetan/EBA5005-GC), via a profile_id crosswalk (`profile_crosswalk.py`, their 5-part
+> `TOWN|FLATTYPE|LeaseBand|MRTBand|StoreyRange` scheme → this pipeline's 4-part one). **96.2% of profiles
+> (681/708) now have real pricing/availability**; forecasting real coverage is **4-ROOM only, all 26 towns**
+> (their model's own stated scope), every other flat type still on the stub.
+> - **Opt-in by design, not automatic everywhere**: real data is only substituted when `assemble()` infers
+>   `live=True` (i.e. `profiles=None` was passed, meaning "today"). Any explicit historical `profiles`
+>   snapshot (the backtest, multigen) gets `live=False` automatically — real data can never leak into a
+>   historical cutoff. Verified: backtest reliability unchanged (98.8%) after wiring this in.
+> - **The hedonic "bargain" signal is suppressed, not recalculated naively, for real-priced profiles.**
+>   `hedonic_value` was fit against this pipeline's own `median_price`, not the Pricing Lead's real,
+>   lease-band-blended `price_today` — the two disagree by a median 2.5% but up to ±50-80% at the tails.
+>   Comparing them would mostly measure model disagreement, not real mispricing, so `shrunk_value_gap` is
+>   set to $0 (not fabricated) for every real-priced profile until the hedonic is re-fit against the real
+>   price as its target — flagged as the top follow-up item, see §10's "what's still needed" list.
+> - Run `python pricing_availability_adapter.py && python forecasting_adapter.py` to refresh against a
+>   newer snapshot of the other branches (re-download via `data/external_handovers/`, see the scripts).
 
 This is the contract the recommender is built against. If your module's real
 output doesn't match a schema below, either the schema changes (tell the

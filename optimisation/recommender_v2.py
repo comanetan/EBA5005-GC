@@ -116,11 +116,20 @@ def preference_overrides_from_file(preferences_path=None, market_path=None, ref_
     return overrides
 
 
-def load_inputs(profiles=None):
+def load_inputs(profiles=None, live=True):
+    """live=True (profiles=None callers -- the actual current recommender/webapp/
+    calculator): reads price_forecast_live.csv if it exists (the forecasting_adapter.py
+    blend of real 4-ROOM forecasts + stub for every other flat type), else falls back to
+    price_forecast.csv. live=False (backtest / multigen / any explicit historical
+    `profiles` snapshot): ALWAYS reads price_forecast.csv (stub-only, time-invariant) --
+    never the live-enhanced file, which reflects TODAY's real forecast and would leak
+    look-ahead information into a historical cutoff."""
     if profiles is None:
         profiles = pd.read_csv(os.path.join(DATA, "housing_profiles_v2_full.csv"))
     betas = json.load(open(os.path.join(DATA, "market_wtp_coefficients.json")))["log_points_per_km"]
-    fcast = pd.read_csv(os.path.join(DATA, "price_forecast.csv"))
+    live_path = os.path.join(DATA, "price_forecast_live.csv")
+    fcast_path = live_path if (live and os.path.exists(live_path)) else os.path.join(DATA, "price_forecast.csv")
+    fcast = pd.read_csv(fcast_path)
     rent = pd.read_csv(os.path.join(ROOT, "data", "processed", "hdb_rental_town_flattype_month.csv"),
                        parse_dates=["month"])
     rent = rent[rent["month"] > rent["month"].max() - pd.DateOffset(months=12)]
@@ -129,24 +138,70 @@ def load_inputs(profiles=None):
     return profiles, betas, fcast, rent_tf
 
 
-def availability_stub(profiles):
+def _load_real_pricing():
+    """pricing_today.csv -- real output from the Pricing & Availability Lead, converted
+    by pricing_availability_adapter.py. None if the file hasn't been produced yet."""
+    path = os.path.join(DATA, "pricing_today.csv")
+    return pd.read_csv(path) if os.path.exists(path) else None
+
+
+def _load_real_availability():
+    path = os.path.join(DATA, "availability.csv")
+    return pd.read_csv(path) if os.path.exists(path) else None
+
+
+def availability_stub(profiles, live=True):
     """Arrival rate of MATCHING transactions (the buyer-relevant quantity):
     lambda = sales_12m / 12 per month. Replaces v1's arbitrary '/20 units'
-    scaling, which made 'buy now' look implausibly rare."""
+    scaling, which made 'buy now' look implausibly rare.
+
+    If availability.csv (the Pricing & Availability Lead's real Cox-PH-derived output,
+    via pricing_availability_adapter.py) exists, its values are used wherever it covers
+    a profile; this formula-based stub fills in only the profiles it doesn't cover
+    (partial real coverage, not all-or-nothing -- see availability_provenance.csv for
+    which profiles got which)."""
     lam = (profiles["txn_count_12m"] / 12).clip(lower=1 / 24)
-    return pd.DataFrame({"profile_id": profiles["profile_id"],
+    stub = pd.DataFrame({"profile_id": profiles["profile_id"],
                          "expected_wait_months": (1 / lam).round(2),
                          "survival_prob_6m": (1 - np.exp(-lam * 6)).round(3),
                          "survival_prob_12m": (1 - np.exp(-lam * 12)).round(3),
                          # shown on every pick: thin profiles can see no matching sale for months
                          "p_no_matching_sale_3m": np.exp(-lam * 3).round(3)})
+    real = _load_real_availability() if live else None
+    if real is None:
+        return stub
+    merged = stub.merge(real[["profile_id", "expected_wait_months", "survival_prob_6m", "survival_prob_12m"]],
+                        on="profile_id", how="left", suffixes=("_stub", ""))
+    for c in ["expected_wait_months", "survival_prob_6m", "survival_prob_12m"]:
+        merged[c] = merged[c].fillna(merged[f"{c}_stub"])
+    # p_no_matching_sale_3m has no real-data equivalent -- stays stub-derived throughout,
+    # but recomputed from whichever expected_wait_months (real or stub) ended up in use
+    lam_final = (1 / merged["expected_wait_months"].clip(lower=0.1))
+    merged["p_no_matching_sale_3m"] = np.exp(-lam_final * 3).round(3)
+    return merged[["profile_id", "expected_wait_months", "survival_prob_6m", "survival_prob_12m",
+                   "p_no_matching_sale_3m"]]
 
 
-def assemble(query, profiles=None):
-    prof, betas, fcast, rent_tf = load_inputs(profiles)
+def assemble(query, profiles=None, live=None):
+    """live: None (default) infers "today, live" iff profiles was not explicitly passed
+    (profiles=None) -- the only case where substituting TODAY's real pricing/availability/
+    forecast data is temporally valid. Backtest, multigen and any other caller that hands
+    in an explicit historical profiles snapshot gets live=False automatically unless they
+    override it, so real-data substitution can never leak into a historical cutoff."""
+    if live is None:
+        live = profiles is None
+    prof, betas, fcast, rent_tf = load_inputs(profiles, live=live)
     df = prof.copy()
     df["price_today"] = df["median_price"]
-    df = df.merge(availability_stub(df), on="profile_id", how="left")
+    df["price_is_real"] = False
+    real_price = _load_real_pricing() if live else None
+    if real_price is not None:
+        df = df.merge(real_price[["profile_id", "price_today"]].rename(columns={"price_today": "price_today_real"}),
+                      on="profile_id", how="left")
+        df["price_is_real"] = df["price_today_real"].notna()
+        df["price_today"] = df["price_today_real"].fillna(df["price_today"])
+        df = df.drop(columns=["price_today_real"])
+    df = df.merge(availability_stub(df, live=live), on="profile_id", how="left")
     f = fcast[fcast["horizon_months"] == query.horizon_months][
         ["town", "flat_type", "growth_factor", "growth_factor_lower", "growth_factor_upper"]]
     df = df.merge(f, on=["town", "flat_type"], how="left").merge(rent_tf, on=["town", "flat_type"], how="left")
@@ -158,7 +213,28 @@ def assemble(query, profiles=None):
 def score(df, query, betas):
     d = df.copy()
     n = d["txn_count_12m"]
-    d["shrunk_value_gap"] = d["hedonic_gap"].fillna(0) * n / (n + query.shrink_k)
+    # "is this a bargain" has to compare the hedonic VALUE estimate against whatever
+    # price_today is actually in force -- recomputed fresh here rather than read from the
+    # profile table's own frozen hedonic_gap (= hedonic_value - median_price at BUILD
+    # time), which goes stale the moment price_today is overridden by real pricing data
+    # (pricing_today.csv, see assemble()) and no longer matches what's being compared.
+    if "hedonic_value" in d.columns:
+        gap = d["hedonic_value"] - d["price_today"]
+    else:
+        gap = d["hedonic_gap"]
+    if "price_is_real" in d.columns and d["price_is_real"].any():
+        # hedonic_value was fit to predict THIS pipeline's own median_price, not the
+        # Pricing Lead's real (lease-band-blended) price_today -- the two bases differ
+        # by a median ~2% but up to +-50-80% at the tails (checked empirically, see
+        # OPTIMISER_METHODOLOGY_REPORT.md), almost certainly because their price is
+        # blended across lease bands this pipeline's profile doesn't carry at all. Until
+        # the hedonic is re-fit against their price as the target, comparing the two
+        # would mostly measure model disagreement, not genuine mispricing -- so the
+        # bargain signal is suppressed (0, not fabricated) for every profile using real
+        # pricing; surplus there comes from preference tilt only, same treatment already
+        # used for MULTI-GENERATION profiles with no hedonic fit at all.
+        gap = gap.where(~d["price_is_real"], 0.0)
+    d["shrunk_value_gap"] = gap.fillna(0) * n / (n + query.shrink_k)
 
     tilt = 0.0
     for a, col in ATTR_COLS.items():

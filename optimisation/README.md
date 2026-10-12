@@ -33,6 +33,17 @@ to this repo. Cloning this branch and running `rebuild_v2.py` won't work out of 
 on another machine yet — message me if you want to actually run this and I'll either
 walk through it or take the time to make the paths portable.
 
+## Real data from the other leads
+
+`pricing_today.csv`, `availability.csv` and `price_forecast_live.csv` under `data/` are
+now REAL — crosswalked from the Pricing & Availability Lead's `main` branch and the
+Forecasting Lead's `forecasting` branch (profile_crosswalk.py, pricing_availability_adapter.py,
+forecasting_adapter.py). 96.2% of profiles have real pricing/availability; forecasting
+real coverage is 4-ROOM only (their model's own stated scope) — see `data/README.md`
+and `OPTIMISER_METHODOLOGY_REPORT.md` §10 for the full methodology, what was found and
+fixed (a look-ahead-bias risk in the backtest, and a hedonic-basis mismatch), and
+exactly what's still needed from the other leads to close the remaining gaps.
+
 ## Running it
 
 ```bash
