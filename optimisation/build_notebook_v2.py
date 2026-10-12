@@ -90,7 +90,7 @@ dcols = [c for c in res.columns if c.startswith("dist_")]
 
 code("""pg = json.load(open(os.path.join(ba.GEO, "MRT_exits_patch_onemap.geojson")))
 patched = pd.DataFrame([f["properties"] for f in pg["features"]])
-patched["opened"] = patched["STATION_NA"].map(ba.PATCH_OPENING_DATES)
+patched["opened"] = patched["STATION_NA"].map(ba.OPENING_DATES)
 display(patched.groupby(["STATION_NA", "opened"]).size().rename("exits_patched").reset_index())
 tx0 = ban.load_transactions_with_access()
 moved = tx0[tx0["dist_mrt_exit_km_at_sale"] > tx0["dist_mrt_exit_km"] + 1e-6]

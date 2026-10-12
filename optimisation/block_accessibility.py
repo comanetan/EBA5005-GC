@@ -53,39 +53,35 @@ def _postal_points(cache_name):
 # which walking-distance file to merge (compute_walk_distances.py output; *_connect25m.csv = OSM gaps bridged)
 WALK_FILE = os.environ.get("BLOCK_WALK_FILE", "block_walk_distances_connect25m.csv")
 
-# Operating stations missing from LTA's exit layer (last updated 17 Jul 2026),
-# found by patch_missing_exits.py via OneMap. Opening dates verified via LTA /
-# Land Transport Guru, so sales before opening don't get credited with them.
-PATCH_OPENING_DATES = {
-    "PUNGGOL COAST MRT STATION": "2024-12-10",
-    "HUME MRT STATION": "2025-02-28",
-    "KEPPEL MRT STATION": "2026-07-12",
-    "CANTONMENT MRT STATION": "2026-07-12",
-    "PRINCE EDWARD ROAD MRT STATION": "2026-07-12",
-}
+# Opening dates for every station that opened during the 2017+ resale window (both those
+# already in LTA's exit layer with just a date override, AND the handful patched in separately
+# via patch_missing_exits.py / OneMap below -- one shared CSV, not two hand-maintained dicts.
+# Source: data/geospatial/mrt_station_openings.csv, adopted 2026-10-12 from the team's shared
+# repo (comanetan/EBA5005-GC, data/raw/mrt_station_openings.csv) after cross-checking it against
+# this file's own prior hardcoded dates -- exact match on all 5 patched stations' dates, and it
+# additionally catches 4 Tuas West Extension stations (Gul Circle, Tuas Crescent, Tuas West Road,
+# Tuas Link, opened 2017-06-18) this file's dict had previously missed.
+def _load_opening_dates():
+    path = os.path.join(GEO, "mrt_station_openings.csv")
+    df = pd.read_csv(path)
+    return {f"{s.upper()} MRT STATION": d for s, d in zip(df["station"], df["opened"])}
 
-# Stations IN the LTA layer that opened during the 2017+ resale window. Interchanges whose
-# other line was already running (Woodlands, Caldecott, Stevens, Orchard, Outram Park, Marina Bay,
-# MacPherson, Tampines, Expo) are treated as open throughout.
-_DTL3 = ["FORT CANNING", "BENCOOLEN", "JALAN BESAR", "BENDEMEER", "GEYLANG BAHRU", "MATTAR", "UBI", "KAKI BUKIT",
-         "BEDOK NORTH", "BEDOK RESERVOIR", "TAMPINES WEST", "TAMPINES EAST", "UPPER CHANGI"]
-_TEL1 = ["WOODLANDS NORTH", "WOODLANDS SOUTH"]
-_TEL2 = ["SPRINGLEAF", "LENTOR", "MAYFLOWER", "BRIGHT HILL", "UPPER THOMSON"]
-_TEL3 = ["NAPIER", "ORCHARD BOULEVARD", "GREAT WORLD", "HAVELOCK", "MAXWELL", "SHENTON WAY", "GARDENS BY THE BAY"]
-_TEL4 = ["TANJONG RHU", "KATONG PARK", "TANJONG KATONG", "MARINE PARADE", "MARINE TERRACE", "SIGLAP", "BAYSHORE"]
-LTA_OPENING_DATES = {f"{s} MRT STATION": d for group, d in [
-    (_DTL3, "2017-10-21"), (["CANBERRA"], "2019-11-02"), (_TEL1, "2020-01-31"), (_TEL2, "2021-08-28"),
-    (_TEL3, "2022-11-13"), (_TEL4, "2024-06-23")] for s in group}
+
+OPENING_DATES = _load_opening_dates()
+# the subset not in LTA's own exit layer at all -- needs patch_missing_exits.py's OneMap lat/lon
+# (dates for these come from the same OPENING_DATES dict/CSV above, just the lat/lon is separate)
+PATCHED_STATION_NAMES = ["PUNGGOL COAST MRT STATION", "HUME MRT STATION", "KEPPEL MRT STATION",
+                         "CANTONMENT MRT STATION", "PRINCE EDWARD ROAD MRT STATION"]
 
 
 def load_amenity_layers():
     exits = _geojson_points("LTA_MRT_Station_Exit.geojson")
     # NaT = open for the whole 2017+ window
-    exits["opened"] = pd.to_datetime(exits["name"].map(LTA_OPENING_DATES))
+    exits["opened"] = pd.to_datetime(exits["name"].map(OPENING_DATES))
     patch_path = os.path.join(GEO, "MRT_exits_patch_onemap.geojson")
     if os.path.exists(patch_path):
         patch = _geojson_points("MRT_exits_patch_onemap.geojson")
-        patch["opened"] = pd.to_datetime(patch["name"].map(PATCH_OPENING_DATES))
+        patch["opened"] = pd.to_datetime(patch["name"].map(OPENING_DATES))
         exits = pd.concat([exits, patch], ignore_index=True)
     exits["station"] = exits["name"].astype(str)
     mrt_exits = exits[exits["station"].str.contains("MRT")]
@@ -179,7 +175,7 @@ def load_amenity_layers():
         layers[f"mrt_exit_opened_{d:%Y%m%d}"] = g[["lat", "lon"]]
     meta = {"n_operating_mrt_stations": mrt_exits["station"].nunique(),
             "n_operating_lrt_stations": lrt_exits["station"].nunique(),
-            "patched_stations": sorted(mrt_exits.loc[mrt_exits["station"].isin(PATCH_OPENING_DATES), "station"].unique().tolist()),
+            "patched_stations": sorted(mrt_exits.loc[mrt_exits["station"].isin(PATCHED_STATION_NAMES), "station"].unique().tolist()),
             "dated_stations": mrt_exits[mrt_exits["opened"].notna()].groupby("station")["opened"].first()
                               .dt.strftime("%Y-%m-%d").to_dict(),
             "n_primary_schools": len(primary), "n_elite_primary": len(elite),

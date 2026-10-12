@@ -17,6 +17,22 @@ working interactive tools to explore it.
 - **[OPTIMISER_USER_GUIDE.md](OPTIMISER_USER_GUIDE.md)** — how to use the interactive
   calculator.
 
+## Raw/interim data
+
+This pipeline reads the shared `data/raw/` and `data/interim/` at the repo root (resale
+transactions, HDB property info, schools, CHAS clinics, hawker centres, parks, MRT exits,
+`mrt_station_openings.csv`), plus `data/raw/daniel_add/` and `data/interim/daniel_add/`
+for sources that pipeline needed but weren't already shared (carpark info, flood-prone
+areas, bus stops, planned rail, community clubs, childcare, polyclinics — see the README
+in each `daniel_add/` folder for exactly what and why).
+
+**Known limitation, not yet fixed**: every script's file paths (`ROOT`/`GEO`/`PROC`
+constants near the top of `block_accessibility.py`, `block_analysis.py`,
+`recommender_v2.py` etc.) are still hardcoded to the author's own machine, not relative
+to this repo. Cloning this branch and running `rebuild_v2.py` won't work out of the box
+on another machine yet — message me if you want to actually run this and I'll either
+walk through it or take the time to make the paths portable.
+
 ## Running it
 
 ```bash
