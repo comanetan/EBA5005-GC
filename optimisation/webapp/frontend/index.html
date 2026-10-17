@@ -24,8 +24,9 @@ h1{font-size:clamp(22px,5vw,30px);margin:0 0 6px}
 .apistatus{font-size:12px;font-family:var(--font-mono);color:var(--fg-muted);margin:0 0 20px}
 .apistatus.ok{color:var(--good)} .apistatus.err{color:var(--bad)}
 .headerbar{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
-.guidebtn{font-weight:600;font-size:13px;background:var(--surface);color:var(--accent);border:1px solid var(--accent);
-  border-radius:7px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.guidebtn{display:inline-flex;align-items:center;gap:7px;font-weight:600;font-size:13px;background:var(--surface);
+  color:var(--accent);border:1px solid var(--accent);border-radius:7px;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.guidebtn svg{width:16px;height:16px;flex:0 0 auto}
 .tabbar{display:flex;gap:6px;border-bottom:1px solid var(--border);margin-bottom:22px;flex-wrap:wrap}
 .tabbtn{font-weight:600;font-size:13.5px;background:none;border:none;color:var(--fg-muted);padding:10px 14px;
   cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
@@ -40,7 +41,7 @@ section.panel{display:flex;flex-direction:column;gap:18px}
 .sectionhead h3{margin:0}
 .methodbadge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--accent);
   border:1px solid var(--accent);border-radius:999px;padding:3px 10px;margin-bottom:10px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px 16px}
 .field{display:flex;flex-direction:column;gap:3px;min-width:0}
 .field label{font-size:12px;color:var(--fg-muted)}
 .field input,.field select{font-family:var(--font-mono);font-size:13.5px;background:var(--bg);color:var(--fg);
@@ -63,9 +64,14 @@ tr.best td{background:color-mix(in srgb, var(--good) 14%, transparent);font-weig
 .mapbox{border-left:3px solid var(--amber);padding:8px 12px;background:color-mix(in srgb, var(--amber) 10%, transparent);
   border-radius:0 6px 6px 0;font-size:13px}
 .smallbtn{font-size:12px;padding:3px 9px;border-radius:6px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer}
-.infobtn{flex:0 0 auto;width:20px;height:20px;line-height:18px;text-align:center;border-radius:50%;border:1.5px solid var(--accent);
-  background:none;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;padding:0;font-family:var(--font-display)}
+.infobtn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:6px;width:24px;height:24px;
+  border-radius:50%;border:none;background:color-mix(in srgb, var(--accent) 14%, transparent);color:var(--accent);
+  cursor:pointer;padding:0;font-family:var(--font-display);transition:background .12s,color .12s}
+.infobtn svg{width:15px;height:15px;flex:0 0 auto;display:block}
 .infobtn:hover{background:var(--accent);color:var(--accent-ink)}
+.infobtn-wide{width:auto;height:auto;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;
+  background:color-mix(in srgb, var(--accent) 10%, transparent);border:1px solid color-mix(in srgb, var(--accent) 45%, transparent)}
+.infobtn-wide:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;
   padding:40px 16px;z-index:50;overflow-y:auto}
 .modal-backdrop[hidden]{display:none}
@@ -87,7 +93,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
       <h1>SG HomeFit Optimiser</h1>
       <p class="sub">Backed by the real pipeline: search queries the project's actual profile export, and the final recommender calls <code>recommender_v2.solve()</code> directly — the genuine PuLP 0-1 program, not a client-side approximation.</p>
     </div>
-    <button class="guidebtn" id="guide_open">? Help &amp; Glossary</button>
+    <button class="guidebtn" id="guide_open"><span id="guide_icon"></span> Help &amp; Glossary</button>
   </div>
   <p class="apistatus" id="api_status">Connecting to API…</p>
 
@@ -111,10 +117,10 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-lp">
     <div class="card">
       <span class="methodbadge">Methodology — Linear Programming (corner-point, shadow price &amp; reduced cost)</span>
-      <div class="titlerow"><h2>Where to spend this month's viewing hours</h2><button class="infobtn" data-info="lp-overview">ⓘ</button></div>
+      <div class="titlerow"><h2>Where to spend this month's viewing hours</h2><button class="infobtn" data-info="lp-overview" aria-label="More info"></button></div>
     </div>
     <div class="quickcard">
-      <div class="titlerow"><h3 style="margin:0">Quick estimate</h3><button class="infobtn" data-info="lp-quickest">ⓘ</button></div>
+      <div class="titlerow"><h3 style="margin:0">Quick estimate</h3><button class="infobtn" data-info="lp-quickest" aria-label="More info"></button></div>
       <div class="grid">
         <div class="field"><label>Profile A — asking price ($)</label><input type="number" id="qe_priceA" value="520000" step="1000"></div>
         <div class="field"><label>Profile A — fair-value estimate ($)</label><input type="number" id="qe_fairA" value="560000" step="1000"></div>
@@ -146,11 +152,11 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
         <div class="field"><label>Slots available</label><input type="number" id="lp_slotsCap" value="16"></div>
       </div>
       <div class="flex-end" style="margin-top:10px"><button class="run" id="lp_run">Solve</button></div>
-      <div class="sectionhead"><h3 style="margin:0">Corner points</h3><button class="infobtn" data-info="lp-corners">ⓘ</button></div>
+      <div class="sectionhead"><h3 style="margin:0">Corner points</h3><button class="infobtn" data-info="lp-corners" aria-label="More info"></button></div>
       <div class="tablewrap"><table id="lp_corners"></table></div>
-      <div class="sectionhead"><h3 style="margin:0">Sensitivity — shadow price &amp; reduced cost</h3><button class="infobtn" data-info="lp-sensitivity">ⓘ</button></div>
+      <div class="sectionhead"><h3 style="margin:0">Sensitivity — shadow price &amp; reduced cost</h3><button class="infobtn" data-info="lp-sensitivity" aria-label="More info"></button></div>
       <div class="tablewrap"><table id="lp_sens"></table></div>
-      <div class="sectionhead"><h3 style="margin:0">Result</h3><button class="infobtn" data-info="lp-result">ⓘ</button></div>
+      <div class="sectionhead"><h3 style="margin:0">Result</h3><button class="infobtn" data-info="lp-result" aria-label="More info"></button></div>
       <div class="kpi-row" id="lp_kpis"></div>
     </div>
   </section>
@@ -159,7 +165,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-gp" hidden>
     <div class="card">
       <span class="methodbadge">Methodology — Goal Programming (preemptive priorities, d&#8314;/d&#8315;)</span>
-      <div class="titlerow"><h2>Spending a stretch budget on two competing goals</h2><button class="infobtn" data-info="gp-overview">ⓘ</button></div>
+      <div class="titlerow"><h2>Spending a stretch budget on two competing goals</h2><button class="infobtn" data-info="gp-overview" aria-label="More info"></button></div>
       <div class="grid">
         <div class="field"><label>$/km closer to MRT</label><input type="number" id="gp_a" value="60000" step="1000">
           <span class="hint" id="gp_a_hint">loading market rate…</span></div>
@@ -170,7 +176,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
         <div class="field"><label>Top priority</label><select id="gp_priority"><option value="1">MRT proximity</option><option value="2">Lease length</option></select></div>
       </div>
       <div class="flex-end" style="margin-top:10px"><button class="run" id="gp_run">Solve</button></div>
-      <div class="sectionhead"><h3 style="margin:0">Result</h3><button class="infobtn" data-info="gp-result">ⓘ</button></div>
+      <div class="sectionhead"><h3 style="margin:0">Result</h3><button class="infobtn" data-info="gp-result" aria-label="More info"></button></div>
       <div class="kpi-row" id="gp_kpis"></div>
     </div>
   </section>
@@ -179,7 +185,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-applied" hidden>
     <div class="card">
       <span class="methodbadge">Methodology — 0-1 Integer Programming + weighted goal programming (the real solver)</span>
-      <div class="titlerow"><h2>The final shortlist recommender</h2><button class="infobtn" data-info="applied-overview">ⓘ</button></div>
+      <div class="titlerow"><h2>The final shortlist recommender</h2><button class="infobtn" data-info="applied-overview" aria-label="More info"></button></div>
       <div class="grid">
         <div class="field"><label>Budget ($)</label><input type="number" id="ap_budget" value="750000" step="1000"></div>
         <div class="field"><label>Min lease (yrs)</label><input type="number" id="ap_lease" value="60"></div>
@@ -194,9 +200,9 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
         <div class="field"><label>Chance-constraint alpha (optional)</label><input type="number" id="ap_alpha" step="0.01" min="0" max="1" placeholder="blank = empirical band"></div>
         <div class="field"><label>Min distance from expressway (km, optional)</label><input type="number" id="ap_expwy" step="0.05" min="0" placeholder="blank = no goal"></div>
       </div>
-      <div class="flex-end" style="margin-top:6px"><button class="infobtn" data-info="applied-mode" style="width:auto;border-radius:6px;padding:3px 10px;font-weight:600">ⓘ What do mode / alpha / expressway mean?</button></div>
+      <div class="flex-end" style="margin-top:6px"><button class="infobtn infobtn-wide" data-info="applied-mode" data-label="What do mode / alpha / expressway mean?" aria-label="What do mode / alpha / expressway mean?"></button></div>
       <div id="ap_priority_wrap" hidden style="margin-top:10px">
-        <div class="sectionhead"><h3 style="margin:0">Priority order (preemptive mode)</h3><button class="infobtn" data-info="applied-priority">ⓘ</button></div>
+        <div class="sectionhead"><h3 style="margin:0">Priority order (preemptive mode)</h3><button class="infobtn" data-info="applied-priority" aria-label="More info"></button></div>
         <div class="grid">
           <div class="field"><label>1st priority</label><select class="ap_pri">
             <option value="dev_mrt" selected>MRT distance</option><option value="dev_school">School access</option>
@@ -218,7 +224,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
       <div class="flex-end" style="margin-top:10px"><button class="run" id="ap_run">Solve the real 0-1 program</button></div>
     </div>
     <div class="card">
-      <div class="titlerow"><h3 style="margin:0">Search profiles (optional — browse what's available)</h3><button class="infobtn" data-info="search-overview">ⓘ</button></div>
+      <div class="titlerow"><h3 style="margin:0">Search profiles (optional — browse what's available)</h3><button class="infobtn" data-info="search-overview" aria-label="More info"></button></div>
       <div class="grid">
         <div class="field"><label>Town</label><select id="s_town"><option value="">Any</option></select></div>
         <div class="field"><label>Flat type</label><select id="s_flat"><option value="">Any</option></select></div>
@@ -235,12 +241,12 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
       <div class="tablewrap"><table id="s_results"></table></div>
     </div>
     <div class="card" id="ap_results" hidden>
-      <div class="titlerow"><h3 style="margin:0">Shortlist</h3><button class="infobtn" data-info="applied-shortlist">ⓘ</button></div>
+      <div class="titlerow"><h3 style="margin:0">Shortlist</h3><button class="infobtn" data-info="applied-shortlist" aria-label="More info"></button></div>
       <div class="tablewrap"><table id="ap_table"></table></div>
-      <div class="sectionhead"><h3 style="margin:0">Solve summary</h3><button class="infobtn" data-info="applied-summary">ⓘ</button></div>
+      <div class="sectionhead"><h3 style="margin:0">Solve summary</h3><button class="infobtn" data-info="applied-summary" aria-label="More info"></button></div>
       <div class="kpi-row" id="ap_kpis"></div>
       <div id="ap_stage_wrap" hidden>
-        <div class="sectionhead"><h3 style="margin:0">Preemptive stages</h3><button class="infobtn" data-info="applied-stages">ⓘ</button></div>
+        <div class="sectionhead"><h3 style="margin:0">Preemptive stages</h3><button class="infobtn" data-info="applied-stages" aria-label="More info"></button></div>
         <div class="kpi-row" id="ap_stage_kpis"></div>
       </div>
       <div class="mapbox" style="margin-top:10px"><b>This is the real solve.</b> Every number above comes straight out of <code>recommender_v2.solve()</code> / <code>solve_preemptive()</code> — the exact functions the production pipeline calls.</div>
@@ -251,7 +257,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-pareto" hidden>
     <div class="card">
       <span class="methodbadge">Methodology — &#949;-constraint multi-objective optimisation (Pareto frontier)</span>
-      <div class="titlerow"><h2>What would relaxing your requirements actually be worth?</h2><button class="infobtn" data-info="pareto-overview">ⓘ</button></div>
+      <div class="titlerow"><h2>What would relaxing your requirements actually be worth?</h2><button class="infobtn" data-info="pareto-overview" aria-label="More info"></button></div>
       <div class="grid">
         <div class="field"><label>Budget ($)</label><input type="number" id="pf_budget" value="650000" step="1000"></div>
         <div class="field"><label>Min lease (yrs)</label><input type="number" id="pf_lease" value="60"></div>
@@ -262,7 +268,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
         <div class="field"><label>Frontier points</label><input type="number" id="pf_points" value="8" min="3" max="15"></div>
       </div>
       <div class="flex-end" style="margin-top:10px"><button class="run" id="pf_run">Trace the frontier</button></div>
-      <div class="sectionhead"><h3 style="margin:0">Frontier (click a row for the real picks behind it)</h3><button class="infobtn" data-info="pareto-frontier">ⓘ</button></div>
+      <div class="sectionhead"><h3 style="margin:0">Frontier (click a row for the real picks behind it)</h3><button class="infobtn" data-info="pareto-frontier" aria-label="More info"></button></div>
       <div class="tablewrap"><table id="pf_table"></table></div>
       <h3>Current weighted-sum solve (for comparison)</h3>
       <div class="kpi-row" id="pf_current_kpis"></div>
@@ -343,11 +349,11 @@ const INFO = {
       <li><b>Needs carpark nearby</b> / <b>Avoid flood-prone areas</b> — from real sourced and geocoded data (HDB carpark listings; PUB's published flood-prone road list).</li>
     </ul>` },
   "applied-shortlist": { title: "How to read the shortlist", html: `
-    <p>The solver picked the <code>k</code> profiles (at most one per town) that together score highest on <b>Net</b> = Surplus − Deviation. Ranked best first.</p>
+    <p>The solver picked the <code>k</code> profiles (at most one per town) that together score highest on <b>Net</b> = Surplus − Shortfall. Ranked best first.</p>
     <ul>
       <li><b>Surplus</b> — how much of a bargain this profile is: the market value of its attributes minus what it actually costs. Higher is better.</li>
-      <li><b>Deviation</b> — the $ cost of every way this pick falls short of what you asked for. Lower is better; $0 means it meets your stated goals exactly.</li>
-      <li><b>Net</b> — Surplus minus Deviation. This is the actual number the solver maximises.</li>
+      <li><b>Shortfall</b> — the $ cost of every way this pick falls short of what you asked for. Lower is better; $0 means it meets your stated goals exactly.</li>
+      <li><b>Net</b> — Surplus minus Shortfall. This is the actual number the solver maximises.</li>
       <li><b>Wait (mo)</b> — expected months before a matching flat is likely to come up for sale, from this profile's own recent sale frequency.</li>
     </ul>` },
   "applied-summary": { title: "Solve summary", html: `
@@ -362,15 +368,25 @@ const INFO = {
 
   "pareto-overview": { title: "Trade-off Frontier — what this solves", html: `
     <p>The Final Recommender's "Weighted-sum" mode picks <i>one</i> point on a surplus-vs-compromise curve implicitly, wherever its $-for-$ trade-off happens to land. This traces the <b>whole curve</b> instead: at each allowed level of total goal compromise, the most surplus a shortlist could possibly capture.</p>
-    <h3>What "Surplus" and "Deviation" actually add up</h3>
+    <h3>What "Surplus" and "Shortfall" actually add up</h3>
     <p><b>Surplus</b> (bigger = more of a bargain) = the hedonic model's market-value-minus-price bargain signal (pulled toward $0 for profiles with few recent sales), <b>plus</b> a preference tilt — extra value only where <i>your</i> stated weighting of an attribute (MRT, hawker, supermarket, clinic, park) differs from how the market already prices it. Weighting something exactly like the market (multiplier 1.0, the default) contributes $0 tilt.</p>
-    <p><b>Deviation</b> (bigger = falls further short of your goals) = every dollar-priced shortfall vs. a goal you set: MRT distance, missing walkable essentials, school tier, storey, expected wait, and expressway distance if set. A pick meeting every goal exactly scores $0 deviation.</p>
+    <p><b>Shortfall</b> (bigger = falls further short of your goals) = every dollar-priced gap vs. a goal you set: MRT distance, missing walkable essentials, school tier, storey, expected wait, and expressway distance if set. A pick meeting every goal exactly scores $0 shortfall.</p>
     <p>Every row in the frontier table is clickable — it expands to the exact real profiles behind that point on the curve, not just totals.</p>` },
   "pareto-frontier": { title: "Reading the frontier", html: `
-    <p>The highlighted row (closest to "Allowed deviation = current weighted-sum's own deviation") is roughly where the default solver already sits.</p>
+    <p>The highlighted row (closest to "Allowed shortfall = current weighted-sum's own shortfall") is roughly where the default solver already sits.</p>
     <p>Rows below it show what <b>more</b> surplus is reachable by accepting <b>more</b> compromise — click a row to expand it and see the real profiles and their $ breakdown.</p>
     <p>"Infeasible" rows mean not even a full shortlist of <code>k</code> exists at that little compromise.</p>` },
 };
+
+/* a crisp inline SVG info icon — injected into every .infobtn so it renders identically
+   everywhere, instead of relying on a Unicode glyph that varies by platform/font */
+const INFO_ICON_SVG = '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'
+  + '<circle cx="10" cy="10" r="8.2"/><line x1="10" y1="9.1" x2="10" y2="14.3"/><circle cx="10" cy="6.1" r="1.05" fill="currentColor" stroke="none"/></svg>';
+document.querySelectorAll(".infobtn").forEach(btn=>{
+  const label = btn.dataset.label;
+  btn.innerHTML = INFO_ICON_SVG + (label ? `<span>${label}</span>` : "");
+});
+$("guide_icon").innerHTML = INFO_ICON_SVG;
 
 function showInfo(key){
   const c = INFO[key];
@@ -508,8 +524,8 @@ async function runApplied(){
   }
   $("ap_table").innerHTML = `<tr><th>#</th><th>Town</th><th>Flat</th><th>Storey</th><th>MRT band</th><th>Price</th>
     <th title="Market value of its attributes minus what it actually costs — higher is a bigger bargain">Surplus</th>
-    <th title="$ cost of falling short of your stated goals (mainly MRT distance) — lower is better, $0 = meets your goals exactly">Deviation</th>
-    <th title="Surplus minus Deviation — the score the solver actually maximises">Net</th>
+    <th title="$ cost of falling short of your stated goals (mainly MRT distance) — lower is better, $0 = meets your goals exactly">Shortfall</th>
+    <th title="Surplus minus Shortfall — the score the solver actually maximises">Net</th>
     <th title="Expected months before a matching flat comes up for sale, from this profile's own recent sale frequency">Wait (mo)</th></tr>` +
     r.shortlist.map(p=>`<tr><td>${p.rank}</td><td>${p.town}</td><td>${p.flat_type}</td><td>${p.storey_band}</td><td>${p.mrt_band}</td>
       <td>${money(p.price_today)}</td><td>${money(p.surplus)}</td><td>${money(p.goal_deviation_total)}</td><td>${money(p.net_objective_value)}</td><td>${fmt(p.expected_wait_months,1)}</td></tr>`).join("");
@@ -538,7 +554,7 @@ async function runPareto(){
   catch(e){ $("pf_table").innerHTML = `<tr><td>API error: ${e.message}</td></tr>`; return; }
   const cur = r.current_weighted_sum;
   const maxSurplus = Math.max(...r.frontier.map(p=>p.total_surplus||0), cur.total_surplus);
-  $("pf_table").innerHTML = `<tr><th>Allowed deviation ($)</th><th>Status</th><th>Total surplus ($)</th><th>Total deviation ($)</th><th>Surplus (relative)</th></tr>` +
+  $("pf_table").innerHTML = `<tr><th>Allowed shortfall ($)</th><th>Status</th><th>Total surplus ($)</th><th>Total shortfall ($)</th><th>Surplus (relative)</th></tr>` +
     r.frontier.map((p,i)=>{
       const isCur = cur && p.total_deviation!=null && Math.abs(p.total_deviation-cur.total_deviation) <= (cur.total_deviation*0.05+1);
       const barPct = p.total_surplus!=null ? Math.max(2, Math.round(100*p.total_surplus/maxSurplus)) : 0;
@@ -553,7 +569,7 @@ async function runPareto(){
     if (d) d.hidden = !d.hidden;
   }));
   $("pf_current_kpis").innerHTML = `<div class="kpi"><div class="v">${money(cur.total_surplus)}</div><div class="k">Total surplus</div></div>
-    <div class="kpi"><div class="v">${money(cur.total_deviation)}</div><div class="k">Total deviation</div></div>
+    <div class="kpi"><div class="v">${money(cur.total_deviation)}</div><div class="k">Total shortfall</div></div>
     <div class="kpi"><div class="v">${money(cur.net_objective)}</div><div class="k">Net objective</div></div>`;
   $("pf_current_picks").innerHTML = picksTableHtml(cur.picks);
 }
@@ -565,9 +581,9 @@ function picksTableHtml(picks){
   return `<table><tr><th>Town</th><th>Flat</th><th>Storey</th><th>MRT band</th><th>Price</th>
       <th title="Hedonic bargain gap, shrunk for thin data">Value gap</th>
       <th title="Extra value only where you weight an attribute differently than the market does">Tilt</th>
-      <th>Surplus</th><th title="MRT">Dev: MRT</th><th title="School">Dev: School</th>
-      <th title="Essentials">Dev: Ess.</th><th title="Storey">Dev: Storey</th><th title="Wait">Dev: Wait</th>
-      <th title="Expressway, if a minimum distance goal was set">Dev: Expwy</th><th>Net</th></tr>` +
+      <th>Surplus</th><th title="MRT shortfall">Short: MRT</th><th title="School shortfall">Short: School</th>
+      <th title="Essentials shortfall">Short: Ess.</th><th title="Storey shortfall">Short: Storey</th><th title="Wait shortfall">Short: Wait</th>
+      <th title="Expressway shortfall, if a minimum distance goal was set">Short: Expwy</th><th>Net</th></tr>` +
     picks.map(p=>`<tr><td>${p.town}</td><td>${p.flat_type}</td><td>${p.storey_band}</td><td>${p.mrt_band}</td>
       <td>${money(p.price_today)}</td><td>${money(p.shrunk_value_gap)}</td><td>${money(p.preference_tilt)}</td>
       <td>${money(p.surplus)}</td><td>${money(p.dev_mrt)}</td><td>${money(p.dev_school)}</td>
