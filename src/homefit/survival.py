@@ -3,7 +3,8 @@
 Unit = block x flat type. Spells run between successive sales; the last one is right-censored at `as_of`. Old blocks drop
 the spell before their first observed sale (its start is unknown); newer blocks start at MOP eligibility; groups that never
 sold are censored from Jan 2017 (or eligibility). Block age violates proportional hazards, so it is a stratum.
-`profile_waits` turns block-level sale rates into an expected wait for ANY flat in a profile: 1 / sum of block rates."""
+`profile_waits` turns block-level sale rates into an expected wait for ANY flat in a profile, calibrated by
+flat type and blended with the profile's own recent sales (see its docstring)."""
 import numpy as np, pandas as pd
 from lifelines import CoxPHFitter
 from lifelines.utils import concordance_index
@@ -81,9 +82,10 @@ def evaluate(as_of, test_from_year):
     score = lambda D: concordance_index(D["duration"], cph.predict_expectation(model_frame(D, cph.columns_)), D["event"])
     return {"c_index_train": score(tr), "c_index_test": score(te), "n_train": len(tr), "n_test": len(te)}
 
-def profile_waits(cph, as_of, horizon=120):
-    """Expected months until the next sale of ANY flat in each profile at as_of."""
-    rows = PR.profile_rows(as_of)
+PRIOR_YEARS = 0.25   # weight of the model prior, in years of observed sales (chosen on the Jun 2023 backtest)
+
+def model_rates(cph, as_of, rows):
+    """Cox-implied sales per year for every row (block x flat type x storey band): share / expected gap between sales."""
     g = rows.drop_duplicates(["address", "flat_type"]).copy()
     b = K.blocks().set_index("address")
     for c in LOC:
@@ -91,15 +93,33 @@ def profile_waits(cph, as_of, horizon=120):
     g["block_age"] = K.year_frac(as_of) // 1 - g["year_completed"]
     g["from_2020"] = float(K.year_frac(as_of) >= 2020)
     g["max_floor_lvl"] = g["max_floor_lvl"].fillna(g["max_floor_lvl"].median())
-    times = np.arange(0, horizon + 1)
+    times = np.arange(0, 121)
     S = cph.predict_survival_function(model_frame(g, cph.columns_), times=times).to_numpy()
     area = getattr(np, "trapezoid", None) or np.trapz
     g["gap_months"] = area(S, times, axis=0)
     rows = rows.merge(g[["address", "flat_type", "gap_months"]], on=["address", "flat_type"])
-    rows["rate"] = rows["share"] / rows["gap_months"]
-    w = rows.groupby("profile_id")["rate"].sum()
-    wait = 1 / w
-    # Profiles with almost no supply get waits far beyond what 10 years of data can support: cap at the horizon, flag them
-    out = pd.DataFrame({"profile_id": w.index, "wait_months": np.minimum(wait, horizon).round(2).to_numpy(),
+    rows["model_per_year"] = 12 * rows["share"] / rows["gap_months"]
+    return rows
+
+def profile_waits(cph, as_of, scheme="homefit", horizon=120, prior_years=PRIOR_YEARS):
+    """Expected months until the next sale of ANY flat in each profile at as_of.
+
+    1. Cox model -> sales per year for each profile (sum over its blocks of share / expected gap).
+    2. Calibrate by flat type: scale so each flat type's total matches its actual sales in the 12 months to as_of.
+       (Uncalibrated, the model over-predicts Executive and 5-room turnover and under-predicts 3-room.)
+    3. Blend with the profile's own sales in the last 12 months (Poisson-gamma / empirical Bayes):
+          rate = (sales_last12 + prior_years x model_rate) / (1 + prior_years)
+       Observed sales dominate where there are many; the model fills in for thin profiles.
+    4. wait = 12 / rate months, capped at `horizon` (flagged scarce).
+    Everything uses data up to as_of only, so the same code runs in the backtest."""
+    rows = model_rates(cph, as_of, PR.profile_rows(as_of, scheme))
+    p = rows.groupby("profile_id").agg(flat_type=("flat_type", "first"), model_per_year=("model_per_year", "sum"))
+    p["sales_last12"] = PR.recent_sales(as_of, rows, scheme).reindex(p.index).fillna(0)
+    by_type = p.groupby("flat_type")
+    p["calib"] = by_type["sales_last12"].transform("sum") / by_type["model_per_year"].transform("sum")
+    p["model_calibrated"] = p["model_per_year"] * p["calib"]
+    p["sales_per_year"] = (p["sales_last12"] + prior_years * p["model_calibrated"]) / (1 + prior_years)
+    wait = 12 / p["sales_per_year"]
+    out = pd.DataFrame({"profile_id": p.index, "wait_months": np.minimum(wait, horizon).round(2).to_numpy(),
                         "scarce": (wait >= horizon).to_numpy()})
-    return out, rows
+    return out, p.reset_index()
