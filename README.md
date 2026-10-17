@@ -10,7 +10,7 @@ data/processed/   model-ready tables (block_features.csv, resale_features.csv)
 outputs/          shared handover files between workstreams (formats below)
 src/              pipeline scripts, run in order 01 → 07
 src/homefit/      model code shared by steps 4, 6, 7 and the backtest (profiles, hedonic, survival)
-notebooks/        01_raw_eda (data understanding) · 02_processed_eda (location vs price) · 03_survival (availability analysis) · 04_hedonic (pricing model, SHAP, backtest)
+notebooks/        01_raw_eda (data understanding) · 02_processed_eda (location vs price) · 03_survival (availability analysis) · 04_hedonic (pricing model, SHAP, backtest) · 05_supplementary_eda (MOP supply, resale rate by age, time-series checks, affordability, spatial clustering)
 docs/             proposal and report material
 ```
 
