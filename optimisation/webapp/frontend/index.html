@@ -317,7 +317,7 @@ const INFO = {
   "gp-overview": { title: "Stretch-Budget Allocation — what this solves", html: `
     <p>You have one lump-sum stretch budget and two competing goals (getting closer to MRT, or buying extra remaining lease). This is <b>literal preemptive Goal Programming</b>: your top-priority goal is funded first, up to its own target or until the budget runs out — then whatever is left over funds the second goal.</p>
     <p>This mirrors the course's own lecture example exactly (same equations, same method) — just with your own $ rates and targets.</p>
-    <p>The "$/km closer to MRT" field is pre-filled from the project's real, fitted hedonic model — not a guess.</p>` },
+    <p>The "$/km closer to MRT" field is pre-filled from the project's real, fitted hedonic model — not a guess, and corrected for a known spatial bias (a naive estimate overstates the MRT premium by roughly 2× because nearby blocks share unmeasured neighbourhood quality; this uses the Pricing Lead's spatially- and causally-validated ~3%-per-halving figure instead of the naive ~5-6%).</p>` },
   "gp-result": { title: "Result", html: `
     <p><b>MRT bought</b> / <b>Lease bought</b> — how much of each goal your stretch budget actually funds.</p>
     <p>A <b>shortfall &gt; 0</b> on a goal means it wasn't fully reachable — the budget ran out before that target was met.</p>
