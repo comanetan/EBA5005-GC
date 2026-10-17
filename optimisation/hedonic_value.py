@@ -73,8 +73,31 @@ def predict_value(model, tx: pd.DataFrame, at_month: str):
     return d.index, np.exp(model.predict(d) + resid_var / 2)  # smearing-style bias correction
 
 
+# 2026-10-18: the Pricing & Availability Lead's notebook 04c_hedonic_econometrics.ipynb (main
+# branch, comanetan/EBA5005-GC) found that a town-fixed-effects-only hedonic -- this model's own
+# specification class -- overstates the MRT premium by roughly 2x relative to the best available
+# estimate. Checked directly: their "OLS + town dummies" row implies +5.28% for halving MRT
+# distance from 1km to 500m; this project's own fitted dist_mrt_exit_km coefficient implies
+# +5.28% for the identical comparison -- the same number, because it is the same omitted-
+# spatial-quality bias (nearby blocks share unmeasured neighbourhood value that a town-level
+# fixed effect cannot separate from true MRT proximity). Their notebook isolates the true effect
+# two ways: a spatial-error model (2.7-3.5%, controls for neighbourhood quality directly) and a
+# difference-in-differences design on 11 real new-station openings 2019-2024 (2.8%, 95% CI
+# 2.0-3.7%, causally identified against untreated control blocks in the same towns). Their own
+# stated recommendation ("the spatially robust figure to hand to the Preference Lead") is ~3%.
+# MRT_SPATIAL_CORRECTION = 3.0% / 5.28% -- the ratio between their recommended figure and the
+# naive town-FE estimate that is directly comparable to (and numerically identical to) this
+# model's own uncorrected coefficient. Applied ONLY to the exported WTP rate used for
+# preference-tilt and the dev_mrt goal penalty (market_wtp_coefficients.json) -- NOT to the
+# hedonic model's own price predictions (predict_value()), which remain uncorrected pending a
+# proper spatial re-fit; see OPTIMISER_METHODOLOGY_REPORT.md for the scope of what this does and
+# does not fix.
+MRT_SPATIAL_CORRECTION = 3.0 / 5.28
+
+
 def market_wtp_coefficients(model):
     out = {a: float(model.params[a]) for a in WTP_ATTRS}
+    out["dist_mrt_exit_km"] *= MRT_SPATIAL_CORRECTION
     for lvl, key in [("Within 1km", "elite_primary_within_1km"), ("1-2km", "elite_primary_1_2km")]:
         k = f"C(elite_primary_tier, Treatment('Beyond 2km'))[T.{lvl}]"
         if k in model.params:

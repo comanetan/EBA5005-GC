@@ -249,6 +249,29 @@ The Pricing & Availability Lead's and Forecasting Lead's real deliverables exist
 
 ---
 
+## 11. Correcting the MRT premium for spatial bias (2026-10-18)
+
+A routine check of the team's other branches surfaced `notebooks/04c_hedonic_econometrics.ipynb` (Pricing & Availability Lead, `main` branch) — a rigorous econometric companion to their production LightGBM model: spatial diagnostics (Moran's I, Lagrange-multiplier tests), spatial-error/spatial-lag models, and a causal difference-in-differences study on 11 real MRT stations opened 2019–2024.
+
+**Finding**: a hedonic fit with only town (and month) fixed effects — this pipeline's own specification class — overstates the MRT premium by roughly 2×, because nearby blocks share unmeasured neighbourhood quality that a town-level fixed effect cannot separate from true MRT proximity.
+
+| Specification | Effect of halving MRT distance |
+|---|---|
+| OLS, town dummies only (directly comparable to this pipeline's spec) | 5.28% |
+| Spatial-error model (controls for neighbourhood quality) | 2.7–3.5% |
+| Causal: difference-in-differences on real station openings, 95% CI 2.0–3.7% | 2.8% |
+| **Their recommended benchmark** ("the spatially robust figure to hand to the Preference Lead") | **~3%** |
+
+**Checked directly against this pipeline's own coefficient** before acting on it: `market_wtp_coefficients.json`'s fitted `dist_mrt_exit_km` coefficient implied **exactly 5.28%** for the identical halving comparison — the same number as their "town dummies only" row, confirming this pipeline's hedonic carries the identical bias, not a coincidentally similar one.
+
+**Fix**: `hedonic_value.py` now applies a documented correction factor (`MRT_SPATIAL_CORRECTION = 3.0/5.28 ≈ 0.568`, the ratio between their recommended benchmark and the naive estimate directly comparable to this model's own) to the **exported WTP rate** used for preference-tilt and the `dev_mrt` goal penalty. Verified: the corrected coefficient now implies 2.97% for the same halving check. The GP calculator's default "$/km closer to MRT" rate dropped from ~$58,500 to ~$33,100 accordingly.
+
+**Scope — what this does and does not fix**: the correction is applied only where the MRT rate is used as a $-weight (preference tilt, `dev_mrt`, the GP calculator default, `preference_overrides_from_file()`'s multiplier denominator). It is **not** applied to the hedonic model's own price predictions (`predict_value()`), which still use the uncorrected coefficient — those predictions only feed the bargain-gap signal for the ~4% of profiles still on stub pricing (96% now use real LightGBM prices, unaffected either way), a much smaller blast radius than the $-weight used on every live recommendation. A proper fix would re-fit this pipeline's own hedonic with a spatial term; borrowing a ratio from a different (sales-level vs. block-level) model is a pragmatic, clearly-labelled interim correction, not a substitute for that.
+
+**Re-verified after the change**: backtest reliability 96.6% [93.1%, 98.3%] on the 11-cutoff extended sample, vs. 97.6% [94.5%, 99.0%] before — confidence intervals overlap substantially, not a statistically meaningful regression (expected: this coefficient changes *which* profiles look attractive, not the budget-feasibility check that drives reliability).
+
+---
+
 ## 9. Pricing the new attributes: a hedonic re-fit, tested one at a time (2026-10-10)
 
 The 6 new attributes in §8 were descriptive/filterable only. This section tests each one as a candidate new regressor in the interim hedonic model (`hedonic_value.py`), using the exact same two-step discipline the project already used to decide primary-school distance's fate (§ in `block_analysis.py`'s variance-decomposition method, and the documented "counterintuitive sign → exclude" precedent): **(1)** check how much of the attribute's variance is *within*-town (town fixed effects can only be beaten by a signal with real within-town variation), **(2)** fit it and check the sign/significance are both economically sensible before trusting the number.

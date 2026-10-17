@@ -86,6 +86,16 @@
 > `goal_deviation_total`. Exposed in the web app's Final Recommender tab. Backtest re-run after this change:
 > 98.8% within-budget reliability, unchanged from the pre-change baseline.
 >
+> **v2.5 MRT premium corrected for spatial bias** (2026-10-18, see OPTIMISER_METHODOLOGY_REPORT.md §11): the
+> Pricing & Availability Lead's `notebooks/04c_hedonic_econometrics.ipynb` (main branch) found a naive
+> town-FE hedonic overstates the MRT premium ~2x vs. their spatially-corrected/causal (DiD on 11 real new
+> stations) estimate. Checked directly: this pipeline's own `dist_mrt_exit_km` coefficient implied the
+> identical inflated number (5.28% per halving) as their comparable naive specification. `hedonic_value.py`
+> now applies their recommended ~3% benchmark as a correction factor (`MRT_SPATIAL_CORRECTION`) to the
+> **exported WTP rate** (preference tilt, `dev_mrt`, GP calculator default) — not to the hedonic's own price
+> predictions, which is a separate, not-yet-done fix. Backtest re-verified: 96.6% [93.1-98.3%], statistically
+> unchanged from 97.6% [94.5-99.0%] before.
+>
 > **v2.4 real adapters for Pricing/Availability and Forecasting** (2026-10-12, see OPTIMISER_METHODOLOGY_REPORT.md
 > §10): `pricing_today.csv` / `availability.csv` / `price_forecast_live.csv` are no longer stubs — built by
 > `pricing_availability_adapter.py` / `forecasting_adapter.py` from the other leads' REAL branches (`main` /
