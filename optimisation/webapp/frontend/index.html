@@ -35,6 +35,9 @@ section.panel{display:flex;flex-direction:column;gap:18px}
 .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
 .card h2{font-size:16px;margin:0 0 8px} .card h3{font-size:13px;margin:16px 0 8px;color:var(--fg-muted);text-transform:uppercase;letter-spacing:.04em}
 .note{font-size:13px;color:var(--fg-muted);margin:4px 0 0}
+.titlerow{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sectionhead{display:flex;align-items:center;gap:6px;margin:16px 0 8px}
+.sectionhead h3{margin:0}
 .methodbadge{display:inline-block;font-family:var(--font-mono);font-size:11.5px;font-weight:600;color:var(--accent);
   border:1px solid var(--accent);border-radius:999px;padding:3px 10px;margin-bottom:10px}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px 14px}
@@ -60,11 +63,20 @@ tr.best td{background:color-mix(in srgb, var(--good) 14%, transparent);font-weig
 .mapbox{border-left:3px solid var(--amber);padding:8px 12px;background:color-mix(in srgb, var(--amber) 10%, transparent);
   border-radius:0 6px 6px 0;font-size:13px}
 .smallbtn{font-size:12px;padding:3px 9px;border-radius:6px;border:1px solid var(--accent);background:none;color:var(--accent);cursor:pointer}
+.infobtn{flex:0 0 auto;width:20px;height:20px;line-height:18px;text-align:center;border-radius:50%;border:1.5px solid var(--accent);
+  background:none;color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;padding:0;font-family:var(--font-display)}
+.infobtn:hover{background:var(--accent);color:var(--accent-ink)}
 .modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:flex-start;justify-content:center;
   padding:40px 16px;z-index:50;overflow-y:auto}
 .modal-backdrop[hidden]{display:none}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;max-width:640px;width:100%;padding:22px 24px 26px;position:relative}
 .modal-close{position:absolute;top:14px;right:14px;background:none;border:none;font-size:20px;color:var(--fg-muted);cursor:pointer}
+.modal h2{font-size:18px;margin:0 0 14px;padding-right:24px}
+.modal h3{font-size:13px;margin:16px 0 6px;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.modal h3:first-of-type{margin-top:0}
+.modal p{font-size:13.5px;line-height:1.55;margin:0 0 10px}
+.modal ul{font-size:13.5px;line-height:1.55;margin:0 0 10px;padding-left:18px}
+.modal li{margin-bottom:6px}
 code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:1px 5px;font-size:12px}
 </style>
 </head>
@@ -73,24 +85,18 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <div class="headerbar">
     <div>
       <h1>SG HomeFit Optimiser</h1>
-      <p class="sub">Backed by the real pipeline: search queries the project's actual 712-profile export, and the final recommender calls <code>recommender_v2.solve()</code> directly — the genuine PuLP 0-1 program, not a client-side approximation.</p>
+      <p class="sub">Backed by the real pipeline: search queries the project's actual profile export, and the final recommender calls <code>recommender_v2.solve()</code> directly — the genuine PuLP 0-1 program, not a client-side approximation.</p>
     </div>
-    <button class="guidebtn" id="guide_open">? User Guide</button>
+    <button class="guidebtn" id="guide_open">? Help &amp; Glossary</button>
   </div>
   <p class="apistatus" id="api_status">Connecting to API…</p>
 
-  <div class="modal-backdrop" id="guide_backdrop" hidden>
+  <!-- ===== SHARED INFO MODAL (every ⓘ button and the header Help button open this) ===== -->
+  <div class="modal-backdrop" id="info_backdrop" hidden>
     <div class="modal">
-      <button class="modal-close" id="guide_close">&times;</button>
-      <h2>How to use this tool</h2>
-      <h3>Viewing-Time Allocation</h3>
-      <p>Use the Quick-estimate box: asking price, your fair-value guess, similar sales in the last year, one-way commute. Press the button and it computes the LP inputs for you.</p>
-      <h3>Stretch-Budget Allocation</h3>
-      <p>Market rates are pulled live from <code>/api/meta</code> (the project's own pricing model). Set your stretch budget, targets, and priority.</p>
-      <h3>Final Recommender</h3>
-      <p>Search real profiles and solve the actual 0-1 program the project runs in production. Choose <b>Weighted-sum</b> (default, trades goals off in dollars) or <b>Preemptive</b> (a strict ranking — a higher goal is never sacrificed for a lower one, no matter the $ saving). An optional <b>chance-constraint alpha</b> swaps the budget rule for a Monte-Carlo "P(price stays in budget) ≥ alpha" check instead of the default empirical band.</p>
-      <h3>Trade-off Frontier</h3>
-      <p>Instead of one shortlist, traces the whole curve of "how much more surplus would I get if I accepted $X more compromise" — answers "what would relaxing a requirement be worth" directly, without re-running anything.</p>
+      <button class="modal-close" id="info_close">&times;</button>
+      <h2 id="info_title"></h2>
+      <div id="info_body"></div>
     </div>
   </div>
 
@@ -105,10 +111,10 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-lp">
     <div class="card">
       <span class="methodbadge">Methodology — Linear Programming (corner-point, shadow price &amp; reduced cost)</span>
-      <h2>Where to spend this month's viewing hours</h2>
+      <div class="titlerow"><h2>Where to spend this month's viewing hours</h2><button class="infobtn" data-info="lp-overview">ⓘ</button></div>
     </div>
     <div class="quickcard">
-      <h3>Quick estimate</h3>
+      <div class="titlerow"><h3 style="margin:0">Quick estimate</h3><button class="infobtn" data-info="lp-quickest">ⓘ</button></div>
       <div class="grid">
         <div class="field"><label>Profile A — asking price ($)</label><input type="number" id="qe_priceA" value="520000" step="1000"></div>
         <div class="field"><label>Profile A — fair-value estimate ($)</label><input type="number" id="qe_fairA" value="560000" step="1000"></div>
@@ -140,14 +146,11 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
         <div class="field"><label>Slots available</label><input type="number" id="lp_slotsCap" value="16"></div>
       </div>
       <div class="flex-end" style="margin-top:10px"><button class="run" id="lp_run">Solve</button></div>
-      <h3>Corner points</h3>
-      <p class="note">The best split of hours is always at a "corner" of what's allowed — one constraint or another is fully used up. The solver only has to check these points, not every possible split. The highlighted row is the winner.</p>
+      <div class="sectionhead"><h3 style="margin:0">Corner points</h3><button class="infobtn" data-info="lp-corners">ⓘ</button></div>
       <div class="tablewrap"><table id="lp_corners"></table></div>
-      <h3>Sensitivity — shadow price &amp; reduced cost</h3>
-      <p class="note"><b>Shadow price</b>: if that row's constraint says "binding," it's fully used up — one more unit of it (one more liquidity-cap hour, one more agent slot) would be worth the $ amount shown. A "slack" constraint has room to spare, so one more unit of it is worth $0 — don't bother trying to loosen it. <b>Reduced cost</b>: shown only for a profile that got zero hours — it's how much that profile's hourly value would need to rise before any effort on it would pay off.</p>
+      <div class="sectionhead"><h3 style="margin:0">Sensitivity — shadow price &amp; reduced cost</h3><button class="infobtn" data-info="lp-sensitivity">ⓘ</button></div>
       <div class="tablewrap"><table id="lp_sens"></table></div>
-      <h3>Result</h3>
-      <p class="note">"On A" / "On B" is how many hours to spend on each profile this month. "Value captured" is the total expected $ benefit of that split, net of your own time cost.</p>
+      <div class="sectionhead"><h3 style="margin:0">Result</h3><button class="infobtn" data-info="lp-result">ⓘ</button></div>
       <div class="kpi-row" id="lp_kpis"></div>
     </div>
   </section>
@@ -156,7 +159,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-gp" hidden>
     <div class="card">
       <span class="methodbadge">Methodology — Goal Programming (preemptive priorities, d&#8314;/d&#8315;)</span>
-      <h2>Spending a stretch budget on two competing goals</h2>
+      <div class="titlerow"><h2>Spending a stretch budget on two competing goals</h2><button class="infobtn" data-info="gp-overview">ⓘ</button></div>
       <div class="grid">
         <div class="field"><label>$/km closer to MRT</label><input type="number" id="gp_a" value="60000" step="1000">
           <span class="hint" id="gp_a_hint">loading market rate…</span></div>
@@ -167,8 +170,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
         <div class="field"><label>Top priority</label><select id="gp_priority"><option value="1">MRT proximity</option><option value="2">Lease length</option></select></div>
       </div>
       <div class="flex-end" style="margin-top:10px"><button class="run" id="gp_run">Solve</button></div>
-      <h3>Result</h3>
-      <p class="note">"MRT bought" / "Lease bought" is how much of each goal your stretch budget actually funds. A <b>shortfall &gt; 0</b> on a goal means it wasn't fully reachable — the budget ran out before that target was met. If the <em>top-priority</em> goal has a shortfall, your stretch budget can't even fully cover it alone; if only the <em>second</em> goal has one, that's the deliberate trade-off of giving the first goal priority. To close a shortfall: raise the stretch budget, lower that goal's target, or accept the gap.</p>
+      <div class="sectionhead"><h3 style="margin:0">Result</h3><button class="infobtn" data-info="gp-result">ⓘ</button></div>
       <div class="kpi-row" id="gp_kpis"></div>
     </div>
   </section>
@@ -177,7 +179,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-applied" hidden>
     <div class="card">
       <span class="methodbadge">Methodology — 0-1 Integer Programming + weighted goal programming (the real solver)</span>
-      <h2>The final shortlist recommender</h2>
+      <div class="titlerow"><h2>The final shortlist recommender</h2><button class="infobtn" data-info="applied-overview">ⓘ</button></div>
       <div class="grid">
         <div class="field"><label>Budget ($)</label><input type="number" id="ap_budget" value="750000" step="1000"></div>
         <div class="field"><label>Min lease (yrs)</label><input type="number" id="ap_lease" value="60"></div>
@@ -192,8 +194,9 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
         <div class="field"><label>Chance-constraint alpha (optional)</label><input type="number" id="ap_alpha" step="0.01" min="0" max="1" placeholder="blank = empirical band"></div>
         <div class="field"><label>Min distance from expressway (km, optional)</label><input type="number" id="ap_expwy" step="0.05" min="0" placeholder="blank = no goal"></div>
       </div>
-      <div id="ap_priority_wrap" hidden style="margin-top:4px">
-        <h3>Priority order (preemptive mode) — 1st is never traded away for any lower goal</h3>
+      <div class="flex-end" style="margin-top:6px"><button class="infobtn" data-info="applied-mode" style="width:auto;border-radius:6px;padding:3px 10px;font-weight:600">ⓘ What do mode / alpha / expressway mean?</button></div>
+      <div id="ap_priority_wrap" hidden style="margin-top:10px">
+        <div class="sectionhead"><h3 style="margin:0">Priority order (preemptive mode)</h3><button class="infobtn" data-info="applied-priority">ⓘ</button></div>
         <div class="grid">
           <div class="field"><label>1st priority</label><select class="ap_pri">
             <option value="dev_mrt" selected>MRT distance</option><option value="dev_school">School access</option>
@@ -215,7 +218,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
       <div class="flex-end" style="margin-top:10px"><button class="run" id="ap_run">Solve the real 0-1 program</button></div>
     </div>
     <div class="card">
-      <h3>Search profiles (optional — browse what's available)</h3>
+      <div class="titlerow"><h3 style="margin:0">Search profiles (optional — browse what's available)</h3><button class="infobtn" data-info="search-overview">ⓘ</button></div>
       <div class="grid">
         <div class="field"><label>Town</label><select id="s_town"><option value="">Any</option></select></div>
         <div class="field"><label>Flat type</label><select id="s_flat"><option value="">Any</option></select></div>
@@ -232,30 +235,15 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
       <div class="tablewrap"><table id="s_results"></table></div>
     </div>
     <div class="card" id="ap_results" hidden>
-      <h3>How to read this</h3>
-      <p class="note">The solver picked the <code>k</code> profiles (at most one per town) that together score highest on <b>Net</b> = Surplus &minus; Deviation. Ranked best first.</p>
-      <ul class="note" style="margin:4px 0 0;padding-left:18px">
-        <li><b>Surplus</b> — how much of a bargain this profile is: the market value of its attributes (location, size, age) minus what it actually costs. Higher is better; it's money the hedonic model says you're not paying for what you're getting.</li>
-        <li><b>Deviation</b> — the $ cost of every way this pick falls short of what you asked for (mainly: farther from your MRT target than you wanted, priced at the market rate for that distance). Lower is better; $0 means it meets your stated goals exactly.</li>
-        <li><b>Net</b> — Surplus minus Deviation. This is the actual number the solver maximises; it's why the shortlist is sorted this way.</li>
-        <li><b>Wait (mo)</b> — expected months before a matching flat is likely to come up for sale, estimated from how often this exact profile (town + flat type + storey + MRT band) has sold in the past year. A low number means a liquid, fast-moving profile; a high number means a thin market where you may need to wait.</li>
-      </ul>
-      <h3>Shortlist</h3>
+      <div class="titlerow"><h3 style="margin:0">Shortlist</h3><button class="infobtn" data-info="applied-shortlist">ⓘ</button></div>
       <div class="tablewrap"><table id="ap_table"></table></div>
-      <h3>Solve summary</h3>
-      <ul class="note" style="margin:4px 0 10px;padding-left:18px">
-        <li><b>Solver status</b> — "Optimal" means the solver proved this is the best possible shortlist given your constraints, not just a good guess. Anything else (e.g. "Infeasible") means no shortlist satisfies every constraint — usually the budget or lease floor is too tight.</li>
-        <li><b>Candidates considered</b> — how many of the 712 real profiles were even eligible (within budget, meeting the lease floor) before picking the best <code>k</code> among them.</li>
-        <li><b>Objective achieved</b> — the total Net (Surplus &minus; Deviation) summed across every pick in the shortlist — the single number the solver was maximising.</li>
-        <li><b>Full k satisfied</b> — "Yes" means a complete shortlist of <code>k</code> distinct-town picks was found; "No" means fewer towns had an eligible profile than you asked for picks, so the shortlist is shorter than <code>k</code>.</li>
-      </ul>
+      <div class="sectionhead"><h3 style="margin:0">Solve summary</h3><button class="infobtn" data-info="applied-summary">ⓘ</button></div>
       <div class="kpi-row" id="ap_kpis"></div>
       <div id="ap_stage_wrap" hidden>
-        <h3>Preemptive stages — each locked before the next goal is even considered</h3>
-        <p class="note">Read top to bottom in priority order. A stage's $ value is the total shortfall the shortlist still has on that goal <i>after</i> every higher goal above it was already minimised as far as possible — later stages can only spend what earlier ones left behind.</p>
+        <div class="sectionhead"><h3 style="margin:0">Preemptive stages</h3><button class="infobtn" data-info="applied-stages">ⓘ</button></div>
         <div class="kpi-row" id="ap_stage_kpis"></div>
       </div>
-      <div class="mapbox" style="margin-top:10px"><b>This is the real solve.</b> <code>status</code>, <code>surplus</code>, <code>dev_mrt</code>/<code>dev_school</code>/<code>dev_storey</code>/<code>dev_wait</code> and <code>net_objective_value</code> above come straight out of <code>recommender_v2.solve()</code> / <code>solve_preemptive()</code> — the exact functions the production pipeline calls.</div>
+      <div class="mapbox" style="margin-top:10px"><b>This is the real solve.</b> Every number above comes straight out of <code>recommender_v2.solve()</code> / <code>solve_preemptive()</code> — the exact functions the production pipeline calls.</div>
     </div>
   </section>
 
@@ -263,14 +251,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-pareto" hidden>
     <div class="card">
       <span class="methodbadge">Methodology — &#949;-constraint multi-objective optimisation (Pareto frontier)</span>
-      <h2>What would relaxing your requirements actually be worth?</h2>
-      <p class="note">The Final Recommender's "Weighted-sum" mode picks <i>one</i> point on this curve implicitly (wherever its $-for-$ trade-off happens to land). This traces the <b>whole curve</b>: at each allowed level of total goal compromise, the most surplus a shortlist could possibly capture.</p>
-      <h3>What "Surplus" and "Deviation" actually add up</h3>
-      <ul class="note" style="margin:4px 0 10px;padding-left:18px">
-        <li><b>Surplus</b> (bigger = more of a bargain) = <b>shrunk value gap</b> — the hedonic model's "market value of this profile's attributes minus what it actually sells for," pulled toward $0 for profiles with few recent sales so a thin profile can't fake a huge bargain — <b>plus a preference tilt</b>: extra $ value only for attributes (MRT, hawker, supermarket, clinic, park distance) where <i>your</i> stated weighting differs from how the market already prices them. Weighting something exactly like the market (multiplier 1.0, the default) contributes $0 tilt — you only gain or lose here by caring more or less than the market does.</li>
-        <li><b>Deviation</b> (bigger = falls further short of your goals) = the sum of every dollar-priced shortfall vs. a goal you set: MRT distance beyond your target, missing walkable essentials (supermarket/hawker/clinic/park/school within their threshold), school-tier shortfall, storey below your target, expected wait beyond your target (priced at that town's real rent), and — if you set a minimum expressway distance on the Final Recommender tab — being closer than that. A pick that meets every goal exactly scores $0 deviation; there's no credit for exceeding a goal.</li>
-        <li>Each row below is clickable — it expands to show the <b>exact profiles</b> (real town/flat-type/storey/MRT-band combinations) behind that point on the curve, with this same $ breakdown per pick, not just the totals.</li>
-      </ul>
+      <div class="titlerow"><h2>What would relaxing your requirements actually be worth?</h2><button class="infobtn" data-info="pareto-overview">ⓘ</button></div>
       <div class="grid">
         <div class="field"><label>Budget ($)</label><input type="number" id="pf_budget" value="650000" step="1000"></div>
         <div class="field"><label>Min lease (yrs)</label><input type="number" id="pf_lease" value="60"></div>
@@ -281,8 +262,7 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
         <div class="field"><label>Frontier points</label><input type="number" id="pf_points" value="8" min="3" max="15"></div>
       </div>
       <div class="flex-end" style="margin-top:10px"><button class="run" id="pf_run">Trace the frontier</button></div>
-      <h3>Frontier</h3>
-      <p class="note">The row closest to <b>Allowed deviation = current weighted-sum's own deviation</b> (highlighted) is roughly where the default solver already sits. Rows below it show what MORE surplus is reachable by accepting MORE compromise; "Infeasible" rows mean not even a full shortlist of <code>k</code> exists at that little compromise.</p>
+      <div class="sectionhead"><h3 style="margin:0">Frontier (click a row for the real picks behind it)</h3><button class="infobtn" data-info="pareto-frontier">ⓘ</button></div>
       <div class="tablewrap"><table id="pf_table"></table></div>
       <h3>Current weighted-sum solve (for comparison)</h3>
       <div class="kpi-row" id="pf_current_kpis"></div>
@@ -297,13 +277,121 @@ const $ = (id)=>document.getElementById(id);
 const fmt = (n,d=0)=> (n===null||n===undefined||!isFinite(n)) ? "—" : Number(n).toLocaleString(undefined,{minimumFractionDigits:d,maximumFractionDigits:d});
 const money = (n)=> (n===null||n===undefined||!isFinite(n)) ? "—" : "$"+fmt(n,0);
 
+/* ---- shared info-modal content: every ⓘ button and the header Help button pull from here ---- */
+const INFO = {
+  "guide": { title: "How to use this tool", html: `
+    <h3>Viewing-Time Allocation (Linear Programming)</h3>
+    <p>Use the Quick-estimate box: asking price, your fair-value guess, similar sales in the last year, one-way commute. Press the button and it computes the LP inputs for you, then solves automatically.</p>
+    <h3>Stretch-Budget Allocation (Goal Programming)</h3>
+    <p>Market rates are pulled live from the project's own pricing model. Set your stretch budget, targets, and which goal matters more — the solver funds your top-priority goal first, then spends whatever's left on the second.</p>
+    <h3>Final Recommender (0-1 Integer Programming)</h3>
+    <p>Search real profiles and solve the actual program the project runs in production. Choose Weighted-sum (default, trades goals off in dollars) or Preemptive (a strict ranking). Click any ⓘ button on that tab for details on a specific setting or result.</p>
+    <h3>Trade-off Frontier (Pareto)</h3>
+    <p>Instead of one shortlist, traces the whole curve of "how much more value would I get if I accepted more compromise" — click any row to see the real flats behind it.</p>
+    <h3>Tip</h3>
+    <p>Every table and result section on this page has its own ⓘ button nearby — click it for a focused explanation of just that part, instead of reading everything at once.</p>` },
+
+  "lp-overview": { title: "Viewing-Time Allocation — what this solves", html: `
+    <p>A household has two shortlisted profiles (A and B) and a finite amount of viewing time this month. More time on a profile raises the chance of an informed offer, but costs your own time and the agent's limited availability.</p>
+    <p>This is solved as a Linear Program: maximise the net $ value captured, subject to liquidity caps, a monthly hours budget and an agent-slot limit. The method is <b>corner-point enumeration</b> — the lecture's own graphical method — not a black-box solver.</p>
+    <p>Don't know the $/hr inputs? Use the <b>Quick-estimate</b> box above instead — it converts facts you actually know (asking price, your own fair-value guess, recent sales, commute time) into these inputs automatically.</p>` },
+  "lp-quickest": { title: "Quick estimate", html: `
+    <p>Fill in facts you'd actually know about two candidate profiles — asking price, your own gut-feel fair value, how many similar units sold in the last year, and the one-way commute — and this converts them into the abstract $/hr value, cost, liquidity cap and commute-hours inputs the LP solver needs below, then solves automatically.</p>
+    <p>You can still edit the computed fields by hand afterwards if you want to try different assumptions.</p>` },
+  "lp-corners": { title: "Corner points", html: `
+    <p>The best split of hours is always at a "corner" of what's allowed — one constraint or another is fully used up. The solver only has to check these points, not every possible split between A and B.</p>
+    <p>The highlighted row is the winning corner — the split that gives the highest total value Z.</p>` },
+  "lp-sensitivity": { title: "Shadow price & reduced cost", html: `
+    <p><b>Shadow price</b>: if a row's constraint says "binding", it's fully used up — one more unit of it (one more liquidity-cap hour, one more agent slot) would be worth the $ amount shown. A "slack" constraint has room to spare, so one more unit of it is worth $0 — don't bother trying to loosen it.</p>
+    <p><b>Reduced cost</b>: shown only for a profile that got zero hours — it's how much that profile's hourly value would need to rise before any effort on it would pay off at all.</p>` },
+  "lp-result": { title: "Result", html: `
+    <p><b>On A</b> / <b>On B</b> — how many hours to spend viewing each profile this month.</p>
+    <p><b>Value captured</b> — the total expected $ benefit of that split, net of your own time cost. This is the number Z the solver maximised.</p>` },
+
+  "gp-overview": { title: "Stretch-Budget Allocation — what this solves", html: `
+    <p>You have one lump-sum stretch budget and two competing goals (getting closer to MRT, or buying extra remaining lease). This is <b>literal preemptive Goal Programming</b>: your top-priority goal is funded first, up to its own target or until the budget runs out — then whatever is left over funds the second goal.</p>
+    <p>This mirrors the course's own lecture example exactly (same equations, same method) — just with your own $ rates and targets.</p>
+    <p>The "$/km closer to MRT" field is pre-filled from the project's real, fitted hedonic model — not a guess.</p>` },
+  "gp-result": { title: "Result", html: `
+    <p><b>MRT bought</b> / <b>Lease bought</b> — how much of each goal your stretch budget actually funds.</p>
+    <p>A <b>shortfall &gt; 0</b> on a goal means it wasn't fully reachable — the budget ran out before that target was met.</p>
+    <ul>
+      <li>If the <b>top-priority</b> goal has a shortfall, your stretch budget can't even fully cover it alone.</li>
+      <li>If only the <b>second</b> goal has a shortfall, that's the deliberate trade-off of giving the first goal priority — exactly as preemptive GP is supposed to behave.</li>
+    </ul>
+    <p>To close a shortfall: raise the stretch budget, lower that goal's target, or accept the gap.</p>` },
+
+  "applied-overview": { title: "The final shortlist recommender — what this solves", html: `
+    <p>This is the project's real production solver: a 0-1 Integer Program that picks the best <code>k</code> housing profiles (at most one per town) for your budget and stated goals, blended with a dollar-weighted Goal Programming objective.</p>
+    <p>Set your budget, minimum lease, target MRT distance, how many picks you want, and any optional goals (school, expressway distance). Press Solve to run the actual program — not an approximation.</p>
+    <p>Use the <b>Search profiles</b> card below if you just want to browse what's available before committing to a full solve.</p>` },
+  "applied-mode": { title: "Mode, chance-constraint alpha, and expressway goal", html: `
+    <h3>Goal-programming mode</h3>
+    <p><b>Weighted-sum</b> (default) trades every goal off in dollars — a large enough saving on one goal can outweigh a small shortfall on another.</p>
+    <p><b>Preemptive</b> (strict ranking) never does that — your 1st-priority goal is protected completely before the solver even considers your 2nd, no matter the $ cost. Pick this if you have a goal that's truly non-negotiable.</p>
+    <h3>Chance-constraint alpha (optional)</h3>
+    <p>By default, the budget check uses an empirical "will this likely still be affordable in a year" band. Setting an alpha (e.g. 0.90) swaps this for a Monte-Carlo simulation: "there's at least a 90% chance simulated future prices stay within budget." Leave blank unless you specifically want to compare the two approaches — the default band is the more reliable of the two in backtesting.</p>
+    <h3>Minimum distance from expressway (optional)</h3>
+    <p>If set, picks closer than this are penalised in real dollars, priced at the project's own fitted market rate for expressway-noise exposure — not a guessed weight.</p>` },
+  "applied-priority": { title: "Priority order (preemptive mode)", html: `
+    <p>Rank the 5 goals from most to least important. The solver locks in the best possible outcome for your 1st priority first, then the best outcome for your 2nd priority <i>without worsening the 1st</i>, and so on — your lower-ranked goals can never be traded away to improve a higher one.</p>
+    <p>The "Preemptive stages" section in your results (after solving) shows exactly what each priority level cost.</p>` },
+  "search-overview": { title: "Search profiles", html: `
+    <p>Optional — browse the real profile data directly without running a full solve. Filters include the usual (town, flat type, price, MRT distance, lease, liquidity) plus:</p>
+    <ul>
+      <li><b>Max secondary school / job node distance</b> — straight-line distance, not a measured commute time.</li>
+      <li><b>Needs carpark nearby</b> / <b>Avoid flood-prone areas</b> — from real sourced and geocoded data (HDB carpark listings; PUB's published flood-prone road list).</li>
+    </ul>` },
+  "applied-shortlist": { title: "How to read the shortlist", html: `
+    <p>The solver picked the <code>k</code> profiles (at most one per town) that together score highest on <b>Net</b> = Surplus − Deviation. Ranked best first.</p>
+    <ul>
+      <li><b>Surplus</b> — how much of a bargain this profile is: the market value of its attributes minus what it actually costs. Higher is better.</li>
+      <li><b>Deviation</b> — the $ cost of every way this pick falls short of what you asked for. Lower is better; $0 means it meets your stated goals exactly.</li>
+      <li><b>Net</b> — Surplus minus Deviation. This is the actual number the solver maximises.</li>
+      <li><b>Wait (mo)</b> — expected months before a matching flat is likely to come up for sale, from this profile's own recent sale frequency.</li>
+    </ul>` },
+  "applied-summary": { title: "Solve summary", html: `
+    <ul>
+      <li><b>Solver status</b> — "Optimal" means the solver proved this is the best possible shortlist given your constraints, not just a good guess. Anything else (e.g. "Infeasible") means no shortlist satisfies every constraint — usually the budget or lease floor is too tight.</li>
+      <li><b>Candidates considered</b> — how many real profiles were even eligible (within budget, meeting the lease floor) before picking the best <code>k</code> among them.</li>
+      <li><b>Objective achieved</b> — the total Net summed across every pick — the single number the solver was maximising.</li>
+      <li><b>Full k satisfied</b> — "Yes" means a complete shortlist of <code>k</code> distinct-town picks was found; "No" means fewer towns had an eligible profile than you asked for.</li>
+    </ul>` },
+  "applied-stages": { title: "Preemptive stages", html: `
+    <p>Read top to bottom in priority order. A stage's $ value is the total shortfall the shortlist still has on that goal <i>after</i> every higher goal above it was already minimised as far as possible — later stages can only spend what earlier ones left behind.</p>` },
+
+  "pareto-overview": { title: "Trade-off Frontier — what this solves", html: `
+    <p>The Final Recommender's "Weighted-sum" mode picks <i>one</i> point on a surplus-vs-compromise curve implicitly, wherever its $-for-$ trade-off happens to land. This traces the <b>whole curve</b> instead: at each allowed level of total goal compromise, the most surplus a shortlist could possibly capture.</p>
+    <h3>What "Surplus" and "Deviation" actually add up</h3>
+    <p><b>Surplus</b> (bigger = more of a bargain) = the hedonic model's market-value-minus-price bargain signal (pulled toward $0 for profiles with few recent sales), <b>plus</b> a preference tilt — extra value only where <i>your</i> stated weighting of an attribute (MRT, hawker, supermarket, clinic, park) differs from how the market already prices it. Weighting something exactly like the market (multiplier 1.0, the default) contributes $0 tilt.</p>
+    <p><b>Deviation</b> (bigger = falls further short of your goals) = every dollar-priced shortfall vs. a goal you set: MRT distance, missing walkable essentials, school tier, storey, expected wait, and expressway distance if set. A pick meeting every goal exactly scores $0 deviation.</p>
+    <p>Every row in the frontier table is clickable — it expands to the exact real profiles behind that point on the curve, not just totals.</p>` },
+  "pareto-frontier": { title: "Reading the frontier", html: `
+    <p>The highlighted row (closest to "Allowed deviation = current weighted-sum's own deviation") is roughly where the default solver already sits.</p>
+    <p>Rows below it show what <b>more</b> surplus is reachable by accepting <b>more</b> compromise — click a row to expand it and see the real profiles and their $ breakdown.</p>
+    <p>"Infeasible" rows mean not even a full shortlist of <code>k</code> exists at that little compromise.</p>` },
+};
+
+function showInfo(key){
+  const c = INFO[key];
+  if (!c) return;
+  $("info_title").textContent = c.title;
+  $("info_body").innerHTML = c.html;
+  $("info_backdrop").hidden = false;
+}
+document.addEventListener("click", e=>{
+  const btn = e.target.closest("[data-info]");
+  if (btn) showInfo(btn.dataset.info);
+});
+$("guide_open").addEventListener("click", ()=>showInfo("guide"));
+$("info_close").addEventListener("click", ()=>$("info_backdrop").hidden=true);
+$("info_backdrop").addEventListener("click", e=>{ if(e.target===$("info_backdrop")) $("info_backdrop").hidden=true; });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") $("info_backdrop").hidden=true; });
+
 document.querySelectorAll(".tabbtn").forEach(btn=>btn.addEventListener("click", ()=>{
   document.querySelectorAll(".tabbtn").forEach(b=>b.setAttribute("aria-selected", b===btn?"true":"false"));
   document.querySelectorAll("section.panel").forEach(p=>p.hidden = p.id!=="panel-"+btn.dataset.tab);
 }));
-$("guide_open").addEventListener("click", ()=>$("guide_backdrop").hidden=false);
-$("guide_close").addEventListener("click", ()=>$("guide_backdrop").hidden=true);
-$("guide_backdrop").addEventListener("click", e=>{ if(e.target===$("guide_backdrop")) $("guide_backdrop").hidden=true; });
 
 async function api(path, opts){
   const res = await fetch(API+path, opts);
@@ -387,7 +475,7 @@ async function runSearch(){
   let r; try{ r = await api("/api/profiles/search?"+params); } catch(e){ $("s_results").innerHTML = `<tr><td>API error: ${e.message}</td></tr>`; return; }
   $("s_results").innerHTML = `<tr><th>Town</th><th>Flat type</th><th>MRT band</th><th>Price</th><th>MRT km</th><th>Lease</th><th>Liquidity</th>
     <th title="Distance to nearest secondary school">Secondary (km)</th>
-    <th title="Carpark within 400m / Within 150-400m of an expressway or PUB flood-prone road">Carpark</th>
+    <th title="Carpark within 400m / flagged if near a PUB-listed flood-prone road">Carpark</th>
     <th title="Nearest decentralised employment node and straight-line distance to it (not a transit travel time)">Nearest job node</th></tr>` +
     (r.results.length ? r.results.map(p=>`<tr><td>${p.town}</td><td>${p.flat_type}</td><td>${p.mrt_band}</td><td>${money(p.price)}</td><td>${fmt(p.mrt_km,2)}</td><td>${fmt(p.lease,1)}</td><td>${p.liquidity_12m}</td>
       <td>${fmt(p.secondary_school_km,2)}</td><td>${p.has_carpark?"Yes":"No"}${p.near_flood_prone?" ⚠ flood-listed":""}</td>
