@@ -10,7 +10,7 @@ data/processed/   model-ready tables (block_features.csv, resale_features.csv)
 outputs/          shared handover files between workstreams (formats below)
 src/              pipeline scripts, run in order 01 → 07
 src/homefit/      model code shared by steps 4, 6, 7 and the backtest (profiles, hedonic, survival)
-notebooks/        01_raw_eda (data understanding) · 02_processed_eda (location vs price) · 03_survival (availability analysis) · 04_hedonic (pricing model, SHAP, backtest) · 05_supplementary_eda (MOP supply, resale rate by age, time-series checks, affordability, spatial clustering)
+notebooks/        01_raw_eda (data understanding) · 02_processed_eda (location vs price) · 03_survival (availability analysis) · 03b_survival_diagnostics (PH tests, residuals, model comparison, rolling backtest) · 04_hedonic (pricing model, SHAP, backtest) · 04b_hedonic_validation (validation designs, tuning, ablation, conformal intervals, index check) · 05_supplementary_eda (MOP supply, resale rate by age, time-series checks, affordability, spatial clustering)
 docs/             proposal and report material
 ```
 
@@ -53,7 +53,7 @@ Everyone writes their output in exactly these columns, keyed by `profile_id`. Th
 |---|---|---|---|
 | `outputs/profiles.csv` | profile_id, town, flat_type, lease_band, mrt_band, storey_band, n_blocks, units, n_transactions_all, n_last12, median_price_last12 | shared | **built** by step 4: 1,828 profiles that exist today (blocks past MOP) |
 | `outputs/prices_today.csv` | profile_id, price, price_low, price_high | Pricing & Availability | **model**: LightGBM hedonic, step 6 (low/high = 10th–90th percentile across the profile's blocks) |
-| `outputs/expected_wait.csv` | profile_id, wait_months, scarce | Pricing & Availability | **model**: Cox survival, calibrated by flat type and blended with recent sales, step 7 (scarce = capped at 120 months) |
+| `outputs/expected_wait.csv` | profile_id, wait_months, wait_p10, wait_p90, scarce | Pricing & Availability | **model**: Cox survival, calibrated by flat type and blended with recent sales, step 7 (scarce = capped at 120 months) |
 | `outputs/optimisation/pricing_today.csv` | profile_id, price_today, price_today_se, price_low, price_high | Pricing & Availability → Optimisation | same model on the Optimisation Lead's IDs (`TOWN::4ROOM::Mid::Near`), step 6 |
 | `outputs/optimisation/availability.csv` | profile_id, expected_wait_months, survival_prob_6m, survival_prob_12m, hazard_ratio, scarce | Pricing & Availability → Optimisation | same model on the Optimisation Lead's IDs, step 7 |
 | `outputs/price_index_v1.csv` | month, region, flat_type, index, n_sales, median_price | Pricing & Availability → Forecasting | **use this**: flat + location controls (MRT at time of sale, amenities). `price_index_v0.csv` = flat controls only |

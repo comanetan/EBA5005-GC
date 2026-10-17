@@ -8,6 +8,7 @@ flat type and blended with the profile's own recent sales (see its docstring).""
 import numpy as np, pandas as pd
 from lifelines import CoxPHFitter
 from lifelines.utils import concordance_index
+from scipy.stats import gamma
 import config as C
 from . import common as K, profiles as PR
 
@@ -67,6 +68,8 @@ def model_frame(F, columns=None):
 def fit(as_of, data=None):
     F = spells(as_of) if data is None else data
     M = model_frame(F)
+    # a covariate with no variation (e.g. the post-2020 flag before 2020) cannot be estimated: drop it
+    M = M[[c for c in M.columns if c == "age_band" or M[c].nunique() > 1]]
     M["duration"], M["event"] = F["duration"].to_numpy(), F["event"].to_numpy()
     cph = CoxPHFitter(penalizer=0.01).fit(M, "duration", "event", strata=["age_band"])
     cph.columns_ = [c for c in M.columns if c not in ("duration", "event")]
@@ -110,7 +113,7 @@ def profile_waits(cph, as_of, scheme="homefit", horizon=120, prior_years=PRIOR_Y
     3. Blend with the profile's own sales in the last 12 months (Poisson-gamma / empirical Bayes):
           rate = (sales_last12 + prior_years x model_rate) / (1 + prior_years)
        Observed sales dominate where there are many; the model fills in for thin profiles.
-    4. wait = 12 / rate months, capped at `horizon` (flagged scarce).
+    4. wait = 12 / rate months, capped at `horizon` (flagged scarce); wait_p10/wait_p90 = 80% interval from the gamma posterior.
     Everything uses data up to as_of only, so the same code runs in the backtest."""
     rows = model_rates(cph, as_of, PR.profile_rows(as_of, scheme))
     p = rows.groupby("profile_id").agg(flat_type=("flat_type", "first"), model_per_year=("model_per_year", "sum"))
@@ -120,6 +123,11 @@ def profile_waits(cph, as_of, scheme="homefit", horizon=120, prior_years=PRIOR_Y
     p["model_calibrated"] = p["model_per_year"] * p["calib"]
     p["sales_per_year"] = (p["sales_last12"] + prior_years * p["model_calibrated"]) / (1 + prior_years)
     wait = 12 / p["sales_per_year"]
+    # 80% interval: the blend is a Poisson-gamma model, so the yearly rate has a Gamma(shape, rate) posterior
+    shape, rate = (p["sales_last12"] + prior_years * p["model_calibrated"]).clip(lower=1e-9), 1 + prior_years
+    p["wait_p10"] = np.minimum(12 / gamma.ppf(0.9, shape, scale=1 / rate), horizon)
+    p["wait_p90"] = np.minimum(12 / gamma.ppf(0.1, shape, scale=1 / rate), horizon)
     out = pd.DataFrame({"profile_id": p.index, "wait_months": np.minimum(wait, horizon).round(2).to_numpy(),
+                        "wait_p10": p["wait_p10"].round(2).to_numpy(), "wait_p90": p["wait_p90"].round(2).to_numpy(),
                         "scarce": (wait >= horizon).to_numpy()})
     return out, p.reset_index()
