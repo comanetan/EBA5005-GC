@@ -12,7 +12,7 @@ live in `OPTIMISER_METHODOLOGY_REPORT.md`; this file is the short, standalone in
 | 2 | Bootstrap CI on the 0.960 hedonic-to-real-price calibration R² | ✅ **Done, 2026-10-18** — see below |
 | 3 | Scaling/stress test on the 0-1 IP at a much larger candidate pool (1,000s, not 10s–100s) | ⬜ Not started |
 | 4 | Residual diagnostics (incl. Moran's I) on the subzone-FE hedonic specifically | ⬜ Not started |
-| 5 | Sensitivity of the preemptive priority *order* itself (not just which household) | ⬜ Not started |
+| 5 | Sensitivity of the preemptive priority *order* itself (not just which household) | ✅ **Done, 2026-10-19** — see below |
 | 6 | Out-of-time holdout beyond the current latest cutoff (2025-07) | ⬜ Not started |
 
 ---
@@ -80,7 +80,42 @@ report would survive drawing a different sample of profiles from the same popula
 
 ---
 
-## 3–6. Not yet started
+## 5. Does the preemptive priority order itself actually matter? ✅
+
+**Done 2026-10-19.** Full write-up: `OPTIMISER_METHODOLOGY_REPORT.md` §19. Also added to
+the Word report v2 (`make_report_part6.js`, new subsection right after item 1's
+generalisation test, under Goal Programming's Trial & Error). Script:
+`test_preemptive_priority_sensitivity.py` → `data/preemptive_priority_sensitivity.json`.
+
+**What was run:** all 5! = 120 permutations of the 5-goal priority order, on the report's
+own test household **and** all 4 backtest archetypes (not just one household — same
+cherry-picking concern item 1 was built to rule out).
+
+| Household | Distinct pick-sets (of 120) | Objective spread | Match weighted-sum |
+|---|---|---|---|
+| Report test household | 1 | $0.00 | 0/120 |
+| Young couple, transit-reliant | **11** | **$87,935.10** | 0/120 |
+| Family, needs primary school | **19** | **$82,761.57** | 0/120 |
+| Budget-first, car owner | 1 | $0.00 | 0/120 |
+| Retiree, downsizing, low storey | 1 | $0.00 | 120/120 |
+
+**Conclusion: order matters conditionally, exactly as theory predicts.** 3/5 households are
+completely order-invariant — every goal reads $0 simultaneously on one dominant pick-set,
+so there's nothing for processing order to arbitrate. The other 2 — the exact households
+item 1 already flagged as having a real goal conflict — are genuinely order-sensitive,
+with the objective swinging by $87,935 and $82,761 purely by priority order, **larger than
+the GP-mode gap itself** for these households. Grouping by which goal is ranked #1 shows
+**MRT-first consistently gives the best average outcome in both order-sensitive
+households** — mechanistically explained, not just correlated: MRT carries the largest
+fitted dollar rate (~$33,200/km), so deprioritising it lets the solver lock in cheaper
+goals first and get trapped into an expensive MRT shortfall it can no longer undo. The
+shipped default (MRT first) already matches this empirically best choice — originally
+picked because the proposal names transit access first, not because of this test; this
+test is independent confirmation it's also the economically sound choice.
+
+---
+
+## 3–4, 6. Not yet started
 
 Kept here verbatim so the next session can pick straight back up without re-deriving scope:
 

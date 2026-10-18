@@ -445,3 +445,37 @@ The hedonic-to-real-price calibration (§13, re-fit in §15 and §16) has been r
 | Full min/max across all 2,000 resamples | — | [0.9345, 0.9730] |
 
 **Reading it.** The point estimate sits almost exactly on the bootstrap mean (0.9601 vs. 0.9604) — no sign the original fit got a lucky sample. The 95% confidence interval is under 2.4 percentage points wide, and even the most extreme of 2,000 resamples never dropped below 0.9345. β (the slope relating `log(hedonic_value)` to `log(price_today)`) is similarly tight around 1.02, consistent with the two models' prices scaling together almost 1-for-1 once the intercept shift is accounted for. **Conclusion: 0.960 is a stable property of the fit, not a fragile point estimate** — the calibration genuinely explains ~96% of the variance in the real price from this pipeline's own hedonic estimate, and that conclusion would survive drawing a different 1,119-profile sample from the same population. Script and raw output: `bootstrap_calibration_r2.py` → `data/calibration_r2_bootstrap.json`.
+
+---
+
+## 19. Does the preemptive priority order actually matter? (2026-10-19)
+
+`solve_preemptive()` (§13, §17) has always shipped with one fixed default order — `DEFAULT_PRIORITY = [dev_mrt, dev_school, dev_storey, dev_wait, dev_essentials]` — but the function accepts *any* ordering of the 5 goals, and that flexibility had never been tested. Exhaustive, not a sample: 5 goals → 5! = **120 permutations**, each needing `n+1=6` fresh 0-1 IPs (`solve_preemptive()`'s own staged construction) — 720 solves per household, fully tractable given the solve times already measured in §7.2 (tens of milliseconds each).
+
+**What was run**: `test_preemptive_priority_sensitivity.py` — all 120 orderings, on the report's own running test household **and** all 4 backtest archetypes (deliberately, not just one household — item §17 already showed 3/4 archetypes have a real weighted-sum-vs-preemptive gap, i.e. genuine goal conflict, which is exactly where priority order *should* start to matter; testing only the report's own household risked the same "is this general or cherry-picked" trap §17 was built to catch).
+
+| Household | Distinct pick-sets (of 120) | Objective spread | Orderings matching weighted-sum |
+|---|---|---|---|
+| Report test household | 1 | $0.00 | 0/120 |
+| Young couple, transit-reliant | **11** | **$87,935.10** | 0/120 |
+| Family, needs primary school | **19** | **$82,761.57** | 0/120 |
+| Budget-first, car owner | 1 | $0.00 | 0/120 |
+| Retiree, downsizing, low storey | 1 | $0.00 | 120/120 |
+
+**Reading it — order matters conditionally, and the condition is exactly what theory predicts.** Three of five households are **completely order-invariant** — every one of the 120 permutations produces the identical pick-set. Checked why, for the report's own household: all 5 goals read exactly $0 simultaneously (`stage_values = {dev_mrt: 0, dev_school: 0, dev_storey: 0, dev_wait: 0, dev_essentials: 0}`) — when one candidate set dominates on *every* goal at once, there is no conflict for the processing order to arbitrate, so every ordering finds the same dominant set. "Budget-first, car owner" and "Retiree" are order-invariant for the same reason (confirmed against §17's own per-pick deviation breakdown).
+
+The other two households — where §17 already showed a real weighted-sum-vs-preemptive gap — are genuinely **order-sensitive**: 11 and 19 distinct pick-sets out of 120, with the objective swinging by **$87,935** and **$82,761** respectively depending purely on which goal is processed first. That is not a small effect — it is larger than the weighted-sum-vs-preemptive gap itself for these households.
+
+**What drives the swing, checked rather than left as "it varies":** grouping all 120 orderings by which goal is given top priority —
+
+| Top priority | Young couple: mean objective | Family: mean objective |
+|---|---|---|
+| **dev_mrt first** | **−$41,674** (best) | **−$13,655** (best) |
+| dev_school first | −$56,839 | −$30,016 |
+| dev_storey first | −$57,423 | −$36,608 |
+| dev_wait first | −$70,243 (worst) | −$24,193 |
+| dev_essentials first | −$58,016 | −$34,330 |
+
+**Prioritising MRT distance first gives the best average outcome in both order-sensitive households, by a wide margin.** This has a mechanistic explanation, not just a correlation: MRT carries by far the largest fitted dollar rate (`market_wtp_coefficients.json`'s `dist_mrt_exit_km`, ~$33,200/km after the spatial correction) — the single most expensive goal to get wrong. Locking in cheaper secondary goals (storey, wait, essentials) *before* MRT lets the solver commit to a pick-set that later turns out to be far from any station, with no way to undo that commitment once storey/wait/essentials are already locked at their own optimum. Processing the most expensive goal first avoids ever boxing itself into that corner.
+
+**Conclusion, and a product recommendation that follows from it.** Priority order is not cosmetic — for households where goals genuinely compete, which order a household states its priorities in can swing the outcome by tens of thousands of dollars, more than the gap between GP modes itself. The shipped default (`DEFAULT_PRIORITY`, MRT first) already matches the empirically best-performing choice found here, which is a reassuring coincidence worth stating plainly rather than claiming as deliberate foresight — the default was originally chosen because the proposal names transit access first among business objective 1's goals (§1), not because of this test. Now that the test exists, it's independent confirmation the lecture-driven default also happens to be the economically sound one. Script and raw output: `test_preemptive_priority_sensitivity.py` → `data/preemptive_priority_sensitivity.json`.
