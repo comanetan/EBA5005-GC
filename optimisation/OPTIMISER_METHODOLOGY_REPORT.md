@@ -242,10 +242,10 @@ The Pricing & Availability Lead's and Forecasting Lead's real deliverables exist
 
 **What's still needed from the other leads, concretely** (not a vague "send more data" ask):
 - **Preference**: nothing exists on any branch yet — the one workstream genuinely not started, not just mismatched.
-- **A richer hedonic re-fit**, once there's bandwidth: fit `hedonic_value` against the real `price_today` as the target (or drop this pipeline's own hedonic for real-priced profiles and get a bargain signal from the Pricing Lead directly, e.g. their own model's residual/confidence) — this unblocks surplus #2 above.
-- **Forecast coverage beyond 4-ROOM**, if the regional SARIMAX extends to it — currently the single largest real-data gap (4 of 5 flat types still run on the flat stub for forecasting).
-- **A lease-band dimension**, or confirmation it's safe to keep aggregating it away — this pipeline's profile has never carried remaining lease as a axis beyond a hard minimum-lease filter; the Pricing Lead's data suggests it's a meaningfully large price driver (their profile splits on it explicitly).
-- **Portable file paths**: every script in this pipeline still hardcodes the author's own machine path (`ROOT = r"C:\...\Project"`) — not yet fixed, flagged honestly in `optimisation/README.md` rather than implied to just work for a teammate cloning the branch.
+- ~~**A richer hedonic re-fit**, once there's bandwidth~~ — **done, 2026-10-18, see §14**: a literal re-fit against their price wasn't possible (no block-level data from them), so a profile-level calibration was built instead (R²=0.934), re-enabling the bargain signal with a statistical outlier guard.
+- **Forecast coverage beyond 4-ROOM**, if the regional SARIMAX extends to it — currently the single largest real-data gap (4 of 5 flat types still run on the flat stub for forecasting). *(Still open as of 18 Oct.)*
+- **A lease-band dimension**, or confirmation it's safe to keep aggregating it away — this pipeline's profile has never carried remaining lease as a axis beyond a hard minimum-lease filter; the Pricing Lead's data suggests it's a meaningfully large price driver (their profile splits on it explicitly). *(Still open as of 18 Oct.)*
+- ~~**Portable file paths**: every script in this pipeline still hardcodes the author's own machine path~~ — **done** (fixed across 18 scripts before this section was last touched; this line was stale, left over from before that fix — corrected 2026-10-18).
 
 ---
 
