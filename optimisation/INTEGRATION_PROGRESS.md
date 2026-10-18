@@ -102,7 +102,7 @@ Current stub values (what every number is currently defaulting to, for scale):
 
 | Owner | Ask | Deadline status | Blocking? |
 |---|---|---|---|
-| **Preference Lead** | `preferences.json`, schema above | 2 days overdue (was 16 Oct) | 🔴 Yes — every recommendation today runs on stub weights |
+| **Preference Lead** | `preferences.json`, schema above | 3 days overdue (was 16 Oct; re-checked 19 Oct, still nothing) | 🔴 Yes — every recommendation today runs on stub weights |
 | **Forecasting Lead** | `price_paths.csv` for 2/3/5-ROOM + EXECUTIVE | no committed date | 🟡 Partial — ~80% of profiles have no real forecast |
 | **Pricing & Availability Lead** | Nothing new — optional block-level prices if they're willing | — | No — already delivered, I just need to re-pull `main` |
 | **Me (Optimisation)** | ✅ Done 18 Oct: re-wired adapter to `outputs/optimisation/*.csv` (96.2% → 99.7% coverage); confirmed Monte Carlo/chance-constraint don't violate Forecasting's "no joint sampling" caveat; published `outputs/shortlist.csv` (20 picks, 4 archetypes) | done | — |
