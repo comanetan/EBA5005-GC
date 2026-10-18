@@ -100,8 +100,9 @@ def query_profiles(town: Optional[str], flat_type: Optional[str], max_price: flo
         d = d[d["dist_nearest_job_node_km_p50"] <= max_job_node_km]
     d = d.sort_values("median_price").head(limit)
     return [{
-        "id": r.profile_id, "town": r.town.title(), "flat_type": r.flat_type, "storey_band": r.storey_band,
-        "mrt_band": r.mrt_band, "price": round(r.median_price), "mrt_km": round(r.dist_mrt_exit_km_p50, 2),
+        "id": r.profile_id, "town": r.town.title(), "flat_type": r.flat_type, "lease_band": r.lease_band,
+        "storey_band": r.storey_band, "mrt_band": r.mrt_band, "price": round(r.median_price),
+        "mrt_km": round(r.dist_mrt_exit_km_p50, 2),
         "secondary_school_km": round(getattr(r, "dist_secondary_school_km_p50", float("nan")), 2),
         "has_carpark": bool(getattr(r, "share_has_carpark_400m", 0) >= 0.5),
         "near_flood_prone": bool(getattr(r, "share_near_flood_prone_area", 0) >= 0.5),
@@ -160,7 +161,7 @@ def recommend(req: RecommendRequest):
     except Exception as e:
         raise HTTPException(500, f"solver error: {e}")
 
-    cols = ["rank", "profile_id", "town", "flat_type", "storey_band", "mrt_band", "price_today", "price_upper",
+    cols = ["rank", "profile_id", "town", "flat_type", "lease_band", "storey_band", "mrt_band", "price_today", "price_upper",
             "median_remaining_lease", "dist_mrt_exit_km_p50", "essentials_score", "expected_wait_months",
             "p_no_matching_sale_3m", "surplus", "dev_mrt", "dev_school", "dev_storey", "dev_wait", "dev_expressway",
             "goal_deviation_total", "net_objective_value"]
@@ -196,7 +197,7 @@ class ParetoRequest(BaseModel):
     n_points: int = 8
 
 
-PICK_COLS = ["profile_id", "town", "flat_type", "storey_band", "mrt_band", "price_today",
+PICK_COLS = ["profile_id", "town", "flat_type", "lease_band", "storey_band", "mrt_band", "price_today",
              "shrunk_value_gap", "preference_tilt", "surplus",
              "dev_mrt", "dev_school", "dev_essentials", "dev_storey", "dev_wait", "dev_expressway",
              "goal_deviation_total", "net_objective_value"]

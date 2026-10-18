@@ -367,7 +367,7 @@ def solve(query, profiles=None, fcast_override=None, chance_alpha=None, upper_fa
     sel = [i for i in ids if (x[i].value() or 0) > 0.5]
     sl = d[d["profile_id"].isin(sel)].sort_values("net_objective_value", ascending=False).copy()
     sl["rank"] = range(1, len(sl) + 1)
-    cols = (["rank", "profile_id", "town", "flat_type", "storey_band", "mrt_band", "price_today", "price_upper",
+    cols = (["rank", "profile_id", "town", "flat_type", "lease_band", "storey_band", "mrt_band", "price_today", "price_upper",
              "median_remaining_lease", "dist_mrt_exit_km_p50", "essentials_score", "share_elite_primary_1km",
              "share_elite_primary_2km", "p_no_matching_sale_3m",
              "expected_wait_months", "survival_prob_6m", "survival_prob_12m", "monthly_rent",
@@ -455,7 +455,7 @@ def solve_preemptive(query, priority=None, profiles=None, fcast_override=None, c
     sel = [i for i in ids if (x[i].value() or 0) > 0.5]
     sl = d[d["profile_id"].isin(sel)].sort_values("net_objective_value", ascending=False).copy()
     sl["rank"] = range(1, len(sl) + 1)
-    cols = (["rank", "profile_id", "town", "flat_type", "storey_band", "mrt_band", "price_today", "price_upper",
+    cols = (["rank", "profile_id", "town", "flat_type", "lease_band", "storey_band", "mrt_band", "price_today", "price_upper",
              "median_remaining_lease", "dist_mrt_exit_km_p50", "essentials_score", "share_elite_primary_1km",
              "share_elite_primary_2km", "p_no_matching_sale_3m",
              "expected_wait_months", "survival_prob_6m", "survival_prob_12m", "monthly_rent",

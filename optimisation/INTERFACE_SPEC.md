@@ -6,10 +6,13 @@
 > `Optimisation_Lead_Pipeline_v2_BlockLevel.ipynb`): 79% of MRT-distance variance is *within* towns, and
 > block accessibility explains price beyond town effects. So the shared unit of analysis is now:
 >
-> **`profile = town × flat_type × storey_band × mrt_band`**, `mrt_band ∈ {Near ≤400m, Mid 400–800m, Far >800m}`
-> measured to the nearest **operating** MRT exit (LTA exit layer). **712 profiles.**
+> **`profile = town × flat_type × lease_band × storey_band × mrt_band`**, `mrt_band ∈ {Near ≤400m, Mid 400–800m, Far >800m}`
+> measured to the nearest **operating** MRT exit (LTA exit layer). `lease_band ∈ {<60, 60-79, 80+}` (added
+> 2026-10-18, v2.9 below — matches the Pricing Lead's own bands exactly). **1,184 profiles** (was 712, then 708
+> after later re-fits; see the dated changelog below for the full history).
 >
-> `profile_id` format: `"{TOWN}::{FLATTYPE}::{StoreyBand}::{MRTBand}"`, e.g. `"TAMPINES::4ROOM::Mid::Near"`.
+> `profile_id` format: `"{TOWN}::{FLATTYPE}::{LeaseBand}::{StoreyBand}::{MRTBand}"`, e.g.
+> `"TAMPINES::4ROOM::60-79::Mid::Near"`.
 >
 > What this means for each lead:
 > - **Pricing & Availability** — `pricing_today.csv` and `availability.csv` keyed by the v2 `profile_id`.
@@ -85,6 +88,17 @@
 > goal (mirror of `target_mrt_km`'s maximum-distance goal), producing `dev_expressway` in the shortlist and
 > `goal_deviation_total`. Exposed in the web app's Final Recommender tab. Backtest re-run after this change:
 > 98.8% within-budget reliability, unchanged from the pre-change baseline.
+>
+> **v2.9 Lease-band dimension added** (2026-10-18, see OPTIMISER_METHODOLOGY_REPORT.md §16):
+> `profile_id` grew from 4-part to 5-part (box at the top of this file, now updated) — `<60`/`60-79`/`80+`,
+> matching the Pricing Lead's own bands exactly so lease never needs crosswalking. Profile count 708 → 1,184.
+> `pricing_availability_adapter.py`'s crosswalk-based functions are the primary path again (v2.8's native
+> pass-through can't match a 5-part ID); coverage 99.7% → 94.5% (1,119/1,184) — real lease splits, thinner
+> cells. Calibration fit improved R² 0.942 → 0.960. **Backtest reliability (extended 11×4): 96.5% → 99.4%
+> [96.9%, 99.9%]** — a genuine improvement, with an honest cost reported alongside it: `matched_sale_seen`
+> fell to 81.4% (finer cells price better but are thinner). Fixed two real breakages found by grepping every
+> hardcoded profile_id string-split: `backtest_v2.py` (3 spots) and `technique_comparison.py` (2 spots) were
+> unpacking a fixed 4-part profile_id and would have crashed or silently mis-joined on a 5-part one.
 >
 > **v2.8 Real spatial re-fit (subzone FE) + corrected polyclinic source** (2026-10-18, see
 > OPTIMISER_METHODOLOGY_REPORT.md §15): `hedonic_value.FORMULA` now uses `C(subzone)` (167 subzones with

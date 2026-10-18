@@ -88,8 +88,8 @@ def experiment_shrinkage():
     # in the clean, non-overlapping 12m window that follows?
     C = pd.Timestamp(CUTOFF)
     future = rel_price_in_window(tx, C + pd.DateOffset(months=12), C + pd.DateOffset(months=24))
-    fut_by_profile = future.groupby(["town", "flat_type", "storey_band", "mrt_band"], observed=True)["rel_psm"].median()
-    prof = prof.set_index(["town", "flat_type", "storey_band", "mrt_band"])
+    fut_by_profile = future.groupby(["town", "flat_type", "lease_band", "storey_band", "mrt_band"], observed=True)["rel_psm"].median()
+    prof = prof.set_index(["town", "flat_type", "lease_band", "storey_band", "mrt_band"])
     prof["future_rel_psm"] = fut_by_profile
     valid = prof.dropna(subset=["future_rel_psm"]).copy()
     idx = prof.index.get_indexer(valid.index)
@@ -137,7 +137,7 @@ def experiment_availability_distribution():
     print("=" * 90)
     tx = load_transactions_with_access()
     tx = tx[tx["flat_type"] != "MULTI-GENERATION"].copy()
-    keys = ["town", "flat_type", "storey_band", "mrt_band"]
+    keys = ["town", "flat_type", "lease_band", "storey_band", "mrt_band"]
 
     # real inter-arrival gaps: for each profile cell, the time (days) between CONSECUTIVE sales
     tx_sorted = tx.sort_values("month")

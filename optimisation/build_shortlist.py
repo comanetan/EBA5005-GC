@@ -19,7 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 OUT = os.path.join(HERE, "outputs")
 
-SHORTLIST_COLS = ["household_id", "rank", "profile_id", "town", "flat_type", "storey_band", "mrt_band",
+SHORTLIST_COLS = ["household_id", "rank", "profile_id", "town", "flat_type", "lease_band", "storey_band", "mrt_band",
                    "price_today", "expected_wait_months", "surplus", "net_objective_value"]
 
 

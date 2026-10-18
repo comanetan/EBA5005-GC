@@ -3,8 +3,12 @@
 Housing profiles v2 -- block-informed.
 
 Decision (evidence in block_analysis.py):
-  profile = town x flat_type x storey_band x mrt_band
+  profile = town x flat_type x lease_band x storey_band x mrt_band
   mrt_band: Near (<=400m to an operating MRT exit), Mid (400-800m), Far (>800m)
+  lease_band: <60 / 60-79 / 80+ remaining years (added 2026-10-18, matches the Pricing &
+  Availability Lead's own bands exactly -- see OPTIMISER_METHODOLOGY_REPORT.md Sec. 16;
+  their data suggested lease was a meaningfully large price driver this profile was
+  aggregating away, with only a hard min_lease_yrs floor to show for it)
 
 Why not pure block-level profiles: only ~28% of last-12-month transactions
 fall in block x flat_type x storey cells with >=3 sales -- too thin to price
@@ -66,9 +70,11 @@ def build_profiles_v2(recent_months=12, min_txn=3, as_of=None, write=True, with_
     df["essentials_score"] = df[[f"ess_{k}" for k in ESSENTIALS]].sum(axis=1)
     df["elite_1km"] = (df["elite_primary_tier"] == "Within 1km").astype(int)
     df["elite_2km"] = df["elite_primary_tier"].isin(["Within 1km", "1-2km"]).astype(int)
+    # lease_band already computed in load_transactions_with_access() (block_analysis.py),
+    # shared by every consumer of tx data, not recomputed here
 
     recent = df[df["month"] > df["month"].max() - pd.DateOffset(months=recent_months)]
-    keys = ["town", "flat_type", "storey_band", "mrt_band"]
+    keys = ["town", "flat_type", "lease_band", "storey_band", "mrt_band"]
 
     agg = {
         "median_price": ("resale_price", "median"),
@@ -105,13 +111,14 @@ def build_profiles_v2(recent_months=12, min_txn=3, as_of=None, write=True, with_
     prof = recent.groupby(keys, observed=True).agg(**agg).reset_index()
     prof = prof[prof["txn_count_12m"] >= min_txn].copy()
     prof["profile_id"] = (prof["town"].str.replace("/", "-") + "::" + prof["flat_type"].str.replace(" ", "")
-                          + "::" + prof["storey_band"] + "::" + prof["mrt_band"].astype(str))
+                          + "::" + prof["lease_band"].astype(str) + "::" + prof["storey_band"]
+                          + "::" + prof["mrt_band"].astype(str))
 
     # exposure for the availability model: dwelling units of this flat type in the profile's blocks
     blocks = pd.read_csv(os.path.join(OUT, "block_accessibility.csv"))
     ft_col = {"2 ROOM": "2room_sold", "3 ROOM": "3room_sold", "4 ROOM": "4room_sold",
               "5 ROOM": "5room_sold", "EXECUTIVE": "exec_sold"}
-    block_of = recent[["query", "town", "flat_type", "storey_band", "mrt_band"]].drop_duplicates()
+    block_of = recent[["query", "town", "flat_type", "lease_band", "storey_band", "mrt_band"]].drop_duplicates()
     block_of = block_of.merge(blocks[["query"] + list(ft_col.values())], on="query", how="left")
     block_of["units_of_type"] = block_of.apply(lambda r: r.get(ft_col.get(r["flat_type"], ""), np.nan), axis=1)
     exposure = block_of.groupby(keys, observed=True)["units_of_type"].sum().rename("units_in_profile_blocks")

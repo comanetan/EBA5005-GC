@@ -94,13 +94,19 @@ def build_availability(wait_path=None, write=True):
     return agg
 
 
-# 2026-10-18: as of main commit 42df63b (17 Oct), Pricing & Availability started writing
-# outputs/optimisation/{pricing_today,availability}.csv DIRECTLY on this pipeline's own
-# profile_id scheme (952 of my profiles covered) -- priced/timed per-profile from their
-# block mix weighted by units, not a median crosswalk across their 5-part lease-band IDs.
-# This supersedes build_pricing_today()/build_availability() above, which exist now only
-# to reproduce their OLDER (12 Oct) 5-part-ID snapshot for backtest/history purposes --
-# prefer the functions below for any current run.
+# 2026-10-18 (main commit 42df63b, 17 Oct): Pricing & Availability started writing
+# outputs/optimisation/{pricing_today,availability}.csv DIRECTLY on this pipeline's OLD
+# 4-part profile_id scheme (no lease band) -- priced/timed per-profile from their block mix
+# weighted by units, not a median crosswalk. This was briefly the preferred path.
+#
+# SAME DAY, LATER: this pipeline's own profile gained a lease_band dimension (see
+# OPTIMISER_METHODOLOGY_REPORT.md Sec. 16), making profile_id 5-part. build_from_native()'s
+# file is keyed on the OLD 4-part scheme and can never match a 5-part profile_id again --
+# not a bug to fix, a scheme mismatch to retire. build_pricing_today()/build_availability()
+# above are therefore the primary path once more, and a BETTER one now than when they were
+# first written: lease_band is an identity mapping (both sides use <60/60-79/80+), so the
+# crosswalk only ever has to resolve storey/MRT boundary differences, never lease ones.
+# build_from_native() is kept only to reproduce the 17 Oct native snapshot for comparison.
 def build_from_native(pricing_path=None, availability_path=None, write=True):
     """Pass-through (not a crosswalk): their file's profile_id already matches mine, so
     this just filters to my known profile_ids and renames nothing. Any profile_id in
@@ -131,20 +137,11 @@ if __name__ == "__main__":
     mine = pd.read_csv(os.path.join(DATA, "housing_profiles_v2_full.csv"))
     n_mine = mine["profile_id"].nunique()
 
-    if os.path.exists(os.path.join(EXT, "pricing_today_main_native.csv")):
-        p, a, missing_mine, extra_theirs = build_from_native()
-        print(f"NATIVE pass-through (main@42df63b, 17 Oct): pricing_today.csv {len(p)} / {n_mine} "
-              f"of my profiles ({len(p)/n_mine*100:.1f}%), availability.csv {len(a)} / {n_mine}")
-        print(f"  {len(missing_mine)} of my profiles missing from their file, "
-              f"{len(extra_theirs)} of their profiles not in mine (boundary disagreements, both small)")
-        print(f"  median price_today_se ${p['price_today_se'].median():,.0f}, "
-              f"median expected_wait_months {a['expected_wait_months'].median():.1f}")
-    else:
-        p = build_pricing_today()
-        print(f"pricing_today.csv: {len(p)} / {n_mine} of my profiles covered "
-              f"({len(p)/n_mine*100:.1f}%), median SE ${p['price_today_se'].median():,.0f}")
+    p = build_pricing_today()
+    print(f"pricing_today.csv (lease-preserving crosswalk): {len(p)} / {n_mine} of my profiles covered "
+          f"({len(p)/n_mine*100:.1f}%), median SE ${p['price_today_se'].median():,.0f}")
 
-        a = build_availability()
-        print(f"availability.csv: {len(a)} / {n_mine} of my profiles covered "
-              f"({len(a)/n_mine*100:.1f}%), median wait {a['expected_wait_months'].median():.1f} months, "
-              f"{(a['scarce_share']>0).sum()} profiles with >=1 scarce source cell")
+    a = build_availability()
+    print(f"availability.csv (lease-preserving crosswalk): {len(a)} / {n_mine} of my profiles covered "
+          f"({len(a)/n_mine*100:.1f}%), median wait {a['expected_wait_months'].median():.1f} months, "
+          f"{(a['scarce_share']>0).sum()} profiles with >=1 scarce source cell")

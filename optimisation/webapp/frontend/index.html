@@ -522,12 +522,12 @@ async function runApplied(){
     $("ap_kpis").innerHTML = ""; $("ap_stage_wrap").hidden = true;
     return;
   }
-  $("ap_table").innerHTML = `<tr><th>#</th><th>Town</th><th>Flat</th><th>Storey</th><th>MRT band</th><th>Price</th>
+  $("ap_table").innerHTML = `<tr><th>#</th><th>Town</th><th>Flat</th><th title="Remaining lease: under 60 / 60-79 / 80+ years">Lease</th><th>Storey</th><th>MRT band</th><th>Price</th>
     <th title="Market value of its attributes minus what it actually costs — higher is a bigger bargain">Surplus</th>
     <th title="$ cost of falling short of your stated goals (mainly MRT distance) — lower is better, $0 = meets your goals exactly">Shortfall</th>
     <th title="Surplus minus Shortfall — the score the solver actually maximises">Net</th>
     <th title="Expected months before a matching flat comes up for sale, from this profile's own recent sale frequency">Wait (mo)</th></tr>` +
-    r.shortlist.map(p=>`<tr><td>${p.rank}</td><td>${p.town}</td><td>${p.flat_type}</td><td>${p.storey_band}</td><td>${p.mrt_band}</td>
+    r.shortlist.map(p=>`<tr><td>${p.rank}</td><td>${p.town}</td><td>${p.flat_type}</td><td>${p.lease_band}</td><td>${p.storey_band}</td><td>${p.mrt_band}</td>
       <td>${money(p.price_today)}</td><td>${money(p.surplus)}</td><td>${money(p.goal_deviation_total)}</td><td>${money(p.net_objective_value)}</td><td>${fmt(p.expected_wait_months,1)}</td></tr>`).join("");
   $("ap_kpis").innerHTML = `<div class="kpi"><div class="v">${r.status}</div><div class="k">Solver status</div></div>
     <div class="kpi"><div class="v">${fmt(r.n_candidates)}</div><div class="k">Candidates considered</div></div>
@@ -578,13 +578,13 @@ $("pf_run").addEventListener("click", runPareto);
 /* ---- shared: render a Pareto pick's full $ breakdown as a mini table ---- */
 function picksTableHtml(picks){
   if (!picks || !picks.length) return '<p class="note">No picks at this point.</p>';
-  return `<table><tr><th>Town</th><th>Flat</th><th>Storey</th><th>MRT band</th><th>Price</th>
+  return `<table><tr><th>Town</th><th>Flat</th><th title="Remaining lease: under 60 / 60-79 / 80+ years">Lease</th><th>Storey</th><th>MRT band</th><th>Price</th>
       <th title="Hedonic bargain gap, shrunk for thin data">Value gap</th>
       <th title="Extra value only where you weight an attribute differently than the market does">Tilt</th>
       <th>Surplus</th><th title="MRT shortfall">Short: MRT</th><th title="School shortfall">Short: School</th>
       <th title="Essentials shortfall">Short: Ess.</th><th title="Storey shortfall">Short: Storey</th><th title="Wait shortfall">Short: Wait</th>
       <th title="Expressway shortfall, if a minimum distance goal was set">Short: Expwy</th><th>Net</th></tr>` +
-    picks.map(p=>`<tr><td>${p.town}</td><td>${p.flat_type}</td><td>${p.storey_band}</td><td>${p.mrt_band}</td>
+    picks.map(p=>`<tr><td>${p.town}</td><td>${p.flat_type}</td><td>${p.lease_band}</td><td>${p.storey_band}</td><td>${p.mrt_band}</td>
       <td>${money(p.price_today)}</td><td>${money(p.shrunk_value_gap)}</td><td>${money(p.preference_tilt)}</td>
       <td>${money(p.surplus)}</td><td>${money(p.dev_mrt)}</td><td>${money(p.dev_school)}</td>
       <td>${money(p.dev_essentials)}</td><td>${money(p.dev_storey)}</td><td>${money(p.dev_wait)}</td>

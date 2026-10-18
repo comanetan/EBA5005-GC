@@ -43,6 +43,15 @@ def parse_lease(s):
     return int(m.group(1)) + (int(m.group(2)) if m.group(2) else 0) / 12
 
 
+# 2026-10-18 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 16): bands match the Pricing & Availability
+# Lead's own scheme EXACTLY (profile_crosswalk.py's LEASE_BAND docstring: "<60, 60-79, 80+") --
+# not a new, independently-chosen cut. Using their bands means no lease-band crosswalk is ever
+# needed (an identity mapping), only storey/MRT boundary differences remain to resolve.
+def lease_band(remaining_lease_yrs):
+    yrs = pd.to_numeric(remaining_lease_yrs, errors="coerce")
+    return pd.cut(yrs, [-1, 59.999, 79.999, 999], labels=["<60", "60-79", "80+"]).astype(str)
+
+
 def load_transactions_with_access():
     cache = os.path.join(OUT, "transactions_block_access.parquet")
     if os.path.exists(cache):
@@ -53,6 +62,7 @@ def load_transactions_with_access():
     r["storey_band"] = r["storey_range"].apply(storey_band)
     r["storey_mid"] = r["storey_range"].str.extract(r"(\d+) TO (\d+)").astype(float).mean(axis=1)
     r["remaining_lease_yrs"] = r["remaining_lease"].apply(parse_lease)
+    r["lease_band"] = lease_band(r["remaining_lease_yrs"])
     r["log_price"] = np.log(r["resale_price"])
 
     b = pd.read_csv(os.path.join(OUT, "block_accessibility.csv"))

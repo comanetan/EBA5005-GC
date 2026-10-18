@@ -89,7 +89,7 @@ def run(cutoffs=CUTOFFS, archetypes=ARCHETYPES, k=5, verbose=True):
             q = rv2.HouseholdQuery2(k=k, name=name, **a)
             res = rv2.solve(q, profiles=prof_c)
             for _, p in res["shortlist"].iterrows():
-                keys = ["town", "flat_type", "storey_band", "mrt_band"]
+                keys = ["town", "flat_type", "lease_band", "storey_band", "mrt_band"]
                 vals = [p[x] for x in keys]
                 rp, cv, n = realised(txc, C, vals, keys)
                 rows.append({"cutoff": c, "household": name, "strategy": "v2_block_informed",
@@ -134,7 +134,7 @@ def run_v2_variant(label, cutoffs=CUTOFFS, archetypes=ARCHETYPES, k=5, use_empir
         for name, a in archetypes.items():
             res = rv2.solve(rv2.HouseholdQuery2(k=k, name=name, **a), profiles=prof_c, upper_factors=bands)
             for _, p in res["shortlist"].iterrows():
-                keys = ["town", "flat_type", "storey_band", "mrt_band"]
+                keys = ["town", "flat_type", "lease_band", "storey_band", "mrt_band"]
                 rp, cv, n = realised(txc, C, [p[x] for x in keys], keys)
                 rows.append({"cutoff": c, "household": name, "strategy": label, "profile": p["profile_id"],
                              "price_at_cutoff": p["price_today"], "realised_price": rp, "realised_cell_cv": cv,
@@ -164,7 +164,7 @@ def run_v2_chance_variant(label="v2_chance_constraint", alpha=0.90, cutoffs=CUTO
         for name, a in archetypes.items():
             res = rv2.solve(rv2.HouseholdQuery2(k=k, name=name, **a), profiles=prof_c, chance_alpha=alpha)
             for _, p in res["shortlist"].iterrows():
-                keys = ["town", "flat_type", "storey_band", "mrt_band"]
+                keys = ["town", "flat_type", "lease_band", "storey_band", "mrt_band"]
                 rp, cv, n = realised(txc, C, [p[x] for x in keys], keys)
                 rows.append({"cutoff": c, "household": name, "strategy": label, "profile": p["profile_id"],
                              "price_at_cutoff": p["price_today"], "realised_price": rp, "realised_cell_cv": cv,
@@ -228,10 +228,11 @@ def availability_calibration(bt, tx, strategy="v2_block_informed_empirical_band"
         if C not in by_cutoff:
             by_cutoff[C] = network_as_of(tx[tx["month"] <= C], C)
         tx_c = by_cutoff[C]
-        town, ft, sb, mb = r["profile"].split("::")
+        town, ft, lease, sb, mb = r["profile"].split("::")
         ft = ft.replace("ROOM", " ROOM") if "ROOM" in ft else ft
         w = tx_c[(tx_c["month"] > C - pd.DateOffset(months=12)) & (tx_c["town"] == town.replace("-", "/"))
-                 & (tx_c["flat_type"] == ft) & (tx_c["storey_band"] == sb) & (tx_c[band_col].astype(str) == mb)]
+                 & (tx_c["flat_type"] == ft) & (tx_c["lease_band"] == lease)
+                 & (tx_c["storey_band"] == sb) & (tx_c[band_col].astype(str) == mb)]
         n12.append(len(w))
     d["sales_prev_12m"] = n12
     d["p_no_sale_pred"] = np.exp(-3 * d["sales_prev_12m"] / 12)
