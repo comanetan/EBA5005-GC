@@ -94,15 +94,57 @@ def build_availability(wait_path=None, write=True):
     return agg
 
 
+# 2026-10-18: as of main commit 42df63b (17 Oct), Pricing & Availability started writing
+# outputs/optimisation/{pricing_today,availability}.csv DIRECTLY on this pipeline's own
+# profile_id scheme (952 of my profiles covered) -- priced/timed per-profile from their
+# block mix weighted by units, not a median crosswalk across their 5-part lease-band IDs.
+# This supersedes build_pricing_today()/build_availability() above, which exist now only
+# to reproduce their OLDER (12 Oct) 5-part-ID snapshot for backtest/history purposes --
+# prefer the functions below for any current run.
+def build_from_native(pricing_path=None, availability_path=None, write=True):
+    """Pass-through (not a crosswalk): their file's profile_id already matches mine, so
+    this just filters to my known profile_ids and renames nothing. Any profile_id in
+    their file that isn't one of mine (or vice versa) is a genuine boundary disagreement
+    in our distance bands, not an adapter bug -- reported, not silently dropped."""
+    pricing_path = pricing_path or os.path.join(EXT, "pricing_today_main_native.csv")
+    availability_path = availability_path or os.path.join(EXT, "availability_main_native.csv")
+    mine = _my_profile_ids()
+
+    p = pd.read_csv(pricing_path)
+    p_mine = p[p["profile_id"].isin(mine)].copy()
+    if write:
+        p_mine[["profile_id", "price_today", "price_today_se", "price_low", "price_high"]].to_csv(
+            os.path.join(DATA, "pricing_today.csv"), index=False)
+
+    a = pd.read_csv(availability_path)
+    a_mine = a[a["profile_id"].isin(mine)].copy()
+    if write:
+        a_mine[["profile_id", "expected_wait_months", "survival_prob_6m", "survival_prob_12m",
+                "hazard_ratio", "scarce"]].to_csv(os.path.join(DATA, "availability.csv"), index=False)
+
+    missing_mine = mine - set(p["profile_id"])
+    extra_theirs = set(p["profile_id"]) - mine
+    return p_mine, a_mine, missing_mine, extra_theirs
+
+
 if __name__ == "__main__":
     mine = pd.read_csv(os.path.join(DATA, "housing_profiles_v2_full.csv"))
     n_mine = mine["profile_id"].nunique()
 
-    p = build_pricing_today()
-    print(f"pricing_today.csv: {len(p)} / {n_mine} of my profiles covered "
-          f"({len(p)/n_mine*100:.1f}%), median SE ${p['price_today_se'].median():,.0f}")
+    if os.path.exists(os.path.join(EXT, "pricing_today_main_native.csv")):
+        p, a, missing_mine, extra_theirs = build_from_native()
+        print(f"NATIVE pass-through (main@42df63b, 17 Oct): pricing_today.csv {len(p)} / {n_mine} "
+              f"of my profiles ({len(p)/n_mine*100:.1f}%), availability.csv {len(a)} / {n_mine}")
+        print(f"  {len(missing_mine)} of my profiles missing from their file, "
+              f"{len(extra_theirs)} of their profiles not in mine (boundary disagreements, both small)")
+        print(f"  median price_today_se ${p['price_today_se'].median():,.0f}, "
+              f"median expected_wait_months {a['expected_wait_months'].median():.1f}")
+    else:
+        p = build_pricing_today()
+        print(f"pricing_today.csv: {len(p)} / {n_mine} of my profiles covered "
+              f"({len(p)/n_mine*100:.1f}%), median SE ${p['price_today_se'].median():,.0f}")
 
-    a = build_availability()
-    print(f"availability.csv: {len(a)} / {n_mine} of my profiles covered "
-          f"({len(a)/n_mine*100:.1f}%), median wait {a['expected_wait_months'].median():.1f} months, "
-          f"{(a['scarce_share']>0).sum()} profiles with >=1 scarce source cell")
+        a = build_availability()
+        print(f"availability.csv: {len(a)} / {n_mine} of my profiles covered "
+              f"({len(a)/n_mine*100:.1f}%), median wait {a['expected_wait_months'].median():.1f} months, "
+              f"{(a['scarce_share']>0).sum()} profiles with >=1 scarce source cell")

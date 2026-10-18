@@ -1,0 +1,21 @@
+household_id,rank,profile_id,town,flat_type,storey_band,mrt_band,price_today,expected_wait_months,surplus,net_objective_value
+"Young couple, transit-reliant",1,WOODLANDS::3ROOM::Mid::Near,WOODLANDS,3 ROOM,Mid,Near,453000.0,0.52,9884.837996593442,9884.837996593442
+"Young couple, transit-reliant",2,BUKIT PANJANG::3ROOM::Mid::Mid,BUKIT PANJANG,3 ROOM,Mid,Mid,452000.0,1.76,4685.896266441711,-5041.778459590319
+"Young couple, transit-reliant",3,BUKIT BATOK::3ROOM::Low::Near,BUKIT BATOK,3 ROOM,Low,Near,403000.0,0.35,8800.28549043415,-9399.71450956585
+"Young couple, transit-reliant",4,YISHUN::4ROOM::Low::Mid,YISHUN,4 ROOM,Low,Mid,490000.0,0.1,5346.523537824269,-20026.37481012387
+"Young couple, transit-reliant",5,HOUGANG::3ROOM::Mid::Far,HOUGANG,3 ROOM,Mid,Far,460000.0,0.17,-575.1187498031311,-26506.818409974243
+"Family, needs primary school",1,BEDOK::4ROOM::Mid::Near,BEDOK,4 ROOM,Mid,Near,628000.0,0.19,0.0,0.0
+"Family, needs primary school",2,ANG MO KIO::4ROOM::Mid::Mid,ANG MO KIO,4 ROOM,Mid,Mid,599000.0,0.18,0.0,-783.625463751232
+"Family, needs primary school",3,PASIR RIS::4ROOM::Mid::Mid,PASIR RIS,4 ROOM,Mid,Mid,658000.0,0.25,0.0,-8542.365088814842
+"Family, needs primary school",4,JURONG WEST::4ROOM::Mid::Mid,JURONG WEST,4 ROOM,Mid,Mid,537000.0,0.11,0.0,-9308.33235551911
+"Family, needs primary school",5,TOA PAYOH::4ROOM::Mid::Far,TOA PAYOH,4 ROOM,Mid,Far,628000.0,0.41,0.0,-9586.407321302282
+"Budget-first, car owner",1,BUKIT BATOK::2ROOM::Mid::Far,BUKIT BATOK,2 ROOM,Mid,Far,383000.0,0.33,2024.9815302906661,0.0
+"Budget-first, car owner",2,JURONG EAST::3ROOM::Mid::Far,JURONG EAST,3 ROOM,Mid,Far,377000.0,0.42,1181.264937865767,0.0
+"Budget-first, car owner",3,JURONG WEST::3ROOM::Mid::Far,JURONG WEST,3 ROOM,Mid,Far,356000.0,0.17,307.2757150982789,0.0
+"Budget-first, car owner",4,PUNGGOL::2ROOM::Mid::Far,PUNGGOL,2 ROOM,Mid,Far,388000.0,0.45,51.39515719953559,0.0
+"Budget-first, car owner",5,YISHUN::2ROOM::Mid::Far,YISHUN,2 ROOM,Mid,Far,366000.0,0.4,5333.344360491429,0.0
+"Retiree, downsizing, low storey",1,JURONG EAST::2ROOM::Mid::Mid,JURONG EAST,2 ROOM,Mid,Mid,355000.0,2.8,-1910.2499332620775,-1910.2499332620775
+"Retiree, downsizing, low storey",2,BEDOK::3ROOM::Low::Far,BEDOK,3 ROOM,Low,Far,397000.0,0.52,-983.8549217126516,-1937.9242753254887
+"Retiree, downsizing, low storey",3,GEYLANG::3ROOM::Mid::Far,GEYLANG,3 ROOM,Mid,Far,423000.0,4.17,-1045.6473759000535,-2068.363056252365
+"Retiree, downsizing, low storey",4,JURONG WEST::3ROOM::Low::Mid,JURONG WEST,3 ROOM,Low,Mid,378000.0,0.27,-2126.645292481954,-2126.645292481954
+"Retiree, downsizing, low storey",5,BUKIT PANJANG::3ROOM::Low::Mid,BUKIT PANJANG,3 ROOM,Low,Mid,419000.0,0.94,-2233.0042439431936,-2233.0042439431936
