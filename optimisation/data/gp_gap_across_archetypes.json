@@ -1,0 +1,98 @@
+[
+  {
+    "archetype": "Young couple, transit-reliant",
+    "status_ws": "Optimal",
+    "status_pe": "Optimal",
+    "ws_objective": -13286.9,
+    "pe_objective": -36366.1,
+    "gap": 23079.2,
+    "n_picks": 5,
+    "shared_picks": 3,
+    "ws_picks": [
+      "BUKIT BATOK::3ROOM::60-79::Mid::Near",
+      "BUKIT PANJANG::3ROOM::60-79::Mid::Mid",
+      "HOUGANG::3ROOM::60-79::Low::Near",
+      "WOODLANDS::3ROOM::60-79::Mid::Near",
+      "YISHUN::3ROOM::60-79::Mid::Mid"
+    ],
+    "pe_picks": [
+      "BEDOK::3ROOM::60-79::Mid::Near",
+      "BUKIT BATOK::3ROOM::60-79::Mid::Near",
+      "HOUGANG::3ROOM::60-79::Low::Near",
+      "WOODLANDS::3ROOM::60-79::Mid::Near",
+      "YISHUN::3ROOM::60-79::Mid::Near"
+    ]
+  },
+  {
+    "archetype": "Family, needs primary school",
+    "status_ws": "Optimal",
+    "status_pe": "Optimal",
+    "ws_objective": 115270.25,
+    "pe_objective": -10212.79,
+    "gap": 125483.04,
+    "n_picks": 5,
+    "shared_picks": 1,
+    "ws_picks": [
+      "BUKIT PANJANG::4ROOM::60-79::Mid::Mid",
+      "GEYLANG::4ROOM::60-79::Low::Mid",
+      "JURONG WEST::5ROOM::80+::Low::Mid",
+      "WOODLANDS::4ROOM::80+::High::Mid",
+      "YISHUN::4ROOM::80+::Mid::Mid"
+    ],
+    "pe_picks": [
+      "BEDOK::4ROOM::60-79::Low::Mid",
+      "CENTRAL AREA::4ROOM::60-79::Mid::Near",
+      "GEYLANG::4ROOM::60-79::Low::Mid",
+      "TAMPINES::4ROOM::60-79::Low::Mid",
+      "TOA PAYOH::4ROOM::60-79::Low::Mid"
+    ]
+  },
+  {
+    "archetype": "Budget-first, car owner",
+    "status_ws": "Optimal",
+    "status_pe": "Optimal",
+    "ws_objective": 27069.65,
+    "pe_objective": -745.64,
+    "gap": 27815.29,
+    "n_picks": 5,
+    "shared_picks": 1,
+    "ws_picks": [
+      "BUKIT BATOK::2ROOM::80+::High::Far",
+      "JURONG EAST::3ROOM::<60::Mid::Far",
+      "JURONG WEST::3ROOM::<60::Mid::Mid",
+      "PUNGGOL::2ROOM::80+::High::Far",
+      "SEMBAWANG::2ROOM::80+::Mid::Far"
+    ],
+    "pe_picks": [
+      "BUKIT BATOK::3ROOM::60-79::Mid::Mid",
+      "JURONG EAST::3ROOM::<60::Mid::Mid",
+      "JURONG WEST::3ROOM::<60::Mid::Mid",
+      "SEMBAWANG::2ROOM::80+::High::Far",
+      "WOODLANDS::3ROOM::<60::Mid::Mid"
+    ]
+  },
+  {
+    "archetype": "Retiree, downsizing, low storey",
+    "status_ws": "Optimal",
+    "status_pe": "Optimal",
+    "ws_objective": 151468.19,
+    "pe_objective": 151468.19,
+    "gap": 0.0,
+    "n_picks": 5,
+    "shared_picks": 5,
+    "ws_picks": [
+      "ANG MO KIO::3ROOM::<60::Mid::Mid",
+      "BUKIT MERAH::3ROOM::<60::High::Mid",
+      "CLEMENTI::3ROOM::<60::Mid::Mid",
+      "GEYLANG::3ROOM::<60::Mid::Mid",
+      "KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid"
+    ],
+    "pe_picks": [
+      "ANG MO KIO::3ROOM::<60::Mid::Mid",
+      "BUKIT MERAH::3ROOM::<60::High::Mid",
+      "CLEMENTI::3ROOM::<60::Mid::Mid",
+      "GEYLANG::3ROOM::<60::Mid::Mid",
+      "KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid"
+    ]
+  }
+]

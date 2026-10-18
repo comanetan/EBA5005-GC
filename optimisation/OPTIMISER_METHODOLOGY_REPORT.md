@@ -403,3 +403,29 @@ This pipeline's profile had never carried remaining lease as an axis — only a 
 **Re-verified against the full walk-forward backtest, both samples.** Small 6-cutoff × 3-archetype sample: 100.0% [94.7%, 100%] (up from 97.6% [91.5%, 99.3%]). Extended 11×4 sample: **99.4% [96.9%, 99.9%]**, up from 96.5% [93.0%, 98.3%] — point estimates don't overlap cleanly with the *old* 95% CI's lower edge, a genuine signal, not noise. Re-fit the hedonic-to-real-price calibration against the new profiles too: R² rose again, 0.942 → 0.960, resid_std tightened 0.084 → 0.068 — both sides of the comparison are now lease-homogeneous, so they agree even more.
 
 **Downstream on this report's live examples** (both use `profiles=None`, real data, so both moved again): Live Recommender Output now returns 351 candidates (up from 220, more profiles to filter from), objective $84,188.10, top pick Geylang · 4-Room · 60-79-year lease · Low · Mid MRT band. The Weighted-Sum vs. Preemptive gap on the report's running test household: $52,455 (v1 draft) → $4,469 (§11) → $0 (§12) → $155,112.19 (§13+§14) → **$50,362.25** (today), zero picks shared each time the gap reopens — tracked through every cause, not just the final number.
+
+---
+
+## 17. Is the GP divergence finding general, or one cherry-picked household? (2026-10-18)
+
+Every number in §13–§16 above for the "Weighted-Sum vs. Preemptive" gap comes from **one illustrative household** (budget $750k, k=3, MRT weight 1.5×, needs primary school), re-tested across five data states. That raises a fair question this project holds itself to answering, not assuming away: does this household's story generalise, or is it a cherry-picked example that happens to make a good before/after narrative?
+
+**What was tested, and what wasn't.** The ideal test would re-run the full five-stage history across all 4 backtest archetypes (`backtest_v2.EXTENDED_ARCHETYPES`) — 20 combinations. That isn't feasible: the five historical data states (v1 draft, post-MRT-fix, post-native-pricing, post-calibration, post-lease-band) were never independently git-tagged as runnable snapshots — each was a step in one continuously-edited pipeline, not a preserved checkpoint. What **is** feasible, and directly answers the "general or cherry-picked" question, is run **today's final, fully-corrected pipeline** across all 4 archetypes (`test_gp_gap_across_archetypes.py`), at `k=5` (the backtest's own convention) with the shipped default priority order (MRT ≫ School ≫ Storey ≫ Wait ≫ Essentials).
+
+| Archetype | Weighted-sum objective | Preemptive objective | Gap | Shared picks |
+|---|---|---|---|---|
+| Young couple, transit-reliant | −$13,286.90 | −$36,366.10 | **$23,079.20** | 3/5 |
+| Family, needs primary school | $115,270.25 | −$10,212.79 | **$125,483.04** | 1/5 |
+| Budget-first, car owner | $27,069.65 | −$745.64 | **$27,815.29** | 1/5 |
+| Retiree, downsizing, low storey | $151,468.19 | $151,468.19 | **$0.00** | 5/5 |
+
+**Reading it — the finding generalises, with one genuinely informative exception.** 3 of 4 archetypes show a real, substantial gap ($23K–$125K) — this is not an artefact of the one household used throughout the report; the project's own "Family, needs primary school" archetype (budget $750k, needs primary school) is structurally the closest to that household, and shows the largest gap of all four, $125,483.04. The one archetype with a **$0 gap** (Retiree, downsizing, low storey) is itself the expected, correct behaviour: this household's constraints are loose enough that every goal is simultaneously satisfiable, so there is nothing for the two GP modes to disagree about — consistent with §13–§16's own repeated finding that the gap only exists when a real trade-off exists.
+
+**A second, subtler mechanism found while checking *why* each gap exists — not every divergence is "preemptive sacrifices surplus for a shortfall."** Pulling the goal-deviation breakdown for "Budget-first, car owner":
+
+- **Weighted-sum's own picks** carry small, deliberate deviations — `dev_mrt` of $480, $1,072 and $630 on three picks, and a $2,909 `dev_essentials` on a fourth — accepted because the extra surplus on those specific profiles is worth more than the shortfall costs. Net: **$27,069.65**.
+- **Preemptive's picks** are a *completely different set*, chosen so that **every** goal reads exactly $0 on every pick. But that "clean" set's own surplus is lower — net: **−$745.64**.
+
+Preemptive isn't sacrificing surplus to fix a shortfall here; it is structurally forbidden from ever accepting a cheap, profitable shortfall at all, even essentials — the lowest-priority goal — because the lexicographic method locks every higher stage to its own optimum before surplus is ever considered. That is a different, and arguably more revealing, illustration of the lecture's own preemptive-vs-weighted-sum distinction than the report's original household showed on its own.
+
+**Conclusion:** the divergence is a real, general property of these two GP modes on this recommender — not a coincidence of one test household — and the exception (zero gap when nothing conflicts) is itself confirming evidence, not a contradiction. Script and raw output: `test_gp_gap_across_archetypes.py` → `data/gp_gap_across_archetypes.json`.
