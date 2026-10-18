@@ -1,0 +1,24 @@
+{
+  "pricing_inputs": [
+    {
+      "origin": "2023-06",
+      "pricing_sha256": "6f8f71670742d8cfc35253f8fcf03d6d680ec0505ffdeb63b26ebfea6007239f",
+      "profiles": 493
+    },
+    {
+      "origin": "2024-12",
+      "pricing_sha256": "9f3d431d8bf124166cfd9cca0960b646d8cc8840a582973d9770c1f14ff69634",
+      "profiles": 492
+    }
+  ],
+  "feature_sha256": "8eb83b372bad239a47fe5be1c7890345ec4fdbc61857b811db5a638a9c732693",
+  "realised_target": "median recorded sale price in horizon minus/plus one month, with origin-date profile bands",
+  "limitations": [
+    "Only profiles with matching observed transactions contribute price errors; missing sales reported separately.",
+    "Existing Pricing Lead historical exports inherited as supplied; their code uses annual outlier flags and static amenities.",
+    "No claim that this completes the full preference/availability/GP recommender backtest.",
+    "Lease and MRT bands frozen to origin; approximate lease from commencement year like shared profile builder.",
+    "Selection is cheapest predicted price, five distinct towns, lease-band >=60, explicit budgets; not household utility.",
+    "Regional error bands omit profile valuation uncertainty; evaluate fine-cell coverage, not only regional coverage."
+  ]
+}

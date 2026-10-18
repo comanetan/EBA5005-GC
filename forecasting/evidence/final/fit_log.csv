@@ -1,0 +1,211 @@
+region,origin,converged,aic,warnings,optimizer_retry
+NORTH,2020-09-01,True,-308.8535851326241,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2020-09-01,True,-320.9276266007618,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+EAST,2020-09-01,True,-287.57804310479327,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2020-09-01,True,-280.98487925824855,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2020-09-01,True,-272.9051631322219,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+NORTH,2020-12-01,True,-309.9620976282745,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2020-12-01,True,-335.2466806480689,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2020-12-01,True,-296.823125611504,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2020-12-01,True,-290.9700343882164,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2020-12-01,True,-293.0272463978792,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2021-03-01,True,-326.80944664507757,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2021-03-01,True,-352.19781680145627,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2021-03-01,True,-315.6236653703048,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2021-03-01,True,-309.92247662726004,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2021-03-01,True,-307.1316399701471,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2021-06-01,True,-345.5645504767899,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2021-06-01,True,-372.051507178362,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2021-06-01,True,-330.7477747501019,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2021-06-01,True,-323.9553704123272,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2021-06-01,True,-325.1924730224881,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+NORTH,2021-09-01,True,-365.08145715640956,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2021-09-01,True,-392.9470467820613,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2021-09-01,True,-349.6743044814607,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+WEST,2021-09-01,True,-342.975760214305,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2021-09-01,True,-342.7761684611445,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+NORTH,2021-12-01,True,-386.3636882625688,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2021-12-01,True,-403.51143099613716,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2021-12-01,True,-365.5468863691311,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2021-12-01,True,-361.9900242936728,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2021-12-01,True,-361.55991815084724,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2022-03-01,True,-405.6957509620818,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2022-03-01,True,-425.024477960024,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2022-03-01,True,-386.990352520686,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2022-03-01,True,-382.1928644163075,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2022-03-01,True,-380.49744362424923,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2022-06-01,True,-423.78552145565754,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2022-06-01,True,-443.22463489184145,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2022-06-01,True,-403.4864781645069,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2022-06-01,True,-404.0872649143749,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2022-06-01,True,-399.0553687789286,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2022-09-01,True,-445.7314957654215,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2022-09-01,True,-460.1837196407252,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+EAST,2022-09-01,True,-421.5187887101756,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2022-09-01,True,-426.03169659966744,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2022-09-01,True,-417.89707487834687,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2022-12-01,True,-468.39076133394735,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2022-12-01,True,-482.20738875808684,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+EAST,2022-12-01,True,-442.44576174456694,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2022-12-01,True,-448.02441218290153,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2022-12-01,True,-427.9541026731232,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2023-03-01,True,-490.41559025201224,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2023-03-01,True,-501.25850648520037,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2023-03-01,True,-463.85931198339154,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2023-03-01,True,-470.33358580943667,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2023-03-01,True,-448.0389569037777,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+NORTH,2023-06-01,True,-513.7116007401139,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2023-06-01,True,-524.1572087630999,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2023-06-01,True,-480.67342022815075,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2023-06-01,True,-489.61298021484885,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2023-06-01,True,-467.23546366075175,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2023-09-01,True,-535.9760870263492,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2023-09-01,True,-544.2243064336539,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2023-09-01,True,-500.3837405815268,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2023-09-01,True,-510.75870438691356,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2023-09-01,True,-487.9168718218755,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2023-12-01,True,-558.2839192599128,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2023-12-01,True,-567.3188088130537,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+EAST,2023-12-01,True,-518.9723867946368,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+WEST,2023-12-01,True,-531.5495646284712,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2023-12-01,True,-509.2047345687639,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2024-03-01,True,-580.2919039790894,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2024-03-01,True,-590.4777655188665,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2024-03-01,True,-538.9893306032724,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2024-03-01,True,-553.3817149468857,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2024-03-01,True,-527.6520665770133,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2024-06-01,True,-602.7787021615655,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2024-06-01,True,-612.9646343631147,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2024-06-01,True,-559.0866419939304,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2024-06-01,True,-575.629985322739,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2024-06-01,True,-545.6276951911265,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2024-09-01,True,-623.629715551353,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2024-09-01,True,-631.0662814828194,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2024-09-01,True,-578.799898064843,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2024-09-01,True,-594.0349082260143,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2024-09-01,True,-566.1268205305776,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2024-12-01,True,-645.6141005578098,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2024-12-01,True,-654.563262341393,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2024-12-01,True,-599.0579435041863,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2024-12-01,True,-615.0072048830637,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2024-12-01,True,-584.7662967368199,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2025-03-01,True,-666.3523643956652,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+NORTH-EAST,2025-03-01,True,-674.4692491271168,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2025-03-01,True,-618.6582839499104,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2025-03-01,True,-635.7584005780934,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2025-03-01,True,-604.8683123698037,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2025-06-01,True,-688.7296557535105,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2025-06-01,True,-697.1490647847354,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed). | Maximum Likelihood optimization failed to converge. Check mle_retvals",powell
+EAST,2025-06-01,True,-636.5692308832913,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2025-06-01,True,-656.1526047896817,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2025-06-01,True,-625.44189254387,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH,2025-09-01,True,-710.6060025575234,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+NORTH-EAST,2025-09-01,True,-718.8515533238221,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+EAST,2025-09-01,True,-656.765904284273,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+WEST,2025-09-01,True,-678.2935879552163,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",
+CENTRAL,2025-09-01,True,-646.1116018726788,"Setting the shape on a NumPy array has been deprecated in NumPy 2.5.
+As an alternative, you can create a new view using np.reshape (with copy=False if needed).",

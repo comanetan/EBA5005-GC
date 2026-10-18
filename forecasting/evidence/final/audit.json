@@ -1,0 +1,21 @@
+{
+  "features_sha256": "8eb83b372bad239a47fe5be1c7890345ec4fdbc61857b811db5a638a9c732693",
+  "monthly_source_rows": 102733,
+  "joint_origins": 21,
+  "towns": [
+    "SENGKANG",
+    "HOUGANG",
+    "ANG MO KIO"
+  ],
+  "calibration_rule": "origin + 12 months <= as_of; same origin sampled across every region and horizon",
+  "scope": "four-room only; no automatic model reselection",
+  "limitations": [
+    "Only 21 overlapping historical paths; repeated Monte Carlo draws are not new evidence.",
+    "Directional mode retains historical bias; symmetric mode mirrors entire error paths and assumes sign symmetry.",
+    "Depends on stable error distribution; regime shifts can invalidate coverage.",
+    "Regional market uncertainty only; no individual-flat valuation, availability or grant uncertainty.",
+    "Current data vintages/static amenities remain retrospective limitations.",
+    "Early evaluation excludes unseen flat-model categories; counts in category_support.csv.",
+    "Earlier histories predate original model selection; calibration analysis is exploratory, not untouched testing."
+  ]
+}

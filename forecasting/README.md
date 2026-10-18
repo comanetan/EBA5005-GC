@@ -1,5 +1,11 @@
 # Yi Ling's preliminary HDB forecasting
 
+**19 October final review:** start with [FINAL_REVIEW.md](FINAL_REVIEW.md) for
+town validation, joint scenarios, LSTM explanations, residual diagnostics and
+the dated optimiser replay. Reproducible results are in `evidence/final/`.
+The original experiment notes below describe successive stages, not all the
+current dashboard interface. Use `REGIONAL_HANDOVER.md` for current integration.
+
 ## Current dashboard handover
 
 Use [REGIONAL_HANDOVER.md](REGIONAL_HANDOVER.md) and `regional_api.RegionalForecaster`

@@ -1,0 +1,91 @@
+town,stage,model,window,n,MAPE_pct
+ANG MO KIO,later_check_revisited,ARIMA_011_drift,all_12_months,12,2.1706852755423363
+ANG MO KIO,later_check_revisited,ARIMA_011_drift,month_6,1,1.5122294115037294
+ANG MO KIO,later_check_revisited,ARIMA_011_drift,month_12,1,4.210903154347645
+ANG MO KIO,later_check_revisited,SARIMA_110_100,all_12_months,12,1.3584889989935716
+ANG MO KIO,later_check_revisited,SARIMA_110_100,month_6,1,0.9047183570254469
+ANG MO KIO,later_check_revisited,SARIMA_110_100,month_12,1,0.21909423209862666
+ANG MO KIO,later_check_revisited,naive,all_12_months,12,1.331174493627955
+ANG MO KIO,later_check_revisited,naive,month_6,1,0.7635310304477949
+ANG MO KIO,later_check_revisited,naive,month_12,1,0.06517450823889659
+ANG MO KIO,later_check_revisited,regional_ARIMA,all_12_months,12,2.7023120097226996
+ANG MO KIO,later_check_revisited,regional_ARIMA,month_6,1,2.082355489546095
+ANG MO KIO,later_check_revisited,regional_ARIMA,month_12,1,5.695487573608937
+ANG MO KIO,later_check_revisited,seasonal_naive,all_12_months,12,1.9548171480332979
+ANG MO KIO,later_check_revisited,seasonal_naive,month_6,1,0.5664303152604466
+ANG MO KIO,later_check_revisited,seasonal_naive,month_12,1,0.06517450823889659
+ANG MO KIO,validation_revisited,ARIMA_011_drift,all_12_months,36,2.2346836745297143
+ANG MO KIO,validation_revisited,ARIMA_011_drift,month_6,3,1.0861926648347693
+ANG MO KIO,validation_revisited,ARIMA_011_drift,month_12,3,3.1684511171253114
+ANG MO KIO,validation_revisited,SARIMA_110_100,all_12_months,36,2.6870615205639545
+ANG MO KIO,validation_revisited,SARIMA_110_100,month_6,3,1.6630371779259967
+ANG MO KIO,validation_revisited,SARIMA_110_100,month_12,3,5.45155697884
+ANG MO KIO,validation_revisited,naive,all_12_months,36,2.8437800651961815
+ANG MO KIO,validation_revisited,naive,month_6,3,1.4156249677111006
+ANG MO KIO,validation_revisited,naive,month_12,3,4.240388227830209
+ANG MO KIO,validation_revisited,regional_ARIMA,all_12_months,36,2.8520623952048507
+ANG MO KIO,validation_revisited,regional_ARIMA,month_6,3,1.8938589671642452
+ANG MO KIO,validation_revisited,regional_ARIMA,month_12,3,3.921330797885958
+ANG MO KIO,validation_revisited,seasonal_naive,all_12_months,36,6.661726583159033
+ANG MO KIO,validation_revisited,seasonal_naive,month_6,3,7.193906752332462
+ANG MO KIO,validation_revisited,seasonal_naive,month_12,3,4.240388227830209
+HOUGANG,later_check_revisited,ARIMA_011_drift,all_12_months,12,3.0784138716527374
+HOUGANG,later_check_revisited,ARIMA_011_drift,month_6,1,3.5253389185644357
+HOUGANG,later_check_revisited,ARIMA_011_drift,month_12,1,6.5563856528374265
+HOUGANG,later_check_revisited,SARIMA_110_100,all_12_months,12,1.0098748520269476
+HOUGANG,later_check_revisited,SARIMA_110_100,month_6,1,1.4544972368415676
+HOUGANG,later_check_revisited,SARIMA_110_100,month_12,1,1.7801665803291788
+HOUGANG,later_check_revisited,naive,all_12_months,12,0.8285297234159762
+HOUGANG,later_check_revisited,naive,month_6,1,0.7838067032966745
+HOUGANG,later_check_revisited,naive,month_12,1,0.8847556895205999
+HOUGANG,later_check_revisited,regional_ARIMA,all_12_months,12,3.186502415377992
+HOUGANG,later_check_revisited,regional_ARIMA,month_6,1,3.6740675107280296
+HOUGANG,later_check_revisited,regional_ARIMA,month_12,1,6.700175728303859
+HOUGANG,later_check_revisited,seasonal_naive,all_12_months,12,1.7571412737589949
+HOUGANG,later_check_revisited,seasonal_naive,month_6,1,0.05401886819909052
+HOUGANG,later_check_revisited,seasonal_naive,month_12,1,0.8847556895205999
+HOUGANG,validation_revisited,ARIMA_011_drift,all_12_months,36,1.7397423151008156
+HOUGANG,validation_revisited,ARIMA_011_drift,month_6,3,1.2684323611943233
+HOUGANG,validation_revisited,ARIMA_011_drift,month_12,3,3.4558420127239464
+HOUGANG,validation_revisited,SARIMA_110_100,all_12_months,36,2.620904493061309
+HOUGANG,validation_revisited,SARIMA_110_100,month_6,3,2.337191886534118
+HOUGANG,validation_revisited,SARIMA_110_100,month_12,3,4.357948525563981
+HOUGANG,validation_revisited,naive,all_12_months,36,3.7291897315803277
+HOUGANG,validation_revisited,naive,month_6,3,3.180262454485853
+HOUGANG,validation_revisited,naive,month_12,3,6.246635163383881
+HOUGANG,validation_revisited,regional_ARIMA,all_12_months,36,1.9864363898389195
+HOUGANG,validation_revisited,regional_ARIMA,month_6,3,1.333171715828881
+HOUGANG,validation_revisited,regional_ARIMA,month_12,3,4.048239955164298
+HOUGANG,validation_revisited,seasonal_naive,all_12_months,36,7.595368624199888
+HOUGANG,validation_revisited,seasonal_naive,month_6,3,8.039889940433854
+HOUGANG,validation_revisited,seasonal_naive,month_12,3,6.246635163383881
+SENGKANG,later_check_revisited,ARIMA_011_drift,all_12_months,12,3.528143188763925
+SENGKANG,later_check_revisited,ARIMA_011_drift,month_6,1,2.6488217845061612
+SENGKANG,later_check_revisited,ARIMA_011_drift,month_12,1,7.6753571199035475
+SENGKANG,later_check_revisited,SARIMA_110_100,all_12_months,12,0.8712942688422395
+SENGKANG,later_check_revisited,SARIMA_110_100,month_6,1,0.5445585339094228
+SENGKANG,later_check_revisited,SARIMA_110_100,month_12,1,2.112924272959482
+SENGKANG,later_check_revisited,naive,all_12_months,12,0.5954798787790316
+SENGKANG,later_check_revisited,naive,month_6,1,0.7444497024512331
+SENGKANG,later_check_revisited,naive,month_12,1,0.9551222589066155
+SENGKANG,later_check_revisited,regional_ARIMA,all_12_months,12,2.993248690157985
+SENGKANG,later_check_revisited,regional_ARIMA,month_6,1,2.10198402861026
+SENGKANG,later_check_revisited,regional_ARIMA,month_12,1,6.774598521594832
+SENGKANG,later_check_revisited,seasonal_naive,all_12_months,12,1.5225325309514426
+SENGKANG,later_check_revisited,seasonal_naive,month_6,1,0.1586726346412326
+SENGKANG,later_check_revisited,seasonal_naive,month_12,1,0.9551222589066155
+SENGKANG,validation_revisited,ARIMA_011_drift,all_12_months,36,1.7146669277400508
+SENGKANG,validation_revisited,ARIMA_011_drift,month_6,3,1.7339766808263917
+SENGKANG,validation_revisited,ARIMA_011_drift,month_12,3,3.4723459495263342
+SENGKANG,validation_revisited,SARIMA_110_100,all_12_months,36,3.3310881413218665
+SENGKANG,validation_revisited,SARIMA_110_100,month_6,3,3.4873429362313413
+SENGKANG,validation_revisited,SARIMA_110_100,month_12,3,5.454853582995553
+SENGKANG,validation_revisited,naive,all_12_months,36,4.436233218380554
+SENGKANG,validation_revisited,naive,month_6,3,4.514696340138488
+SENGKANG,validation_revisited,naive,month_12,3,7.51845891949742
+SENGKANG,validation_revisited,regional_ARIMA,all_12_months,36,1.9371116860233535
+SENGKANG,validation_revisited,regional_ARIMA,month_6,3,2.0530519784365118
+SENGKANG,validation_revisited,regional_ARIMA,month_12,3,3.660179306933594
+SENGKANG,validation_revisited,seasonal_naive,all_12_months,36,9.060944172553281
+SENGKANG,validation_revisited,seasonal_naive,month_6,3,9.862153711260076
+SENGKANG,validation_revisited,seasonal_naive,month_12,3,7.51845891949742

@@ -1,0 +1,96 @@
+{
+  "status": "completed",
+  "solver_runs": 99,
+  "origins": [
+    "2022-12-01",
+    "2023-03-01",
+    "2023-06-01",
+    "2023-09-01",
+    "2023-12-01",
+    "2024-03-01",
+    "2024-06-01",
+    "2024-09-01",
+    "2024-12-01",
+    "2025-03-01",
+    "2025-06-01"
+  ],
+  "fits": [
+    {
+      "origin": "2022-12-01",
+      "hedonic_rows": 79068,
+      "profiles": 367,
+      "rental_latest": "2022-12-01"
+    },
+    {
+      "origin": "2023-03-01",
+      "hedonic_rows": 80221,
+      "profiles": 367,
+      "rental_latest": "2023-03-01"
+    },
+    {
+      "origin": "2023-06-01",
+      "hedonic_rows": 83269,
+      "profiles": 368,
+      "rental_latest": "2023-06-01"
+    },
+    {
+      "origin": "2023-09-01",
+      "hedonic_rows": 82402,
+      "profiles": 367,
+      "rental_latest": "2023-09-01"
+    },
+    {
+      "origin": "2023-12-01",
+      "hedonic_rows": 81488,
+      "profiles": 376,
+      "rental_latest": "2023-12-01"
+    },
+    {
+      "origin": "2024-03-01",
+      "hedonic_rows": 81187,
+      "profiles": 380,
+      "rental_latest": "2024-03-01"
+    },
+    {
+      "origin": "2024-06-01",
+      "hedonic_rows": 81630,
+      "profiles": 381,
+      "rental_latest": "2024-06-01"
+    },
+    {
+      "origin": "2024-09-01",
+      "hedonic_rows": 81551,
+      "profiles": 387,
+      "rental_latest": "2024-09-01"
+    },
+    {
+      "origin": "2024-12-01",
+      "hedonic_rows": 80250,
+      "profiles": 392,
+      "rental_latest": "2024-12-01"
+    },
+    {
+      "origin": "2025-03-01",
+      "hedonic_rows": 79962,
+      "profiles": 391,
+      "rental_latest": "2025-03-01"
+    },
+    {
+      "origin": "2025-06-01",
+      "hedonic_rows": 80232,
+      "profiles": 393,
+      "rental_latest": "2025-06-01"
+    }
+  ],
+  "scope": "Actual weighted-goal-programming solver; three fixed four-room household scenarios; 12-month outcomes",
+  "limitations": [
+    "Retrospective integration sensitivity test: ARIMA family and symmetric uncertainty choice were selected using overlapping evaluation periods.",
+    "Uses Daniel dated profile median prices and dated interim hedonic valuation; not the final Comane pricing or conjoint/survival pipeline.",
+    "Current block/amenity snapshots and latest transaction/rental data vintages remain; historical releases are not reconstructed.",
+    "Availability is Daniel historical transaction-count stub; matching sales do not measure a buyer successfully securing a listing.",
+    "Future matching uses origin rail network and approximate origin lease years; outcomes are 3-month-window medians, not actual offers.",
+    "Repeated households and overlapping dates are dependent; aggregate rates have no independent-binomial confidence interpretation.",
+    "Current empirically learned MRT correction disabled historically; this reconstructed model is not identical to live defaults.",
+    "Naive uses zero growth and zero uncertainty; comparison is decision sensitivity, not equal-risk model accuracy."
+  ]
+}

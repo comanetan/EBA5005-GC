@@ -1,0 +1,39 @@
+{
+  "optimisation_commit": "6b238edb594fa4a6bbe33b031c8170e6bea251bf",
+  "sources": [
+    {
+      "source": "1. raw\\daniel_add\\LTA_MRT_Station_Exit.geojson",
+      "destination": "data\\geospatial\\LTA_MRT_Station_Exit.geojson",
+      "sha256": "a7eaa90f30991dc0ac4aa970d704123ce3ec9e60c82b42c32a32e74be7dc0327"
+    },
+    {
+      "source": "1. raw\\daniel_add\\MasterPlan2019_Subzone_Boundary_NoSea.geojson",
+      "destination": "data\\geospatial\\MasterPlan2019_Subzone_Boundary_NoSea.geojson",
+      "sha256": "77e30aa02b1784b649d9b6f23e3b2ebb825af787de554f3a3fb76bbee3013c42"
+    },
+    {
+      "source": "2. interim\\daniel_add\\hdb_rental_town_flattype_month.csv",
+      "destination": "data\\processed\\hdb_rental_town_flattype_month.csv",
+      "sha256": "e98452d95ec868c45d92bb83776ee6062f380464ef1f9f4c4e3f45900f009149"
+    },
+    {
+      "source": "2. interim\\daniel_add\\schools_geocoded.csv",
+      "sha256": "8caeda0e4d19da7994acadb67739a2cdfb62c52f55d3da256fb2ba426ecff1b3",
+      "transformation": "retain supplied coordinates; mark nonmissing pairs OK",
+      "rows": 183
+    },
+    {
+      "source": "2. interim\\daniel_add\\supermarkets_geocoded.csv",
+      "sha256": "56d143f394eae3dafa948d1cc3020c92ef1dfd6db484ca051339dc42267ae274",
+      "transformation": "retain supplied coordinates; mark nonmissing pairs OK",
+      "rows": 306
+    }
+  ],
+  "transformations": [
+    "block coordinates from committed geocode cache",
+    "station point patch from team station-opening CSV; these are station points, not measured exit coordinates"
+  ],
+  "limitations": [
+    "Static amenity and block inventories are current snapshots, not historical vintages."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "method": "permutation-sampled interventional Shapley values",
+  "reference": "https://arxiv.org/abs/1705.07874",
+  "origin": "2025-09-01",
+  "permutations": 128,
+  "background": "pooled training-only windows at September 2025; independent feature replacement game",
+  "outputs": "6 and 12 month cumulative log growth of three-seed LSTM ensemble",
+  "limitations": [
+    "Correlated lag inputs mean interventions can create unusual histories.",
+    "Attributions depend on background and have Monte Carlo sampling error.",
+    "Explanations do not establish causality, economic plausibility or predictive superiority.",
+    "SORA and MRT are not LSTM inputs; no SHAP claim about them is possible.",
+    "ARIMA diagnostic p-values are exploratory and unadjusted for multiple testing."
+  ]
+}

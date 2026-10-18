@@ -1,0 +1,6 @@
+# Optional: testing Daniel's existing CBC solver interface.
+pulp==3.3.0
+# Optional isolated real-data optimiser replay (not needed by dashboard inference).
+geopandas==1.2.0
+scikit-learn==1.9.1
+pyarrow==26.0.0

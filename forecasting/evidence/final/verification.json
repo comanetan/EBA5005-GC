@@ -1,0 +1,11 @@
+{
+  "date": "2026-10-19",
+  "command": "python -m unittest discover -s forecasting -t . -p test_*.py",
+  "tests_run": 17,
+  "result": "passed",
+  "actual_optimiser_commit": "6b238edb594fa4a6bbe33b031c8170e6bea251bf",
+  "real_data_solver_invocations": 99,
+  "synthetic_contract_check": "passed",
+  "figure_visually_inspected": "forecast_review.png",
+  "interpretation": "Software compatibility and retrospective evidence; not a guarantee of future forecast or recommendation performance."
+}
