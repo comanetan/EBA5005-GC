@@ -1,8 +1,8 @@
 {
-  "alpha": 0.5240439867294179,
-  "beta": 0.9581659069981219,
-  "r_squared": 0.9339755945545803,
+  "alpha": 0.5252196918848709,
+  "beta": 0.9583360719384322,
+  "r_squared": 0.9418274646745223,
   "n": 706,
-  "resid_std": 0.0893126484299565,
+  "resid_std": 0.08383390851788983,
   "_source": "log(price_today) ~ alpha + beta*log(hedonic_value), OLS on the 706-profile overlap with pricing_today.csv; see OPTIMISER_METHODOLOGY_REPORT.md Sec. 14"
 }

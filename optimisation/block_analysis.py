@@ -56,7 +56,7 @@ def load_transactions_with_access():
     r["log_price"] = np.log(r["resale_price"])
 
     b = pd.read_csv(os.path.join(OUT, "block_accessibility.csv"))
-    keep = ["query", "lat", "lon", "mrt_band", "year_completed", "max_floor_lvl", "total_dwelling_units",
+    keep = ["query", "lat", "lon", "mrt_band", "subzone", "year_completed", "max_floor_lvl", "total_dwelling_units",
             "primary_tier", "elite_primary_tier", "childcare_tier", "childcare_band",
             "secondary_tier", "expressway_proximity_band", "nearest_job_node",
             "near_flood_prone_area", "has_carpark_400m", "has_night_parking_400m"] + \

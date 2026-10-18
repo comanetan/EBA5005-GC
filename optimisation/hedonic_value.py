@@ -41,8 +41,15 @@ WTP_ATTRS = ["dist_mrt_exit_km", "dist_hawker_km", "dist_supermarket_km", "dist_
 # is true for 97% of blocks, so it can't distinguish flats (the cause of v2's counterintuitive sign).
 CONTROL_ACCESS = ["n_bus_stop_400m", "dist_planned_rail_km"]
 
+# 2026-10-18 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 15): C(town) replaced with C(subzone) --
+# see block_accessibility.py::assign_subzone() for why. Town FE (26 levels) is too coarse to
+# separate true MRT proximity from unmeasured neighbourhood quality nearby blocks share;
+# subzone FE (167 levels with HDB stock, nested inside town) is a finer, still purely
+# fixed-effects control that doesn't need a spatial-econometrics stack. This is the "proper
+# spatial re-fit" the MRT correction (Sec. 11) explicitly deferred -- it now applies to
+# predict_value()'s own price predictions too, not just the exported WTP rate.
 FORMULA = ("log_price ~ C(month_s) + C(flat_type) + C(flat_model) + storey_mid + floor_area_sqm"
-           " + remaining_lease_yrs + I(remaining_lease_yrs**2) + C(town) + "
+           " + remaining_lease_yrs + I(remaining_lease_yrs**2) + C(subzone) + "
            + " + ".join(WTP_ATTRS + CONTROL_ACCESS) + " + C(elite_primary_tier, Treatment('Beyond 2km'))")
 
 
@@ -53,7 +60,7 @@ def fit_hedonic(tx: pd.DataFrame, as_of=None, train_months=36, sample_n=120_000,
     d = d[d["month"] > d["month"].max() - pd.DateOffset(months=train_months)]
     if "dist_mrt_exit_km_at_sale" in d.columns:  # fit on the network that existed at each sale
         d["dist_mrt_exit_km"] = d["dist_mrt_exit_km_at_sale"]
-    d = d.dropna(subset=WTP_ATTRS + CONTROL_ACCESS + ["remaining_lease_yrs", "storey_mid"])
+    d = d.dropna(subset=WTP_ATTRS + CONTROL_ACCESS + ["remaining_lease_yrs", "storey_mid", "subzone"])
     if sample_n and len(d) > sample_n:
         d = d.sample(sample_n, random_state=seed)
     d["month_s"] = d["month"].dt.strftime("%Y-%m")
@@ -73,26 +80,30 @@ def predict_value(model, tx: pd.DataFrame, at_month: str):
     return d.index, np.exp(model.predict(d) + resid_var / 2)  # smearing-style bias correction
 
 
-# 2026-10-18: the Pricing & Availability Lead's notebook 04c_hedonic_econometrics.ipynb (main
-# branch, comanetan/EBA5005-GC) found that a town-fixed-effects-only hedonic -- this model's own
-# specification class -- overstates the MRT premium by roughly 2x relative to the best available
-# estimate. Checked directly: their "OLS + town dummies" row implies +5.28% for halving MRT
-# distance from 1km to 500m; this project's own fitted dist_mrt_exit_km coefficient implies
-# +5.28% for the identical comparison -- the same number, because it is the same omitted-
-# spatial-quality bias (nearby blocks share unmeasured neighbourhood value that a town-level
-# fixed effect cannot separate from true MRT proximity). Their notebook isolates the true effect
-# two ways: a spatial-error model (2.7-3.5%, controls for neighbourhood quality directly) and a
-# difference-in-differences design on 11 real new-station openings 2019-2024 (2.8%, 95% CI
-# 2.0-3.7%, causally identified against untreated control blocks in the same towns). Their own
-# stated recommendation ("the spatially robust figure to hand to the Preference Lead") is ~3%.
-# MRT_SPATIAL_CORRECTION = 3.0% / 5.28% -- the ratio between their recommended figure and the
-# naive town-FE estimate that is directly comparable to (and numerically identical to) this
-# model's own uncorrected coefficient. Applied ONLY to the exported WTP rate used for
-# preference-tilt and the dev_mrt goal penalty (market_wtp_coefficients.json) -- NOT to the
-# hedonic model's own price predictions (predict_value()), which remain uncorrected pending a
-# proper spatial re-fit; see OPTIMISER_METHODOLOGY_REPORT.md for the scope of what this does and
-# does not fix.
-MRT_SPATIAL_CORRECTION = 3.0 / 5.28
+# 2026-10-18 (original finding), UPDATED same day once FORMULA moved to C(subzone) (see above):
+# the Pricing & Availability Lead's notebook 04c_hedonic_econometrics.ipynb found a town-FE-only
+# hedonic overstates the MRT premium ~2x (town-FE: 5.28%/halving; their spatial-error model:
+# 2.7-3.5%; their causal DiD on 11 real station openings: 2.8%, 95% CI 2.0-3.7%; their own
+# recommended benchmark: ~3%). This model's OWN town-FE coefficient implied the identical 5.28%,
+# confirming the same bias, not a coincidence.
+#
+# Switching FORMULA's geographic control from C(town) (26 levels) to C(subzone) (167 levels with
+# HDB stock, nested inside town) is this pipeline's actual spatial re-fit -- a real fix to
+# predict_value()'s own price predictions, not just the exported WTP rate. Measured effect:
+# adjusted R^2 rose 0.9372 -> 0.9545, and the raw MRT coefficient's implied halving-effect fell
+# 5.28% -> 4.55%. This is a genuine, substantial improvement -- but NOT a full fix: 4.55% is
+# still above their ~3% causally-identified benchmark, because subzone FE (median ~3km^2) is a
+# coarser proxy for neighbourhood quality than their spatial-error model or real-station DiD, so
+# some within-subzone spatial confound (e.g. newer blocks clustering nearer an MRT within the
+# same subzone) survives. Stated plainly rather than claimed as solved.
+# MRT_SPATIAL_CORRECTION = 3.0% / 4.55% -- recalibrated to the NEW (smaller) residual gap. Still
+# applied only to the exported WTP rate (preference-tilt, dev_mrt, market_wtp_coefficients.json);
+# predict_value()'s own predictions now carry the improved-but-not-fully-corrected subzone-FE
+# coefficient, on the view that a measured partial fix belongs in the model itself, while the
+# fully-corrected ~3% figure (which the Pricing Lead's methodology, not this pipeline's own
+# formula, actually identifies) stays reserved for the one place accuracy matters most: the
+# dollar rate every household's preference tilt and MRT goal is priced against.
+MRT_SPATIAL_CORRECTION = 3.0 / 4.550253820025718
 
 
 def market_wtp_coefficients(model):

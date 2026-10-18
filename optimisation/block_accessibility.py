@@ -19,9 +19,10 @@ Rail:
 import json
 import os
 
+import geopandas as gpd
 import numpy as np
 import pandas as pd
-from shapely.geometry import shape
+from shapely.geometry import Point, shape
 from sklearn.neighbors import BallTree
 
 ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  # .../Project, portable across machines
@@ -42,6 +43,28 @@ def _geojson_points(fname, filt=None):
         c = g if g.geom_type == "Point" else g.centroid
         rows.append({"lat": c.y, "lon": c.x, "name": f["properties"].get("NAME") or f["properties"].get("STATION_NA")})
     return pd.DataFrame(rows)
+
+
+# 2026-10-18 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 15): the Pricing Lead's spatial-error/DiD
+# analysis showed town fixed effects can't separate true MRT proximity from unmeasured
+# neighbourhood quality nearby blocks share -- the root cause of the MRT premium's 2x spatial
+# bias (Results Sec. 11). A full spatial-error/lag model needs a spatial-econometrics stack
+# this pipeline doesn't have; the practical, data-light fix used here instead is a FINER
+# geographic fixed effect -- subzone (332 of them, median ~3km^2, vs. 26 towns) -- which
+# nests inside town (every subzone belongs to exactly one town) and so can absorb
+# neighbourhood-scale quality a town dummy is too coarse to see, without any new modelling
+# machinery. Used by hedonic_value.py's FORMULA in place of C(town).
+def assign_subzone(blocks: pd.DataFrame) -> pd.Series:
+    d = json.load(open(os.path.join(GEO, "MasterPlan2019_Subzone_Boundary_NoSea.geojson"), encoding="utf-8"))
+    polys = gpd.GeoDataFrame(
+        {"subzone": [f["properties"]["SUBZONE_C"] for f in d["features"]]},
+        geometry=[shape(f["geometry"]) for f in d["features"]], crs="EPSG:4326")
+    pts = gpd.GeoDataFrame(
+        {"query": blocks["query"].values},
+        geometry=[Point(lon, lat) for lat, lon in zip(blocks["lat"], blocks["lon"])], crs="EPSG:4326")
+    joined = gpd.sjoin(pts, polys, how="left", predicate="within")
+    joined = joined.drop_duplicates(subset="query")  # a point exactly on a shared boundary can match 2 polygons
+    return blocks[["query"]].merge(joined[["query", "subzone"]], on="query", how="left")["subzone"]
 
 
 def _postal_points(cache_name):
@@ -136,7 +159,11 @@ def load_amenity_layers():
         "hawker": _geojson_points("Hawker_Centres.geojson")[["lat", "lon"]],
         "supermarket": _postal_points("supermarkets_geocoded_v2.csv"),
         "chas_clinic": _geojson_points("CHAS_Clinics.geojson")[["lat", "lon"]],
-        "polyclinic": _geojson_points("Vaccination_Polyclinics.geojson")[["lat", "lon"]],
+        # 2026-10-18 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 15): swapped from Vaccination_Polyclinics.geojson
+        # (8 COVID-vaccination sites only) to the Pricing & Availability Lead's real polyclinics.csv (26
+        # actual polyclinics, geocoded via geocode_polyclinics.py) -- a real undercount, now fixed.
+        "polyclinic": pd.read_csv(os.path.join(OUT, "polyclinics_geocoded.csv")).pipe(
+            lambda d: d[d["status"] == "OK"])[["lat", "lon"]],
         "park": _geojson_points("Parks.geojson")[["lat", "lon"]],
         "childcare": _postal_points("childcare_postal_geocoded_v2.csv"),
         "community_club": _geojson_points("Community_Clubs.geojson")[["lat", "lon"]],
@@ -227,6 +254,7 @@ def build_block_accessibility():
     geo = pd.read_csv(os.path.join(PROC, "hdb_blocks_geocoded.csv"))
     blocks = blocks.merge(geo[geo["status"] == "OK"][["query", "latitude", "longitude"]], on="query", how="inner")
     blocks = blocks.rename(columns={"latitude": "lat", "longitude": "lon"})
+    blocks["subzone"] = assign_subzone(blocks)
 
     layers, meta = load_amenity_layers()
     X = np.radians(blocks[["lat", "lon"]].values)

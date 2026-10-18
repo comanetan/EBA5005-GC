@@ -86,6 +86,19 @@
 > `goal_deviation_total`. Exposed in the web app's Final Recommender tab. Backtest re-run after this change:
 > 98.8% within-budget reliability, unchanged from the pre-change baseline.
 >
+> **v2.8 Real spatial re-fit (subzone FE) + corrected polyclinic source** (2026-10-18, see
+> OPTIMISER_METHODOLOGY_REPORT.md §15): `hedonic_value.FORMULA` now uses `C(subzone)` (167 subzones with
+> HDB stock, via a new geopandas point-in-polygon join, `block_accessibility.py::assign_subzone()`, 100%
+> block coverage) in place of `C(town)` — finishing the spatial re-fit v2.5 explicitly deferred.
+> Adjusted R² 0.9372 → 0.9545; the MRT coefficient's implied halving-effect fell 5.28% → 4.55% (still above
+> the Pricing Lead's ~3% causal benchmark — subzone FE is a real but partial fix, stated as such, not
+> oversold). `MRT_SPATIAL_CORRECTION` recalibrated to `3.0/4.55≈0.659` (was `3.0/5.28≈0.568`). Full
+> `rebuild_v2.py` + re-verified: backtest reliability 96.5% [93.0%, 98.3%], statistically identical to
+> 96.6% [93.1%, 98.3%] before. Separately: `dist_polyclinic_km` now sourced from the Pricing Lead's real
+> 27-polyclinic list (geocoded via `geocode_polyclinics.py`, 27/27 resolved) instead of an 8-site COVID-
+> vaccination subset — checked first that this column drives no WTP coefficient, goal, or web app field
+> today, so no backtest re-verification was needed for this part.
+>
 > **v2.7 Bargain signal re-enabled for real-priced profiles, via calibration not a literal re-fit**
 > (2026-10-18, see OPTIMISER_METHODOLOGY_REPORT.md §14): `shrunk_value_gap` was forced to $0 for every
 > real-priced profile since v2.4 — `hedonic_value` and the Pricing Lead's `price_today` are on different
