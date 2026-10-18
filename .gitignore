@@ -7,6 +7,10 @@ __pycache__/
 # Interim files rebuild in seconds (steps 1, 1b, 3), except the geocode cache, which took ~4 hours of OneMap lookups
 data/interim/*
 !data/interim/geocode_cache.csv
+# Daniel's geocoded/derived interim data for the optimisation pipeline -- same reasoning
+# (real OneMap/OSM API time, not cheaply regenerable) -- see data/interim/daniel_add/README.md
+!data/interim/daniel_add/
+!data/interim/daniel_add/*
 
 # Processed tables rebuild in about a minute (steps 4, 4b) or with notebook 03
 data/processed/

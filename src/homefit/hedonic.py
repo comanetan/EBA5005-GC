@@ -79,15 +79,16 @@ def evaluate(as_of, test_share=0.2, seed=0):
         ape = np.abs(pred / y - 1)
         recent = (d.loc[te, "t"] > d["t"].max() - 12).to_numpy()
         out[name] = {"MAPE": ape.mean(), "median_APE": np.median(ape), "within_10pct": (ape <= 0.10).mean(),
-                     "R2_log": 1 - np.var(np.log(y) - np.log(pred)) / np.var(np.log(y)), "MAPE_last12m": ape[recent].mean()}
+                     "R2_log": 1 - np.var(np.log(y) - np.log(pred)) / np.var(np.log(y)), "MAPE_last12m": ape[recent].mean(),
+                     "RMSE_log": np.sqrt(np.mean((np.log(y) - np.log(pred)) ** 2))}
     res = pd.DataFrame(out).T
     res.attrs.update(n_train=int((~te).sum()), n_test=int(te.sum()), test_blocks=len(test_blocks), rounds=model.rounds_)
     return res, model, d[te].assign(pred=predict(model, d[te]))
 
-def price_profiles(model, as_of):
+def price_profiles(model, as_of, scheme="homefit"):
     """Price every profile at as_of: a representative flat per block x flat type x storey band, then a units-weighted
     average across the profile's blocks (geometric mean), with the 10th-90th percentile spread across blocks."""
-    rows = PR.profile_rows(as_of)
+    rows = PR.profile_rows(as_of, scheme)
     hist = training_frame(as_of)
     area = hist.groupby(["address", "flat_type"])["floor_area_sqm"].median()
     area_town = hist.groupby(["town", "flat_type"])["floor_area_sqm"].median()

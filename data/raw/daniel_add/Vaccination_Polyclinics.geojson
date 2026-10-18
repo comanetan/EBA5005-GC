@@ -1,0 +1,142 @@
+{
+	"type" : "FeatureCollection",
+	"name" : "VACCINATION_POLYCLINICS",
+	"features" : [
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [ 103.8586873260051, 1.3166930224324112 ]
+			},
+			"properties" : {
+				"OBJECTID" : 321,
+				"NAME" : "Kallang Polyclinic",
+				"ADDRESS" : "701 Serangoon Road",
+				"POSTALCODE" : "328263",
+				"CONTACTNUMBER" : "63553000",
+				"VACCINETYPESANDOPERATINGHOURS" : "Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (12yrs & above), Moderna/Spikevax XBB.1.5 (6mths to 5yrs old)Moderna/Spikevax (6mths - 5yrs old):\nWed: 09:00am to 11:00am\nLast walk-in: 10:30am\nPfizer-BioNTech/Comirnaty (12yrs & above):\nTue: 09:00am to 11:00am\nLast walk-in: 10:30amModerna/Spikevax (6mths - 5yrs old):\nSat: 08:00am to 12:30pm\nLast walk-in: 11:30am\nSun: Closed\nPfizer-BioNTech/Comirnaty (12yrs & above):\nSat & Sun: ClosedPH: Closed",
+				"INC_CRC" : "7FA6D605F696C4C9",
+				"FMEL_UPD_D" : "20240123171959"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [ 103.9057771466773, 1.3173375809405603 ]
+			},
+			"properties" : {
+				"OBJECTID" : 322,
+				"NAME" : "Eunos Polyclinic",
+				"ADDRESS" : "1 Chin Cheng Avenue",
+				"POSTALCODE" : "429400",
+				"CONTACTNUMBER" : "66436969",
+				"VACCINETYPESANDOPERATINGHOURS" : "Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (12yrs & above), Moderna/Spikevax XBB.1.5 (6mths to 5yrs old)Moderna/Spikevax (6mths - 5yrs old):\nFri: 09:00am to 12:00pm, 02:00pm to 04:30pm\nLast walk-in: 11:30am, 03:30pm\nPfizer-BioNTech/Comirnaty (12yrs & above):\nMon-Thu: 08:00am to 12:00pm, 02:00pm to 04:30pm\nLast walk-in: 11:30am, 03:30pmModerna/Spikevax (6mths - 5yrs old):\nSat: 08:00am to 12:00pm\nLast walk-in: 11:30am\nSun: Closed\nPfizer-BioNTech/Comirnaty (12yrs & above):\nSat & Sun: ClosedPH: Closed",
+				"INC_CRC" : "B39B001C6DF5AFD2",
+				"FMEL_UPD_D" : "20240123171959"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [ 103.74782227017751, 1.352015174812025 ]
+			},
+			"properties" : {
+				"OBJECTID" : 323,
+				"NAME" : "Bukit Batok Polyclinic",
+				"ADDRESS" : "50 Bukit Batok West Avenue 3",
+				"POSTALCODE" : "659164",
+				"CONTACTNUMBER" : "69082222",
+				"VACCINETYPESANDOPERATINGHOURS" : "Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (12yrs & above), Moderna/Spikevax XBB.1.5 (6mths to 5yrs old).Moderna/Spikevax (6mths - 5yrs old):\nMon-Fri: 08:00am to 12:30pm\nLast walk-in: 11:30am\nPfizer-BioNTech/Comirnaty  (12yrs & above):\nMon-Fri: 09:00am to 12:30pm, 02:00pm to 04:30pm\nLast walk-in: 11:30am, 03:30pmModerna/Spikevax (6mths - 5yrs old):\nSat: 08:00am to 12:30pm\nLast walk-in: 11:30am\nSun: Closed\nPfizer-BioNTech/Comirnaty  (12yrs & above):\nSat & Sun: ClosedPH: Closed",
+				"INC_CRC" : "6FF488E09DFCBBCC",
+				"FMEL_UPD_D" : "20240123171959"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [ 103.91319574883552, 1.4028784531949312 ]
+			},
+			"properties" : {
+				"OBJECTID" : 324,
+				"NAME" : "Punggol Polyclinic",
+				"ADDRESS" : "681 Punggol Drive",
+				"POSTALCODE" : "820681",
+				"CONTACTNUMBER" : "66436969",
+				"VACCINETYPESANDOPERATINGHOURS" : "Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (12yrs & above), Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (5yrs to 11yrs) Pfizer-BioNTech/Comirnaty (5yrs to 11yrs):\nFri: 09:00am to 12:00pm, 02:00pm to 04:30pm\nLast walk-in: 11:30am, 03:30pm\nPfizer-BioNTech/Comirnaty (12yrs & above):\nMon-Thu: 08:00am to 12:00pm, 02:00pm to 04:30pm\nLast walk-in: 11:30am, 03:30pmPfizer-BioNTech/Comirnaty (5yrs to 11yrs):\nSat: 08:00am to 12:00pm\nLast walk-in: 11:30am \nSun: Closed\nPfizer-BioNTech/Comirnaty (12yrs & above):\nSat & Sun: ClosedPH: Closed",
+				"INC_CRC" : "467A8B207162B74E",
+				"FMEL_UPD_D" : "20240123171959"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [ 103.77521291746736, 1.4308932241216819 ]
+			},
+			"properties" : {
+				"OBJECTID" : 325,
+				"NAME" : "Woodlands Polyclinic",
+				"ADDRESS" : "10 Woodlands Street 31",
+				"POSTALCODE" : "738579",
+				"CONTACTNUMBER" : "63553000",
+				"VACCINETYPESANDOPERATINGHOURS" : "Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (12yrs & above), Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (5yrs to 11yrs) Pfizer-BioNTech/Comirnaty (5yrs to 11yrs): \nFri: 02:00pm to 04:30pm\nLast walk-in: 03:30pm\nPfizer-BioNTech/Comirnaty (12yrs & above):\nWed & Thu: 02:00pm to 04:30pm\nLast walk-in: 03:30pmPfizer-BioNTech/Comirnaty (5yrs to 11yrs): \nSat: 10:30am to 12:30pm\nLast walk-in: 11:30am \nSun: Closed\nPfizer-BioNTech/Comirnaty (12yrs & above):\nSat: 08:00am to 10:30am\nLast walk-in: 10:00am \nSun: ClosedPH: Closed",
+				"INC_CRC" : "BC840D25575A55B7",
+				"FMEL_UPD_D" : "20240123171959"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [ 103.88716604481574, 1.3194936457037207 ]
+			},
+			"properties" : {
+				"OBJECTID" : 326,
+				"NAME" : "Geylang Polyclinic",
+				"ADDRESS" : "21 Geylang East Central",
+				"POSTALCODE" : "389707",
+				"CONTACTNUMBER" : "63553000",
+				"VACCINETYPESANDOPERATINGHOURS" : "Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (12yrs & above), Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (5yrs to 11yrs). Pfizer-BioNTech/Comirnaty (5yrs to 11yrs) :\nThu: 02:00pm to 04:30pm\nLast walk-in: 03:30pm\nPfizer-BioNTech/Comirnaty (12yrs & above) :\nTue & Wed: 02:00pm to 04:30pm\nLast walk-in: 03:30pmSat & Sun: ClosedPH: Closed",
+				"INC_CRC" : "BBEB75BF6D306323",
+				"FMEL_UPD_D" : "20240123171959"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [ 103.94584946666237, 1.3573099581749626 ]
+			},
+			"properties" : {
+				"OBJECTID" : 327,
+				"NAME" : "Tampines Polyclinic",
+				"ADDRESS" : "1 Tampines Street 41",
+				"POSTALCODE" : "529203",
+				"CONTACTNUMBER" : "66436969",
+				"VACCINETYPESANDOPERATINGHOURS" : "Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (12yrs & above), Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (5yrs to 11yrs). Pfizer-BioNTech/Comirnaty (5yrs - 11yrs):\nFri: 09:00am to 12:00pm, 02:00pm to 04:30pm\nLast walk-in: 11:30am, 3:30pm\nPfizer-BioNTech/Comirnaty Omicron (12yrs & above):\nMon-Thu: 08:00am to 12:00pm, 02:00pm to 04:30pm\nLast walk-in: 11:30am, 03:30pmPfizer-BioNTech/Comirnaty (5yrs to 11yrs):\nSat & Sun: Closed\nPfizer-BioNTech/Comirnaty (12yrs & above):\nSat: 08:00am to 12:00pm\nLast walk-in: 11:30am\nSun: ClosedPH: Closed",
+				"INC_CRC" : "836CDAE514D862A1",
+				"FMEL_UPD_D" : "20240123171959"
+			}
+		},
+		{
+			"type" : "Feature",
+			"geometry" : {
+				"type" : "Point",
+				"coordinates" : [ 103.69897934147608, 1.3385622426293666 ]
+			},
+			"properties" : {
+				"OBJECTID" : 328,
+				"NAME" : "Pioneer Polyclinic",
+				"ADDRESS" : "26 Jurong West Street 61",
+				"POSTALCODE" : "648201",
+				"CONTACTNUMBER" : "69082222",
+				"VACCINETYPESANDOPERATINGHOURS" : "Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (12yrs & above), Pfizer-BioNTech/Comirnaty Omicron XBB.1.5 (5yrs to 11yrs). Pfizer-BioNTech/Comirnaty (12yrs & above):\nMon-Fri: 02:00pm to 04:30pm\nLast walk-in: 03:30pmPfizer-BioNTech/Comirnaty (5yrs to 11yrs):\nFri & Sat: 08:30am to 12:30pm\nLast walk-in: 11:30am \nSun: Closed\nPfizer-BioNTech/Comirnaty (12yrs & above):\nSat & Sun: Closed\nPH: Closed",
+				"INC_CRC" : "9C1E0B57B67B110D",
+				"FMEL_UPD_D" : "20240123171959"
+			}
+		}
+	]
+}

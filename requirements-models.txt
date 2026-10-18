@@ -4,6 +4,11 @@ lightgbm          # hedonic gradient-boosting model
 shap              # explainability (hedonic + LSTM)
 statsmodels       # SARIMAX; conditional logit for the conjoint
 lifelines         # Kaplan-Meier, Cox PH
+scikit-survival   # random survival forest, Brier score (notebook 03b)
+pyfixest          # fixed-effects regression, clustered SEs, DiD (notebook 04c)
+spreg             # spatial-error / spatial-lag models (notebook 04c)
+libpysal          # spatial weights (notebook 04c)
+esda              # Moran's I (notebook 04c)
 pulp              # mathematical / goal programming
 streamlit         # what-if dashboard
 # LSTM: add either torch or tensorflow when the Forecasting Lead picks one
