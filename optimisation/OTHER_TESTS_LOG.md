@@ -13,7 +13,7 @@ live in `OPTIMISER_METHODOLOGY_REPORT.md`; this file is the short, standalone in
 | 3 | Scaling/stress test on the 0-1 IP at a much larger candidate pool (1,000s, not 10s–100s) | ✅ **Done, 2026-10-19** — see below |
 | 4 | Residual diagnostics (incl. Moran's I) on the subzone-FE hedonic specifically | ✅ **Done, 2026-10-19** — see below |
 | 5 | Sensitivity of the preemptive priority *order* itself (not just which household) | ✅ **Done, 2026-10-19** — see below |
-| 6 | Out-of-time holdout beyond the current latest cutoff (2025-07) | ⬜ Not started |
+| 6 | Out-of-time holdout beyond the current latest cutoff (2025-07) | ✅ **Done, 2026-10-19** — see below |
 
 ---
 
@@ -170,11 +170,36 @@ directly instead of inferred from one number.
 
 ---
 
-## 6. Not yet started
+## 6. Does 99.4% reliability hold on a cutoff never used in this project's own iteration history? ✅
 
-Kept here verbatim so the next session can pick straight back up without re-deriving scope:
+**Done 2026-10-19.** Full write-up: `OPTIMISER_METHODOLOGY_REPORT.md` §22. Script:
+`test_out_of_time_holdout.py` → `data/out_of_time_holdout_test.json`.
 
-- **6 — Out-of-time holdout beyond 2025-07:** the extended backtest's most recent cutoff is
-  2025-07. As more real transaction months accumulate, re-running on a genuinely new,
-  never-before-tested cutoff (not just adding more historical cutoffs) is the strongest
-  test of whether 99.4% reliability holds up going forward.
+**Data-availability check:** transactions run 2017-01→2026-10, but 2026-10 is a *partial*
+month (212 sales vs. 2,000+ for every complete month either side — "today" is 2026-10-19).
+`realised()`'s 3-month scoring window must sit entirely inside complete months to be
+unbiased, so **2025-08-01** is the newest cutoff with a fully-clean window — the real
+ceiling on how far "out-of-time" this test can honestly go right now. 2025-09-01 was also
+run but flagged (its window touches the partial month).
+
+**What was run:** the exact production methodology (`run_v2_variant("v2_block_informed_empirical_band", ...)`,
+same 4 archetypes, k=5) — recomputed the 11-cutoff baseline fresh (not copied from the
+report) for a true apples-to-apples comparison, then ran the new cutoffs.
+
+| Sample | Picks | Reliability | 95% CI | Matched-sale-seen |
+|---|---|---|---|---|
+| Baseline (re-verified, 11×4) | 220 | 99.4% | [96.9%, 99.9%] | 81.4% |
+| New holdout, 2025-08-01 (safe) | 20 (13 scored) | 92.3% | [66.7%, 98.6%] | 65.0% |
+| Combined (12×4) | 240 | 99.0% | [96.3%, 99.7%] | 80.0% |
+
+**Conclusion: a genuinely mixed result, reported as such.** Pooled with history, reliability
+barely moves (99.4%→99.0%) — nothing changed on that view. But the single genuinely new
+cutoff on its own is weaker and noisier: 92.3% within-budget, matched-sale-seen fell to
+65.0% (below the already-flagged 81.4% average), and only 13 of 20 picks had any realised
+sale to score against at all. The gap is **not statistically significant** given how wide
+the small-sample CI is (the two 95% intervals overlap at [96.9%, 98.6%]) — but it's a real,
+visible signal that any one new quarter is thinner and noisier than the pooled headline
+number alone would suggest. This is the right way for a holdout test to end: not a clean
+pass/fail, but a precise picture of where confidence is earned by volume (the pooled 11+
+cutoffs) and where it's still thin (any single new quarter) — a caveat worth carrying into
+every future reliability claim rather than treating 99.4% as self-renewing.
