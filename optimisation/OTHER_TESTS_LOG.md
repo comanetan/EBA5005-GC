@@ -9,7 +9,7 @@ live in `OPTIMISER_METHODOLOGY_REPORT.md`; this file is the short, standalone in
 | # | Item | Status |
 |---|---|---|
 | 1 | Statistical significance test on the GP trial-and-error table — does the preemptive-vs-weighted-sum divergence generalise across households, or is it one cherry-picked example? | ✅ **Done, 2026-10-18** — see below |
-| 2 | Bootstrap CI on the 0.960 hedonic-to-real-price calibration R² | ⬜ Not started |
+| 2 | Bootstrap CI on the 0.960 hedonic-to-real-price calibration R² | ✅ **Done, 2026-10-18** — see below |
 | 3 | Scaling/stress test on the 0-1 IP at a much larger candidate pool (1,000s, not 10s–100s) | ⬜ Not started |
 | 4 | Residual diagnostics (incl. Moran's I) on the subzone-FE hedonic specifically | ⬜ Not started |
 | 5 | Sensitivity of the preemptive priority *order* itself (not just which household) | ⬜ Not started |
@@ -56,13 +56,34 @@ the lowest-priority goal.
 
 ---
 
-## 2–6. Not yet started
+## 2. Is the calibration's R²=0.960 a fragile point estimate? ✅
+
+**Done 2026-10-18.** Full write-up: `OPTIMISER_METHODOLOGY_REPORT.md` §18. Also added to
+the Word report v2 (`make_report_part6.js`, new subsection under the IP section's Trial &
+Error table). Script: `bootstrap_calibration_r2.py` → `data/calibration_r2_bootstrap.json`.
+
+**What was run:** resampled the 1,119-profile overlap with replacement (same n each time),
+refit the identical log-log OLS `hedonic_value.py::fit_price_calibration()` uses, 2,000
+times, and looked at the empirical spread instead of trusting the one sample already cited
+throughout the report.
+
+| Quantity | Point estimate | Bootstrap (2,000 resamples) |
+|---|---|---|
+| R² | 0.9601 | mean 0.9604, std 0.0063, 95% CI **[0.9457, 0.9694]** |
+| β (slope) | 1.0238 | mean 1.0237, std 0.0064 |
+| Full min/max across all 2,000 resamples | — | [0.9345, 0.9730] |
+
+**Conclusion:** stable, not fragile. The point estimate sits almost exactly on the
+bootstrap mean, the 95% CI is under 2.4 percentage points wide, and even the most extreme
+of 2,000 resamples never dropped below 0.9345. The 0.960 figure cited throughout this
+report would survive drawing a different sample of profiles from the same population.
+
+---
+
+## 3–6. Not yet started
 
 Kept here verbatim so the next session can pick straight back up without re-deriving scope:
 
-- **2 — Bootstrap CI on calibration R²:** resample the 1,119-profile overlap with
-  replacement (~500 iterations), refit `hedonic_value.fit_price_calibration()` each time,
-  report the R² distribution — not just the single point estimate of 0.960.
 - **3 — IP scaling/stress test:** the LP-relaxation and GA benchmarks (§7.1–7.2) only ever
   ran on realistic household-sized candidate pools (11–52 profiles). Test what happens at
   1,000+ candidates (e.g. simulating block-level rather than profile-level granularity) —

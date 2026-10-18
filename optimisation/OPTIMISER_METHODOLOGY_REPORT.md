@@ -429,3 +429,19 @@ Every number in §13–§16 above for the "Weighted-Sum vs. Preemptive" gap come
 Preemptive isn't sacrificing surplus to fix a shortfall here; it is structurally forbidden from ever accepting a cheap, profitable shortfall at all, even essentials — the lowest-priority goal — because the lexicographic method locks every higher stage to its own optimum before surplus is ever considered. That is a different, and arguably more revealing, illustration of the lecture's own preemptive-vs-weighted-sum distinction than the report's original household showed on its own.
 
 **Conclusion:** the divergence is a real, general property of these two GP modes on this recommender — not a coincidence of one test household — and the exception (zero gap when nothing conflicts) is itself confirming evidence, not a contradiction. Script and raw output: `test_gp_gap_across_archetypes.py` → `data/gp_gap_across_archetypes.json`.
+
+---
+
+## 18. Is the calibration's R²=0.960 a fragile point estimate? (2026-10-18)
+
+The hedonic-to-real-price calibration (§13, re-fit in §15 and §16) has been reported throughout this report as a single number — R²=0.960 on the 1,119-profile overlap between `hedonic_value` and the Pricing Lead's real `price_today`. A single R² from one fit on one sample is exactly the kind of number that *looks* precise but could in principle be a lucky draw — checked rather than assumed.
+
+**What was run**: `bootstrap_calibration_r2.py` resamples the 1,119-profile overlap **with replacement** (same n each time), refits the identical log-log OLS `hedonic_value.py::fit_price_calibration()` uses, and repeats **2,000 times** — reporting the empirical distribution of R² instead of trusting the one sample already in the report.
+
+| Quantity | Point estimate (full sample) | Bootstrap (2,000 resamples) |
+|---|---|---|
+| R² | 0.9601 | mean 0.9604, std 0.0063, **95% CI [0.9457, 0.9694]** |
+| β (slope) | 1.0238 | mean 1.0237, std 0.0064 |
+| Full min/max across all 2,000 resamples | — | [0.9345, 0.9730] |
+
+**Reading it.** The point estimate sits almost exactly on the bootstrap mean (0.9601 vs. 0.9604) — no sign the original fit got a lucky sample. The 95% confidence interval is under 2.4 percentage points wide, and even the most extreme of 2,000 resamples never dropped below 0.9345. β (the slope relating `log(hedonic_value)` to `log(price_today)`) is similarly tight around 1.02, consistent with the two models' prices scaling together almost 1-for-1 once the intercept shift is accounted for. **Conclusion: 0.960 is a stable property of the fit, not a fragile point estimate** — the calibration genuinely explains ~96% of the variance in the real price from this pipeline's own hedonic estimate, and that conclusion would survive drawing a different 1,119-profile sample from the same population. Script and raw output: `bootstrap_calibration_r2.py` → `data/calibration_r2_bootstrap.json`.
