@@ -103,3 +103,49 @@ def market_wtp_coefficients(model):
         if k in model.params:
             out[key] = float(model.params[k])  # log points vs 'Beyond 2km'
     return out
+
+
+# 2026-10-18 (see OPTIMISER_METHODOLOGY_REPORT.md Sec. 14): hedonic_value (predict_value(),
+# above) is fit against THIS pipeline's own transaction prices, not the Pricing Lead's real
+# LightGBM price_today -- comparing the two raw (hedonic_value - price_today) mostly measures
+# model disagreement, not genuine mispricing (median ~3.6% apart but up to -24%/+104% at the
+# tails, on the 706 profiles where both exist). A literal re-fit of the attribute regression
+# against their price as the target isn't possible without their BLOCK-level predictions (not
+# available -- they only hand over a profile-level aggregate); what IS available at profile
+# level is used instead: a log-log recalibration of hedonic_value onto price_today's basis,
+# fit once on the overlap and then applied to every profile (including stub-priced ones, so
+# the correction generalises rather than only covering the 706 it was fit on).
+def fit_price_calibration(profiles: pd.DataFrame, real_price: pd.DataFrame):
+    """profiles needs profile_id + hedonic_value; real_price needs profile_id + price_today
+    (this pipeline's `pricing_today.csv`, i.e. the Pricing Lead's real price where available).
+    Returns a dict of {alpha, beta, r_squared, n, resid_std} -- log(price_today) ~ alpha +
+    beta*log(hedonic_value), OLS on the overlap only."""
+    d = profiles[["profile_id", "hedonic_value"]].merge(
+        real_price[["profile_id", "price_today"]], on="profile_id", how="inner")
+    d = d[(d["hedonic_value"] > 0) & (d["price_today"] > 0)]
+    x = np.log(d["hedonic_value"].to_numpy())
+    y = np.log(d["price_today"].to_numpy())
+    beta, alpha = np.polyfit(x, y, 1)
+    pred = alpha + beta * x
+    resid = y - pred
+    ss_res, ss_tot = float((resid ** 2).sum()), float(((y - y.mean()) ** 2).sum())
+    r_squared = 1 - ss_res / ss_tot if ss_tot > 0 else float("nan")
+    return {"alpha": float(alpha), "beta": float(beta), "r_squared": r_squared,
+            "n": int(len(d)), "resid_std": float(resid.std(ddof=2))}
+
+
+def apply_price_calibration(hedonic_value: pd.Series, price_today: pd.Series, calib: dict,
+                             clip_sigma=3.0) -> pd.Series:
+    """Maps raw hedonic_value onto price_today's basis using a fitted calibration, THEN clips
+    the result to within clip_sigma residual standard deviations of price_today in log space.
+    Without this, a handful of thin-sample profiles (checked: 10/706, mostly 1-3 blocks or
+    <10 transactions/12m) produce 60-100%+ "bargain" signals the calibration's own R^2=0.934 /
+    resid_std=0.089 fit has no business vouching for -- almost certainly block-composition
+    noise (this pipeline's profile vs. the Pricing Lead's drawing from a different, thin set
+    of blocks for the same nominal profile_id), not a genuine discount. clip_sigma=3 (~+-31%)
+    keeps 696/706 (98.6%) of profiles' calibrated value untouched -- a tail guard, not a
+    blanket shrink."""
+    calibrated = np.exp(calib["alpha"] + calib["beta"] * np.log(hedonic_value.clip(lower=1.0)))
+    bound = clip_sigma * calib["resid_std"]
+    log_ratio = np.log(calibrated / price_today.clip(lower=1.0)).clip(lower=-bound, upper=bound)
+    return price_today * np.exp(log_ratio)

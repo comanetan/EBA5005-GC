@@ -150,6 +150,14 @@ def _load_real_availability():
     return pd.read_csv(path) if os.path.exists(path) else None
 
 
+def _load_price_calibration():
+    """hedonic_price_calibration.json (build_price_calibration.py) -- recalibrates
+    hedonic_value onto price_today's basis via a log-log fit on the overlap. None if not
+    built yet (score() falls back to suppressing the bargain signal, the old behaviour)."""
+    path = os.path.join(DATA, "hedonic_price_calibration.json")
+    return json.load(open(path)) if os.path.exists(path) else None
+
+
 def availability_stub(profiles, live=True):
     """Arrival rate of MATCHING transactions (the buyer-relevant quantity):
     lambda = sales_12m / 12 per month. Replaces v1's arbitrary '/20 units'
@@ -223,17 +231,23 @@ def score(df, query, betas):
     else:
         gap = d["hedonic_gap"]
     if "price_is_real" in d.columns and d["price_is_real"].any():
-        # hedonic_value was fit to predict THIS pipeline's own median_price, not the
-        # Pricing Lead's real (lease-band-blended) price_today -- the two bases differ
-        # by a median ~2% but up to +-50-80% at the tails (checked empirically, see
-        # OPTIMISER_METHODOLOGY_REPORT.md), almost certainly because their price is
-        # blended across lease bands this pipeline's profile doesn't carry at all. Until
-        # the hedonic is re-fit against their price as the target, comparing the two
-        # would mostly measure model disagreement, not genuine mispricing -- so the
-        # bargain signal is suppressed (0, not fabricated) for every profile using real
-        # pricing; surplus there comes from preference tilt only, same treatment already
-        # used for MULTI-GENERATION profiles with no hedonic fit at all.
-        gap = gap.where(~d["price_is_real"], 0.0)
+        # 2026-10-18 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 14): hedonic_value was fit to
+        # predict THIS pipeline's own median_price, not the Pricing Lead's real (lease-band-
+        # blended) price_today -- comparing them raw mostly measures model disagreement, not
+        # genuine mispricing. A literal re-fit of the attribute regression against their
+        # price isn't possible without their block-level predictions (not available -- only a
+        # profile-level aggregate is). What's used instead: hedonic_price_calibration.json, a
+        # log-log recalibration of hedonic_value onto price_today's basis (fit once on the
+        # 706-profile overlap, R^2=0.934, applied to every profile including stub-priced
+        # ones). Falls back to the old suppress-to-0 behaviour if that artifact is missing.
+        calib = _load_price_calibration()
+        if calib is not None and "hedonic_value" in d.columns:
+            from hedonic_value import apply_price_calibration
+            calibrated_value = apply_price_calibration(d["hedonic_value"], d["price_today"], calib)
+            gap_real = calibrated_value - d["price_today"]
+            gap = gap.where(~d["price_is_real"], gap_real)
+        else:
+            gap = gap.where(~d["price_is_real"], 0.0)
     d["shrunk_value_gap"] = gap.fillna(0) * n / (n + query.shrink_k)
 
     tilt = 0.0

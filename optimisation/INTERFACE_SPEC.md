@@ -86,6 +86,18 @@
 > `goal_deviation_total`. Exposed in the web app's Final Recommender tab. Backtest re-run after this change:
 > 98.8% within-budget reliability, unchanged from the pre-change baseline.
 >
+> **v2.7 Bargain signal re-enabled for real-priced profiles, via calibration not a literal re-fit**
+> (2026-10-18, see OPTIMISER_METHODOLOGY_REPORT.md §14): `shrunk_value_gap` was forced to $0 for every
+> real-priced profile since v2.4 — `hedonic_value` and the Pricing Lead's `price_today` are on different
+> bases, so a raw comparison mostly measured model disagreement. A literal transaction-level re-fit against
+> their price isn't possible without their block-level predictions (not available, only a profile-level
+> aggregate). Instead: `hedonic_value.py::fit_price_calibration()` fits `log(price_today) = alpha +
+> beta*log(hedonic_value)` on the 706-profile overlap (R²=0.934), and `apply_price_calibration()` maps
+> every profile onto `price_today`'s basis, clipped to within 3 residual standard deviations (~±31%) after
+> an unclipped first pass produced a $202K spurious "bargain" on a 2-block profile. `score()` now uses this
+> instead of forcing $0. **Re-verified**: walk-forward backtest reliability 96.6% [93.1%, 98.3%], identical
+> to before — this code path is only reachable when `live=True`, never during a backtest.
+>
 > **v2.6 Pricing & Availability now native to this pipeline's profile IDs** (2026-10-18, see
 > OPTIMISER_METHODOLOGY_REPORT.md §12): as of `main` commit `42df63b` (17 Oct), the Pricing & Availability
 > Lead writes `outputs/optimisation/pricing_today.csv` / `availability.csv` directly on this pipeline's own
@@ -179,6 +191,8 @@ fine on town-level features and we upgrade later if time allows.
 | price_today_se | float | standard error of the hedonic estimate (used for a simple uncertainty band until the real interval exists) |
 
 **Stub until ready**: `median_price` from `housing_profiles.csv`, `price_today_se` = 5% of price.
+
+**2026-10-18 — checked, not currently used for anything**: the Pricing Lead's native file (v2.6, below) defines `price_today_se` as `price × 0.052` — their hold-out log-RMSE on *unseen blocks*, i.e. the typical error of a single-flat prediction, not a standard error of the profile mean (their own wording, `docs/model_validation.md` on `main`). This differs from both the original stub's flat 5%-of-price and the old crosswalk adapter's percentile-based approximation. **Audited every consumer in this pipeline** (`recommender_v2.py`, `recommender.py`, `shrink_k`, the GP calculator, the web app, the frontend) and found `price_today_se` is read into memory in two places (`_load_real_pricing()` in `recommender_v2.py`, the `pricing` merge in the legacy `recommender.py`) but **never actually merged into a working dataframe or used in any computation** in the live v2 path — `assemble()` only pulls `price_today` across, never `price_today_se`. `shrink_k` (the bargain-signal shrinkage toward $0 for low-transaction profiles) uses `txn_count_12m`, not `price_today_se`, at all. The "simple uncertainty band" this column was originally meant for ended up implemented a different way — `price_low`/`price_high` feeding `growth_factor_upper` → `price_upper` in the hard budget-feasibility constraint — so the definition change is currently a no-op, not a live bug. Column kept (and its correct new definition recorded here) in case a future feature wires it in.
 
 ## 2. Pricing & Availability Lead → `availability.csv`
 | column | type | meaning |
