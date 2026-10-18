@@ -86,6 +86,17 @@
 > `goal_deviation_total`. Exposed in the web app's Final Recommender tab. Backtest re-run after this change:
 > 98.8% within-budget reliability, unchanged from the pre-change baseline.
 >
+> **v2.6 Pricing & Availability now native to this pipeline's profile IDs** (2026-10-18, see
+> OPTIMISER_METHODOLOGY_REPORT.md §12): as of `main` commit `42df63b` (17 Oct), the Pricing & Availability
+> Lead writes `outputs/optimisation/pricing_today.csv` / `availability.csv` directly on this pipeline's own
+> `profile_id` — no crosswalk needed. `pricing_availability_adapter.py` gained `build_from_native()`, a
+> pass-through that supersedes the crosswalk functions below for current runs (kept for historical/backtest
+> reproduction only). Coverage: **99.7% of profiles (706/708)**, up from 96.2% (681/708). Checked against
+> Forecasting's own documented caveat ("do not independently sample [price_paths.csv] rows for Monte
+> Carlo"): `monte_carlo.py`/`chance_constraint.py` only ever use the summary `growth_factor` columns, never
+> the row-level quantile table — no change needed. Also published `outputs/shortlist.csv`
+> (`build_shortlist.py`), this pipeline's own deliverable on the team's shared handover contract.
+>
 > **v2.5 MRT premium corrected for spatial bias** (2026-10-18, see OPTIMISER_METHODOLOGY_REPORT.md §11): the
 > Pricing & Availability Lead's `notebooks/04c_hedonic_econometrics.ipynb` (main branch) found a naive
 > town-FE hedonic overstates the MRT premium ~2x vs. their spatially-corrected/causal (DiD on 11 real new
