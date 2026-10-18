@@ -10,8 +10,8 @@ live in `OPTIMISER_METHODOLOGY_REPORT.md`; this file is the short, standalone in
 |---|---|---|
 | 1 | Statistical significance test on the GP trial-and-error table — does the preemptive-vs-weighted-sum divergence generalise across households, or is it one cherry-picked example? | ✅ **Done, 2026-10-18** — see below |
 | 2 | Bootstrap CI on the 0.960 hedonic-to-real-price calibration R² | ✅ **Done, 2026-10-18** — see below |
-| 3 | Scaling/stress test on the 0-1 IP at a much larger candidate pool (1,000s, not 10s–100s) | ⬜ Not started |
-| 4 | Residual diagnostics (incl. Moran's I) on the subzone-FE hedonic specifically | ⬜ Not started |
+| 3 | Scaling/stress test on the 0-1 IP at a much larger candidate pool (1,000s, not 10s–100s) | ✅ **Done, 2026-10-19** — see below |
+| 4 | Residual diagnostics (incl. Moran's I) on the subzone-FE hedonic specifically | ✅ **Done, 2026-10-19** — see below |
 | 5 | Sensitivity of the preemptive priority *order* itself (not just which household) | ✅ **Done, 2026-10-19** — see below |
 | 6 | Out-of-time holdout beyond the current latest cutoff (2025-07) | ⬜ Not started |
 
@@ -115,22 +115,65 @@ test is independent confirmation it's also the economically sound choice.
 
 ---
 
-## 3–4, 6. Not yet started
+## 3. Does the 0.000% integrality gap survive 1,000s of candidates? ✅
+
+**Done 2026-10-19.** Full write-up: `OPTIMISER_METHODOLOGY_REPORT.md` §20. Script:
+`test_ip_scaling.py` → `data/ip_scaling_test.json`.
+
+**What was run:** the real ~1,184-candidate pool, shuffled once then synthetically expanded
+(same-town duplicates, ±3% jitter on `net_objective_value`) up to 20,000 rows, solved both
+as the real binary IP and its LP relaxation using `_build_ip()` — a faithful copy of
+`recommender_v2.py::solve()`'s own PuLP construction (cardinality + ≤1/town) — at
+n_candidates ∈ {50, 200, 500, 1,000, 2,000, 5,000, 10,000, 20,000}.
+
+| n_candidates | 50 | 500 | 5,000 | 20,000 |
+|---|---|---|---|---|
+| IP solve time | 53.6 ms | 81.5 ms | 107.0 ms | 538.8 ms |
+| Integrality gap | 0.000% | 0.000% | 0.000% | 0.000% |
+
+**Conclusion:** both headline findings survive a 400× scale-up cleanly. The integrality gap
+stays exactly 0.000% at every scale — confirming §7.1's explanation (a totally-unimodular
+partition-matroid structure) is structural, not a small-instance coincidence. CBC's solve
+time stays trivial (sub-second even at 20,000 candidates) and grows far sub-linearly,
+consistent with the real combinatorial driver being the fixed number of towns (26), not
+the candidate count. A future block-level recommender needs no different solver or
+formulation.
+
+---
+
+## 4. Did subzone FE actually fix the hedonic's spatial autocorrelation, or just reduce it? ✅
+
+**Done 2026-10-19.** Full write-up: `OPTIMISER_METHODOLOGY_REPORT.md` §21. Script:
+`test_hedonic_residual_diagnostics.py` → `data/hedonic_residual_diagnostics.json`.
+
+**What was run:** refit both the production `C(subzone)` formula and the pre-§15
+`C(town)` formula it replaced on the identical 76,852-row sample, aggregated residuals to
+block level (mean residual per block, ≥10 sales, 2,667 blocks), tested with the Pricing
+Lead's own published method — KNN k=8 row-standardised weights, SG-centred equirectangular
+projection, Moran's I (999 permutations).
+
+| Model | Adj. R² | Moran's I | p |
+|---|---|---|---|
+| Town-FE (pre-§15) | 0.9369 | **+0.5918** | 0.001 |
+| Subzone-FE (production) | 0.9545 | **+0.3590** | 0.001 |
+| *Pricing Lead benchmark: OLS + town dummies* | — | *+0.60* | — |
+| *Pricing Lead benchmark: spatial-error (filtered)* | — | *−0.03* | — |
+
+**Conclusion: a real but partial fix**, same honesty pattern already applied to the MRT
+coefficient in §15. Moran's I fell ~39% (0.59→0.36) switching town→subzone FE — and this
+pipeline's own town-FE number lands almost exactly on the Pricing Lead's independently
+measured "OLS + town dummies" benchmark (0.60), reassuring cross-pipeline consistency. But
+0.36 is still hugely significant (z=+38.81, p=0.001) and far from the spatial-error
+model's fully-filtered −0.03. Subzone FE is a genuine improvement, not a solved problem —
+exactly what §15 already said about the MRT coefficient, now confirmed for the residuals
+directly instead of inferred from one number.
+
+---
+
+## 6. Not yet started
 
 Kept here verbatim so the next session can pick straight back up without re-deriving scope:
 
-- **3 — IP scaling/stress test:** the LP-relaxation and GA benchmarks (§7.1–7.2) only ever
-  ran on realistic household-sized candidate pools (11–52 profiles). Test what happens at
-  1,000+ candidates (e.g. simulating block-level rather than profile-level granularity) —
-  does the 0.000% integrality gap hold, does CBC's solve time stay trivial.
-- **4 — Residual diagnostics on the subzone-FE hedonic:** we have the headline adjusted R²
-  (0.9545) but haven't plotted residuals vs. fitted or run Moran's I on the subzone-FE
-  model's own residuals, the way the Pricing Lead did for theirs. Would directly test
-  whether subzone FE actually fixed the spatial autocorrelation problem or just reduced it.
-- **5 — Sensitivity of the preemptive priority order:** we've only ever tested one fixed
-  order (MRT ≫ School ≫ Storey ≫ Wait ≫ Essentials). `sensitivity_v2.py` already has the
-  grid-sweep machinery; point it at all priority permutations (or a representative sample)
-  and measure how much the recommendation changes.
 - **6 — Out-of-time holdout beyond 2025-07:** the extended backtest's most recent cutoff is
   2025-07. As more real transaction months accumulate, re-running on a genuinely new,
   never-before-tested cutoff (not just adding more historical cutoffs) is the strongest
