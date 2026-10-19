@@ -1,0 +1,16 @@
+[
+  {
+    "engine":"OLD (independent stand-in)",
+    "mean_marginal_p_success_wait12m":0.8647,
+    "naive_independent_joint_p_all5_succeed":0.4675351738,
+    "actual_joint_p_all5_succeed":0.472,
+    "gap_vs_naive_pct_points":0.4464826239
+  },
+  {
+    "engine":"NEW (real joint engine)",
+    "mean_marginal_p_success_wait12m":0.8861,
+    "naive_independent_joint_p_all5_succeed":0.5298635454,
+    "actual_joint_p_all5_succeed":0.595,
+    "gap_vs_naive_pct_points":6.5136454641
+  }
+]

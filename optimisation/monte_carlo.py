@@ -5,18 +5,39 @@ for each shortlisted profile. It draws price paths from SARIMAX under
 interest-rate and supply scenarios, and combines them with survival-based
 availability."
 
-Runs today on a STAND-IN SIMULATOR (price paths synthesised from the stub
-forecast's growth_factor/bounds + 3 macro regimes approximating "interest-rate
-and supply scenarios"), clearly swappable for the real SARIMAX scenario
-generator once it lands (14 Oct) -- see `simulate_price()`'s docstring for
-the swap point.
+2026-10-19 UPDATE (OPTIMISER_METHODOLOGY_REPORT.md Sec. 24): the Forecasting Lead's real
+joint Monte Carlo engine (`external_forecasting_pkg/forecasting/multitype_api.py::
+run_joint_monte_carlo()`, vendored from their `forecasting` branch) is now used for every
+profile it supports (3/4/5 ROOM, all 26 towns -- which is now this pipeline's entire
+flat-type universe except 1-ROOM, after the scope alignment in Sec. 23). Their own
+handover explicitly warned that swapping in marginal forecast CSVs alone (what Sec. 23
+did) does NOT give correlated/joint price draws across a shortlist's different towns and
+flat types -- this pipeline's own stand-in simulator below draws each profile
+independently, understating the real, shared risk that profiles in the same region/
+flat-type segment move together. `run_joint_monte_carlo()` draws ONE shared scenario batch
+(a joint error bank indexed by historical month x all 15 regional segments at once) and
+applies it across every profile in the shortlist, so a bad scenario for one Woodlands pick
+is the SAME bad scenario for a same-region Sembawang pick, not an independent coincidence.
+
+This module keeps the original stand-in simulator below as the documented FALLBACK for
+whatever the real engine doesn't cover (1-ROOM only, today) -- same REAL-where-available,
+STUB-elsewhere pattern every other adapter in this pipeline already uses, not an
+all-or-nothing swap. `run_monte_carlo()` (the public entry point other code already calls)
+now blends both; `_run_stub_monte_carlo()` is the renamed original function, unchanged.
+`summarize_strategies()` needed NO changes -- the real engine's output schema already
+matches this module's own scenario-table contract exactly (confirmed, not just claimed;
+see Sec. 24 for the direct comparison).
 """
 import os
+import sys
 
 import numpy as np
 import pandas as pd
 
-DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+HERE = os.path.dirname(os.path.abspath(__file__))
+DATA_DIR = os.path.join(HERE, "data")
+VENDOR_PKG = os.path.join(HERE, "external_forecasting_pkg")
+REAL_FLAT_TYPES = ["3 ROOM", "4 ROOM", "5 ROOM"]  # matches forecasting_adapter.REAL_FLAT_TYPES
 
 # Stand-in macro regimes: (probability, price-growth multiplier on the mean,
 # volatility multiplier, availability multiplier). Approximates "interest-rate
@@ -50,7 +71,49 @@ def simulate_availability(survival_prob, regime, rng):
     return rng.random() < p
 
 
-def run_monte_carlo(shortlist: pd.DataFrame, fcast: pd.DataFrame, n_scenarios=2000, seed=42):
+def _load_real_api(base_price_month=None):
+    """Imports the Forecasting Lead's vendored multitype_api module and returns
+    (run_joint_monte_carlo, resolved_base_price_month), or (None, None) if the vendor
+    package isn't present or its bundle fails to load -- never raises, so a missing/
+    broken vendor copy just falls back to the stand-in simulator for everything."""
+    try:
+        if VENDOR_PKG not in sys.path:
+            sys.path.insert(0, VENDOR_PKG)
+        from forecasting.multitype_api import run_joint_monte_carlo, MultiTypeForecaster
+        if base_price_month is None:
+            base_price_month = MultiTypeForecaster().metadata["origin"]
+        return run_joint_monte_carlo, base_price_month
+    except Exception as e:
+        print(f"[monte_carlo] Real joint engine unavailable ({e!r}) -- falling back to stand-in simulator for all profiles.")
+        return None, None
+
+
+def run_monte_carlo(shortlist: pd.DataFrame, fcast: pd.DataFrame, n_scenarios=2000, seed=42, base_price_month=None):
+    """Public entry point. Splits the shortlist into profiles the Forecasting Lead's real
+    joint engine supports (3/4/5 ROOM -- see module docstring) and whatever's left (1-ROOM
+    today), runs each half through its own engine, and concatenates -- the `regime` column
+    already distinguishes real rows ("joint_multitype_<scenario>") from stand-in rows
+    ("low_rate_high_supply"/"base"/"high_rate_low_supply"), so nothing downstream needs to
+    change to tell them apart."""
+    real_fn, resolved_month = _load_real_api(base_price_month)
+    real_supported = shortlist["flat_type"].isin(REAL_FLAT_TYPES) if real_fn is not None else pd.Series(False, index=shortlist.index)
+    real_part, stub_part = shortlist[real_supported], shortlist[~real_supported]
+
+    tables = []
+    if len(real_part):
+        try:
+            real_scenarios = real_fn(real_part, n_scenarios=n_scenarios, seed=seed, base_price_month=resolved_month)
+            tables.append(real_scenarios)
+        except Exception as e:
+            print(f"[monte_carlo] Real joint engine call failed ({e!r}) -- these {len(real_part)} "
+                  f"profile(s) fall back to the stand-in simulator instead.")
+            stub_part = pd.concat([stub_part, real_part], ignore_index=False)
+    if len(stub_part):
+        tables.append(_run_stub_monte_carlo(stub_part, fcast, n_scenarios=n_scenarios, seed=seed))
+    return pd.concat(tables, ignore_index=True) if tables else pd.DataFrame()
+
+
+def _run_stub_monte_carlo(shortlist: pd.DataFrame, fcast: pd.DataFrame, n_scenarios=2000, seed=42):
     """For each shortlisted profile, simulate n_scenarios outcomes for
     buy-now / wait-6mo / wait-12mo and return a long-format scenario table
     plus a summary table."""
