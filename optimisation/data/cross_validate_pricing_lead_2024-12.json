@@ -1,0 +1,16 @@
+{
+  "cutoff": "2025-01-01",
+  "window": [
+    "2025-12-01",
+    "2026-02-01"
+  ],
+  "n_price_cells": 656,
+  "my_price_mape_median": 6.208982286708364,
+  "their_price_mape_median": 4.888888888888889,
+  "my_price_mape_mean": 8.089868901126087,
+  "their_price_mape_mean": 6.837907686599692,
+  "share_cells_mine_closer": 0.3323170731707317,
+  "n_availability_cells": 656,
+  "brier_theirs": 0.0024184207317073173,
+  "brier_mine": 0.0034824502481218835
+}

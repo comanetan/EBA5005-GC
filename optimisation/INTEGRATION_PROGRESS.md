@@ -27,7 +27,7 @@ Legend: 🟢 delivered & wired in · 🟡 delivered, not yet wired in (action is
 
 **Checked again (19–20 Oct):** no new commits on `main` since 17 Oct (`209c94b`). Two things found while checking, both now acted on or logged:
 1. ✅ **Re-ran the crosswalk adapter** against the current (post-scope-alignment) 1,013-profile universe — `pricing_today.csv`/`availability.csv` were one day stale (18 Oct, still built against the pre-2-ROOM/EXECUTIVE-removal 1,184 profiles). Refreshed coverage: **958/1,013 (94.6%)** for both files, median price SE $30,431, median wait 1.0 months.
-2. ⚪ **Not yet run, a real opportunity:** `outputs/backtest/2024-12/optimisation/{pricing_today,availability}.csv` — their own 2024-12 backtest snapshot, built explicitly (per their `docs/model_validation.md`) to match this pipeline's 2025-01-01 cutoff. Never pulled or cross-checked against my own backtest at that cutoff. A genuine independent validation opportunity, sitting unused — not done as part of this update, flagged for a future session.
+2. ✅ **Done (20 Oct):** `outputs/backtest/2024-12/optimisation/{pricing_today,availability}.csv` — their own 2024-12 backtest snapshot, cross-validated against realised 2025-2026 outcomes on 656 overlapping cells (4-part native grain, aggregated up from this pipeline's own 5-part profiles since their file predates lease_band). Their price prediction beat this pipeline's own trailing-12-month-median baseline in 66.8% of cells (4.89% vs. 6.21% median MAPE); their availability model also had a better Brier score (0.0024 vs. 0.0035). Independent, external confirmation that their model earns its keep over the naive baseline. See `OPTIMISER_METHODOLOGY_REPORT.md` §25.
 
 ---
 

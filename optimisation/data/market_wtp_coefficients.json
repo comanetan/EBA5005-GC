@@ -1,13 +1,14 @@
 {
   "log_points_per_km": {
-    "dist_mrt_exit_km": -0.05907014466350417,
-    "dist_hawker_km": -0.01709420197219301,
-    "dist_supermarket_km": -0.04392049283349081,
-    "dist_chas_clinic_km": 0.007008881265466534,
-    "dist_park_km": -0.0023177326482300264,
-    "dist_expressway_km": 0.009124230603586716,
-    "elite_primary_within_1km": 0.036703322847909364,
-    "elite_primary_1_2km": 0.020416351495089163
+    "dist_mrt_exit_km": -0.057521110880407046,
+    "dist_hawker_km": -0.016417115570224267,
+    "dist_supermarket_km": -0.04395908074891153,
+    "dist_chas_clinic_km": 0.007445011324285503,
+    "dist_park_km": -0.002438467158277377,
+    "dist_expressway_km": 0.008441332449800932,
+    "dist_polyclinic_km": -0.005695393144697291,
+    "elite_primary_within_1km": 0.0349652614569191,
+    "elite_primary_1_2km": 0.01947633187767031
   },
   "as_of": "2026-10-01",
   "note": "Revealed (market) WTP from the interim hedonic; Preference Lead's conjoint WTP replaces/complements this via household multipliers."

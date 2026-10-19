@@ -34,11 +34,14 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 ROOT = os.path.dirname(os.path.dirname(HERE))  # .../Project, portable across machines
 
+# 2026-10-20 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 26): polyclinic added here, not just to
+# ESSENTIALS -- it passed the same sign+significance test every other tilt attribute here did
+# (unlike expressway, a disamenity, which is a GOAL only -- see hedonic_value.py's WTP_ATTRS).
 ATTR_COLS = {"mrt": "dist_mrt_exit_km_p50", "hawker": "dist_hawker_km_p50",
              "supermarket": "dist_supermarket_km_p50", "clinic": "dist_chas_clinic_km_p50",
-             "park": "dist_park_km_p50"}
+             "park": "dist_park_km_p50", "polyclinic": "dist_polyclinic_km_p50"}
 ATTR_BETA_KEY = {"mrt": "dist_mrt_exit_km", "hawker": "dist_hawker_km", "supermarket": "dist_supermarket_km",
-                 "clinic": "dist_chas_clinic_km", "park": "dist_park_km"}
+                 "clinic": "dist_chas_clinic_km", "park": "dist_park_km", "polyclinic": "dist_polyclinic_km"}
 BAND_RANK = {"Near": 0, "Mid": 1, "Far": 2}
 STOREY_RANK = {"Low": 0, "Mid": 1, "High": 2}
 
@@ -53,6 +56,7 @@ class HouseholdQuery2:
         self.__dict__.update(locals())
         self.__dict__.pop("self")
         self.multipliers = {"mrt": 1.0, "hawker": 1.0, "supermarket": 1.0, "clinic": 1.0, "park": 1.0,
+                            "polyclinic": 1.0,
                             **(multipliers or {})}
         self.towns_exclude = towns_exclude or []
 

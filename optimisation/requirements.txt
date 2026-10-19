@@ -1,0 +1,23 @@
+# Optimisation pipeline dependencies, pinned to the versions this pipeline is tested
+# against (2026-10-20). No requirements file existed before this; versions below are
+# this machine's actual installed/tested set, not guesses.
+#
+# pulp: upper-bounded, not just pinned -- the Forecasting Lead's own handover
+# (MULTITYPE_HANDOVER.md) flags that PuLP 4 removes PULP_CBC_CMD, the exact solver call
+# every IP in this pipeline uses (recommender_v2.py, technique_comparison.py, every
+# test_*.py substantiation script). An unpinned `pip install -U` would silently break
+# every solve() call the day PuLP 4 is installed.
+pulp>=3.3,<4.0
+
+pandas>=2.3,<3.0
+numpy>=2.3,<3.0
+scipy>=1.15,<2.0
+statsmodels>=0.14,<0.15
+scikit-learn>=1.7,<2.0
+geopandas>=1.2,<2.0
+shapely>=2.1,<3.0
+
+# Spatial diagnostics (test_hedonic_residual_diagnostics.py's Moran's I -- not needed for
+# the live recommender, only this one substantiation test)
+libpysal>=4.15,<5.0
+esda>=2.10,<3.0

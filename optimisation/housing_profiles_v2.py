@@ -54,7 +54,12 @@ LABEL_COLS = ["secondary_tier", "expressway_proximity_band", "nearest_job_node"]
 # "walkable essentials": indicator per block, then averaged over the profile's sales
 ESSENTIALS = {"supermarket": ("dist_supermarket_km", 0.5), "hawker": ("dist_hawker_km", 0.8),
               "clinic": ("dist_chas_clinic_km", 0.5), "park": ("dist_park_km", 0.8),
-              "primary_school_1km": ("dist_primary_school_km", 1.0)}
+              "primary_school_1km": ("dist_primary_school_km", 1.0),
+              # 2026-10-20 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 26): dist_polyclinic_km
+              # tested as a hedonic regressor and accepted (correctly signed, p=9.3e-8) --
+              # added here alongside the other walkability components, same 0.5km threshold
+              # as the CHAS clinic entry (both are healthcare access, different tier of care).
+              "polyclinic": ("dist_polyclinic_km", 0.5)}
 
 
 def build_profiles_v2(recent_months=12, min_txn=3, as_of=None, write=True, with_hedonic=True):

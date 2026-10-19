@@ -36,7 +36,16 @@ import statsmodels.formula.api as smf
 # least this far from an expressway"), not a tilt multiplier, since "closer is better" framing
 # (used for every other WTP_ATTR) would be backwards for a disamenity.
 WTP_ATTRS = ["dist_mrt_exit_km", "dist_hawker_km", "dist_supermarket_km", "dist_chas_clinic_km", "dist_park_km",
-             "dist_expressway_km"]
+             "dist_expressway_km", "dist_polyclinic_km"]
+# 2026-10-20 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 26): dist_polyclinic_km tested the same
+# way as the 2026-10-08 attribute-expansion pass (fit with/without, check sign + p-value) --
+# correctly signed (closer = higher price, like every other amenity here, not a disamenity
+# like expressway) and highly significant (p=9.3e-8) on the current (2-ROOM/EXECUTIVE-free)
+# transaction set. Added to WTP_ATTRS (a priced preference-tilt attribute, like
+# hawker/supermarket/clinic/park) and to ESSENTIALS below (a walkability goal component) --
+# the same dual wiring those four already have, not the GOAL-only treatment expressway got
+# (expressway is a disamenity; polyclinic is a genuine amenity, so "closer is better" framing
+# is correct here).
 # School access enters as MOE-style tiers for POPULAR (SAP/GEP) primary schools -- "any primary within 1km"
 # is true for 97% of blocks, so it can't distinguish flats (the cause of v2's counterintuitive sign).
 CONTROL_ACCESS = ["n_bus_stop_400m", "dist_planned_rail_km"]
