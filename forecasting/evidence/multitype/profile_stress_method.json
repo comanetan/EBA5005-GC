@@ -1,0 +1,23 @@
+{
+  "sources": [
+    {
+      "origin": "2023-06",
+      "pricing_sha256": "6f8f71670742d8cfc35253f8fcf03d6d680ec0505ffdeb63b26ebfea6007239f",
+      "profiles": 1359
+    },
+    {
+      "origin": "2024-12",
+      "pricing_sha256": "9f3d431d8bf124166cfd9cca0960b646d8cc8840a582973d9770c1f14ff69634",
+      "profiles": 1349
+    }
+  ],
+  "estate_comparison": "Punggol versus Hougang; compare same flat type/lease/MRT/storey profile attributes.",
+  "interpretation": "Shared regional flat-type growth preserves the base-price ratio exactly; cannot learn separate town appreciation.",
+  "limitations": [
+    "Historical pricing exports inherit their supplied data-vintage/outlier/valuation limitations.",
+    "Frozen origin lease/MRT bands and 3-month-window transaction medians; individual conditions unobserved.",
+    "Missing matching sales excluded from price-error calculation and reported; not a successful purchase measure.",
+    "Spot-check is a stress test of shared-growth assumption, not proof it holds or a causal town comparison.",
+    "Nominal intervals and symmetric intervals are different assumptions; profile valuation uncertainty remains excluded."
+  ]
+}

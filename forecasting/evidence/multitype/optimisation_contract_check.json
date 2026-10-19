@@ -1,0 +1,22 @@
+{
+  "status": "passed",
+  "fixture": "synthetic five-town profiles, types ['3 ROOM', '4 ROOM', '5 ROOM']; not a real-data performance test",
+  "optimisation_commit": "6b238edb594fa4a6bbe33b031c8170e6bea251bf",
+  "recommender_sha256": "f01b699854a0deb31292cba2a95cd26e3a10ae1acac72c225634a318ed0a45f3",
+  "solver_status": "Optimal",
+  "selected_profiles": 3,
+  "scenario_rows": 1500,
+  "tested": [
+    "actual assemble/score/CBC solve accepts 156-row town forecast schema",
+    "price_upper equals price_today times supplied upper factor",
+    "actual summarize_strategies consumes joint scenario output"
+  ],
+  "fcast_override_deterministic_path_ignored": true,
+  "remaining_integration": [
+    "Load dated forecast table through load_inputs for historical deterministic runs; fcast_override alone does not update price_upper.",
+    "Opt in to run_joint_monte_carlo; replacing only marginal bounds does not replace independent price draws.",
+    "Only ['3 ROOM', '4 ROOM', '5 ROOM'] supported; never relabel other existing stubs as trained forecasts.",
+    "Real-data replay needs the additional shared-folder sources listed in replay_sources.json; it is separate from this synthetic contract check.",
+    "PuLP 3.3.0 tested; PuLP 4 removes PULP_CBC_CMD used by current optimiser."
+  ]
+}

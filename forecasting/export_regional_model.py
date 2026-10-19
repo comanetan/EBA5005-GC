@@ -63,7 +63,7 @@ def main():
                         'Latest check had poor nominal 90% coverage; inspect models/regional/regional_metrics.csv.',
                         'Excludes profile valuation, hedonic-index estimation and model-selection uncertainty.',
                         'Static amenity snapshots and historical data vintages limit retrospective validity.',
-                        'Joint temporal/cross-region simulation is not implemented.'])
+                        'Legacy point adapter supplies marginal quantiles; use MultiTypeForecaster for current joint simulation.'])
     (BUNDLE / 'manifest.json').write_text(json.dumps(manifest,indent=2,allow_nan=False),encoding='utf-8')
     shutil.copyfile(BASE / 'outputs/pooled_lstm/comparison.csv', BUNDLE / 'evaluation_metrics.csv')
     shutil.copyfile(BASE / 'outputs/regional_location/metrics_by_region.csv', BUNDLE / 'regional_metrics.csv')

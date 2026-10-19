@@ -1,5 +1,9 @@
 # Forecasting final review — 19 October 2026
 
+**Four-room milestone snapshot.** The subsequent proposal-aligned expansion to
+three-, four- and five-room flats is in [PROPOSAL_ALIGNMENT.md](PROPOSAL_ALIGNMENT.md),
+with current runtime instructions in [MULTITYPE_HANDOVER.md](MULTITYPE_HANDOVER.md).
+
 The four-room forecasting component is ready for handover. It includes the saved
 regional model, callable inference, town robustness checks, model diagnostics,
 LSTM lag explanations, joint market scenarios and a real-data replay through

@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-19",
+  "scope": "3 ROOM, 4 ROOM, 5 ROOM across five team regions",
+  "trained_segments": 15,
+  "annual_candidate_families": 12,
+  "annual_prediction_rows": 8640,
+  "quarterly_prediction_rows": 15120,
+  "scenario_challenger_prediction_rows": 3780,
+  "joint_paths_per_bank": 21,
+  "joint_path_shape": [12, 15],
+  "supported_current_pricing_profiles": 1330,
+  "price_path_rows": 15960,
+  "town_forecast_rows": 156,
+  "forecast_fit_errors": 0,
+  "test_command": "python -m unittest discover -s forecasting -t . -p test_*.py",
+  "tests_run": 26,
+  "test_result": "passed",
+  "saved_pickle_loaded_in_separate_unittest_entry_point": true,
+  "actual_optimiser_commit_tested": "6b238edb594fa4a6bbe33b031c8170e6bea251bf",
+  "latest_optimiser_commit_inspected": "f4f7c69",
+  "latest_optimiser_diff": "Adds out-of-time test and documentation only; recommender and Monte Carlo runtime unchanged from tested commit.",
+  "actual_optimiser_schema_check": "passed: 156-row table and joint Monte Carlo summarizer",
+  "real_data_optimiser_invocations": 99,
+  "figures_visually_checked": ["model_comparison.png", "scenario_sensitivity.png", "lstm_shap_heatmap.png"],
+  "scope_limits": [
+    "Default family selected by earlier annual validation; later and quarterly comparisons are exploratory.",
+    "No aggregate or segment Diebold-Mariano comparison significant at 5% after reported BH adjustment.",
+    "Residual autocorrelation remains in thirteen of fifteen selected fits at nominal 5%.",
+    "Macro scenarios diagnostic only: positive SORA association in twelve of fifteen challenger fits.",
+    "Completion-year-plus-five cohort is a proxy, not actual MOP completion or listings.",
+    "Final UI, conjoint and survival integration remains team-owned."
+  ]
+}

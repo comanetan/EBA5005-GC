@@ -1,0 +1,4 @@
+stage,flat_type,model,MAPE_pct,regions,minimum_n
+validation,3 ROOM,ARIMA_POLICY,1.4635171406150336,5,36
+validation,4 ROOM,ARIMA_POLICY,1.3216307389133817,5,36
+validation,5 ROOM,ARIMA_POLICY,1.242045479978742,5,36

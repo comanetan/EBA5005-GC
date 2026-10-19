@@ -1,0 +1,4 @@
+method,picks,matched,within_budget_count,within_budget_rate,mean_mrt_km,household_runs,full_five_pick_shortlists,empty_shortlists,requested_picks,returned_share
+naive,165,141,75.0,0.5319148936170213,0.5553913609848504,33,33,0,165,1.0
+nominal,165,145,123.0,0.8482758620689655,0.5179366050941199,33,33,0,165,1.0
+symmetric,164,142,138.0,0.971830985915493,0.5410112674388755,33,32,0,165,0.9939393939393939

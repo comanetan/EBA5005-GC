@@ -1,5 +1,9 @@
 # Current forecasting handover for Daniel
 
+**Historical four-room stage.** The current three-type deliverable is documented
+in [MULTITYPE_HANDOVER.md](MULTITYPE_HANDOVER.md). This page preserves the previous
+API and nominal-interval contract for existing callers.
+
 Use `RegionalForecaster`, not the legacy Sengkang median-PSM `Forecaster`.
 Scope: four-room flats in North, North-East, East, West and Central.
 Model: ARIMA(0,1,1) with drift on a location-adjusted log index, selected as

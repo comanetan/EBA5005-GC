@@ -1,0 +1,18 @@
+{
+  "loss": "Absolute percentage error at horizon 6 or 12; paired within segment and origin.",
+  "origins": "21 quarterly origins September 2020 to September 2025; same fifteen series.",
+  "variance": "Bartlett/Newey-West long-run loss variance; lags ceil(horizon/3)-1.",
+  "finite_sample": "Harvey-Leybourne-Newbold-style adjustment using horizon on quarterly grid; Student t, n-1 df.",
+  "multiplicity": "BH-adjusted p-values across distinct segment comparisons; aggregate comparisons reported separately.",
+  "interpretation": [
+    "Exploratory forecast comparisons; no independent untouched test or proof of best model.",
+    "Short, overlapping origins and retrospective specification/model selection limit p-value reliability.",
+    "Region/flat-type errors share shocks: do not treat 15 series as 15 times more independent origins.",
+    "Comparisons to a selected model inherit selection bias; BH does not remove selection bias.",
+    "Zero loss variance or insufficient origins returns no p-value; non-rejection is not equivalence."
+  ],
+  "references": [
+    "https://www.sciencedirect.com/science/article/pii/S0169207096007194",
+    "https://economics.sas.upenn.edu/sites/default/files/filevault/12-035.pdf"
+  ]
+}

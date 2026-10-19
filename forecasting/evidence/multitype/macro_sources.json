@@ -1,0 +1,74 @@
+{
+  "policies": [
+    {
+      "announced": "2021-12-15",
+      "effective": "2021-12-16",
+      "monthly_activation": "2022-01",
+      "source": "https://www.hdb.gov.sg/business-partners/estate-agents-and-salespersons/letters-to-keos/measures-to-cool-the-property-market"
+    },
+    {
+      "announced": "2022-09-29",
+      "effective": "2022-09-30",
+      "monthly_activation": "2022-10",
+      "source": "https://www.hdb.gov.sg/hdb-pulse/news/2022/property-measures2022"
+    },
+    {
+      "announced": "2024-08-18",
+      "effective": "2024-08-20",
+      "monthly_activation": "2024-09",
+      "source": "https://www.hdb.gov.sg/hdb-pulse/news/2024/measures-to-cool-the-hdb-resale-market-and-provide-more-support-for-first-time-home-buyers"
+    }
+  ],
+  "policy_definition": "Cumulative selected HDB cooling-package indicators, active first full following month; events unknown at origin excluded from future path.",
+  "policy_interpretation": "Predictive step regressor only; packages differ, are endogenous and include offsetting grants; no causal interpretation.",
+  "supply_definition": "Units sold by flat type in current block inventory, grouped by region and year_completed + 5; log1p annual cohort count, lagged one month.",
+  "supply_limitations": [
+    "Not actual MOP completion or listing supply: key collection/occupation/exceptions unavailable.",
+    "Current stock and address mapping, including survivor/revision bias; proxy experiment not vintage-correct supply forecast.",
+    "Contract-town codes inferred from unambiguous regional addresses include newer untransacted blocks; unmapped codes outside team geography omitted.",
+    "No within-year completion dates; no actual future transactions used to count supply."
+  ],
+  "proxy_version": "completion-cohort-contract-town-v2",
+  "address_mapped_blocks": 8772,
+  "contract_code_added_blocks": 4402,
+  "contract_town_to_region": {
+    "AMK": "NORTH-EAST",
+    "BB": "WEST",
+    "BD": "EAST",
+    "BH": "CENTRAL",
+    "BM": "CENTRAL",
+    "BP": "WEST",
+    "BT": "CENTRAL",
+    "CCK": "WEST",
+    "CL": "WEST",
+    "CT": "CENTRAL",
+    "GL": "CENTRAL",
+    "HG": "NORTH-EAST",
+    "JE": "WEST",
+    "JW": "WEST",
+    "KWN": "CENTRAL",
+    "MP": "CENTRAL",
+    "PG": "NORTH-EAST",
+    "PRC": "EAST",
+    "QT": "CENTRAL",
+    "SB": "NORTH",
+    "SGN": "NORTH-EAST",
+    "SK": "NORTH-EAST",
+    "TAP": "EAST",
+    "TP": "CENTRAL",
+    "WL": "NORTH",
+    "YS": "NORTH"
+  },
+  "mapped_blocks": 13174,
+  "unmapped_blocks": 183,
+  "mapped_sold_units": {
+    "3 ROOM": 249343,
+    "4 ROOM": 463452,
+    "5 ROOM": 260550
+  },
+  "property_information_sha256": "ade1945bfecb2c83abf21db032defdf4e6e3257989c7a0620a014fa916057edf",
+  "sora_sha256": "1da284f3f0b26d89f6a0f68a3d79f0a55419f8b3714d6c8b750e83bef0ed2360",
+  "mop_reference": "https://www.hdb.gov.sg/managing-my-home/home-ownership/acquiring-private-property",
+  "dm_reference": "https://www.sciencedirect.com/science/article/pii/S0169207096007194",
+  "dm_caution_reference": "https://economics.sas.upenn.edu/sites/default/files/filevault/12-035.pdf"
+}

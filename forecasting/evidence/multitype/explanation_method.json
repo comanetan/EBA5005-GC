@@ -1,0 +1,12 @@
+{
+  "origin": "2025-09",
+  "segments": 15,
+  "method": "Permutation-sampled interventional Shapley values; custom estimator, not DeepSHAP/TreeSHAP.",
+  "background": "Pooled training-only windows, same September 2025 origin.",
+  "permutations": 128,
+  "limitations": [
+    "Explains lagged market changes, not direct SORA/lease/MRT effects or economic causality.",
+    "Adjacent lags are correlated; independent replacement may create unusual histories.",
+    "Fixed benchmark explanation at a historical origin; does not explain a different selected model."
+  ]
+}

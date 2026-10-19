@@ -1,4 +1,11 @@
-# Yi Ling's preliminary HDB forecasting
+# Yi Ling's HDB forecasting
+
+**Current deliverable (19 October):** three-, four- and five-room flats across
+five regions. Use [MULTITYPE_HANDOVER.md](MULTITYPE_HANDOVER.md) and
+`multitype_api.MultiTypeForecaster`. The callable PKL is
+`models/multitype/forecast_model.pkl`. See [PROPOSAL_ALIGNMENT.md](PROPOSAL_ALIGNMENT.md)
+for scope, model selection, regressors, Diebold–Mariano checks and limitations.
+The four-room sections below preserve the earlier implementation history.
 
 **19 October final review:** start with [FINAL_REVIEW.md](FINAL_REVIEW.md) for
 town validation, joint scenarios, LSTM explanations, residual diagnostics and

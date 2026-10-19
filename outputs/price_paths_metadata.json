@@ -13,6 +13,6 @@
     "Latest check had poor nominal 90% coverage; inspect models/regional/regional_metrics.csv.",
     "Excludes profile valuation, hedonic-index estimation and model-selection uncertainty.",
     "Static amenity snapshots and historical data vintages limit retrospective validity.",
-    "Joint temporal/cross-region simulation is not implemented."
+    "Legacy point adapter supplies marginal quantiles; use MultiTypeForecaster for current joint simulation."
   ]
 }
