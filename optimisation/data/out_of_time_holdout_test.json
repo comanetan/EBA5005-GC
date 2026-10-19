@@ -2,70 +2,70 @@
   "label": "v2_block_informed_empirical_band",
   "k": 5,
   "baseline_extended_11x4": {
-    "picks": 220.0,
-    "share_within_budget_12m": 0.994413407821229,
-    "share_with_matching_sale_seen": 0.8136363636363636,
-    "median_realised_price_CV_pct": 7.475109771854255,
-    "median_pick_mrt_km": 0.5733420600750202,
-    "median_realised_vs_cutoff_pct": 8.800000000000008,
-    "within_budget_95ci_lo": 0.969,
-    "within_budget_95ci_hi": 0.999
+    "picks": 218.0,
+    "share_within_budget_12m": 0.9831460674157303,
+    "share_with_matching_sale_seen": 0.8165137614678899,
+    "median_realised_price_CV_pct": 7.684283431821759,
+    "median_pick_mrt_km": 0.565449900989863,
+    "median_realised_vs_cutoff_pct": 9.653437019902622,
+    "within_budget_95ci_lo": 0.952,
+    "within_budget_95ci_hi": 0.994
   },
   "new_holdout_cutoffs_all": {
-    "picks": 40.0,
+    "picks": 36.0,
     "share_within_budget_12m": 0.9230769230769231,
-    "share_with_matching_sale_seen": 0.65,
-    "median_realised_price_CV_pct": 6.21093743049862,
-    "median_pick_mrt_km": 0.6405355549814362,
-    "median_realised_vs_cutoff_pct": 3.5174192256039793,
+    "share_with_matching_sale_seen": 0.7222222222222222,
+    "median_realised_price_CV_pct": 7.172974183654193,
+    "median_pick_mrt_km": 0.6039047231753882,
+    "median_realised_vs_cutoff_pct": 2.245042953227716,
     "within_budget_95ci_lo": 0.759,
     "within_budget_95ci_hi": 0.979
   },
   "new_holdout_per_cutoff": [
     {
       "cutoff": "2025-08-01",
-      "picks": 20,
+      "picks": 18,
       "n_scored": 13,
       "share_within_budget_12m": 0.9230769230769231,
       "within_budget_95ci": [
         0.667,
         0.986
       ],
-      "share_with_matching_sale_seen": 0.65,
-      "median_realised_cell_cv_pct": 6.768335792600223
+      "share_with_matching_sale_seen": 0.7222222222222222,
+      "median_realised_cell_cv_pct": 7.172974183654193
     },
     {
       "cutoff": "2025-09-01",
-      "picks": 20,
+      "picks": 18,
       "n_scored": 13,
       "share_within_budget_12m": 0.9230769230769231,
       "within_budget_95ci": [
         0.667,
         0.986
       ],
-      "share_with_matching_sale_seen": 0.65,
-      "median_realised_cell_cv_pct": 4.744228016620399
+      "share_with_matching_sale_seen": 0.7222222222222222,
+      "median_realised_cell_cv_pct": 8.27577793542703
     }
   ],
   "new_holdout_safe_only": {
-    "picks": 20.0,
+    "picks": 18.0,
     "share_within_budget_12m": 0.9230769230769231,
-    "share_with_matching_sale_seen": 0.65,
-    "median_realised_price_CV_pct": 6.768335792600223,
-    "median_pick_mrt_km": 0.6246827626906182,
+    "share_with_matching_sale_seen": 0.7222222222222222,
+    "median_realised_price_CV_pct": 7.172974183654193,
+    "median_pick_mrt_km": 0.6039047231753882,
     "median_realised_vs_cutoff_pct": 3.1387345551040724,
     "within_budget_95ci_lo": 0.667,
     "within_budget_95ci_hi": 0.986
   },
   "combined_12x4": {
-    "picks": 240.0,
-    "share_within_budget_12m": 0.9895833333333334,
-    "share_with_matching_sale_seen": 0.8,
-    "median_realised_price_CV_pct": 7.103157942636702,
-    "median_pick_mrt_km": 0.5755441748541511,
-    "median_realised_vs_cutoff_pct": 8.571428571428562,
-    "within_budget_95ci_lo": 0.963,
-    "within_budget_95ci_hi": 0.997
+    "picks": 236.0,
+    "share_within_budget_12m": 0.9790575916230366,
+    "share_with_matching_sale_seen": 0.809322033898305,
+    "median_realised_price_CV_pct": 7.579696601838007,
+    "median_pick_mrt_km": 0.5656628359652519,
+    "median_realised_vs_cutoff_pct": 8.870967741935477,
+    "within_budget_95ci_lo": 0.947,
+    "within_budget_95ci_hi": 0.992
   },
   "safe_cutoffs": [
     "2025-08-01"

@@ -56,9 +56,13 @@ KNN_K = 8
 def prepared_sample():
     """Identical filtering to hedonic_value.py::fit_hedonic(as_of=None) -- same dropna
     columns (union of both formulas' needs) and same sample_n/seed draw, so both FE
-    variants are fit on the exact same rows."""
+    variants are fit on the exact same rows. 2026-10-19: flat_type exclusion updated to
+    match the production scope alignment (housing_profiles_v2.py / backtest_v2.py,
+    OPTIMISER_METHODOLOGY_REPORT.md Sec. 23) -- this test's own hedonic fit would
+    otherwise silently diverge from the actual production model it's meant to audit."""
+    from backtest_v2 import EXCLUDED_FLAT_TYPES
     df_all = ba.load_transactions_with_access()
-    df = df_all[df_all["flat_type"] != "MULTI-GENERATION"].copy()
+    df = df_all[~df_all["flat_type"].isin(EXCLUDED_FLAT_TYPES)].copy()
     d = df[df["month"] > df["month"].max() - pd.DateOffset(months=TRAIN_MONTHS)]
     if "dist_mrt_exit_km_at_sale" in d.columns:
         d = d.copy()

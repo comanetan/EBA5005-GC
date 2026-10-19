@@ -168,6 +168,12 @@ model's fully-filtered −0.03. Subzone FE is a genuine improvement, not a solve
 exactly what §15 already said about the MRT coefficient, now confirmed for the residuals
 directly instead of inferred from one number.
 
+**Refreshed 2026-10-20** after the flat-type scope alignment (§23): re-run on the
+2-ROOM/EXECUTIVE-free transaction set (69,712 rows, 2,478 scored blocks). Subzone-FE adj.
+R² 0.9481, Moran's I +0.3512; town-FE adj. R² 0.9270, Moran's I +0.5918 (unchanged). Same
+~40.6% reduction, same conclusion — numbers moved slightly with the smaller sample, the
+finding didn't.
+
 ---
 
 ## 6. Does 99.4% reliability hold on a cutoff never used in this project's own iteration history? ✅
@@ -203,3 +209,9 @@ number alone would suggest. This is the right way for a holdout test to end: not
 pass/fail, but a precise picture of where confidence is earned by volume (the pooled 11+
 cutoffs) and where it's still thin (any single new quarter) — a caveat worth carrying into
 every future reliability claim rather than treating 99.4% as self-renewing.
+
+**Refreshed 2026-10-20** after the flat-type scope alignment (§23): baseline now 98.3%
+[95.2%, 99.4%], 218 picks (consistent with §23's own fresh backtest). New holdout cutoff
+(2025-08-01): 92.3% [66.7%, 98.6%], 13 of 18 picks scored, matched-sale-seen 72.2%.
+Combined (12×4): 97.9% [94.7%, 99.2%]. Same conclusion — the single new cutoff remains
+statistically indistinguishable from the (now-98.3%) baseline.

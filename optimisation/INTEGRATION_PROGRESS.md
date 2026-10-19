@@ -25,6 +25,10 @@ Legend: 🟢 delivered & wired in · 🟡 delivered, not yet wired in (action is
 
 **One optional ask, not blocking:** their hedonic is fit against a different price basis than mine, which is why I currently suppress my own "bargain" signal (`shrunk_value_gap`) to $0 for every real-priced profile (see Finding 2 in `OPTIMISER_METHODOLOGY_REPORT.md`). If they're willing to share **block-level predicted price** (not just the profile aggregate), I could re-fit my own hedonic against their target and re-enable that signal instead of suppressing it. Not urgent — flagging for later.
 
+**Checked again (19–20 Oct):** no new commits on `main` since 17 Oct (`209c94b`). Two things found while checking, both now acted on or logged:
+1. ✅ **Re-ran the crosswalk adapter** against the current (post-scope-alignment) 1,013-profile universe — `pricing_today.csv`/`availability.csv` were one day stale (18 Oct, still built against the pre-2-ROOM/EXECUTIVE-removal 1,184 profiles). Refreshed coverage: **958/1,013 (94.6%)** for both files, median price SE $30,431, median wait 1.0 months.
+2. ⚪ **Not yet run, a real opportunity:** `outputs/backtest/2024-12/optimisation/{pricing_today,availability}.csv` — their own 2024-12 backtest snapshot, built explicitly (per their `docs/model_validation.md`) to match this pipeline's 2025-01-01 cutoff. Never pulled or cross-checked against my own backtest at that cutoff. A genuine independent validation opportunity, sitting unused — not done as part of this update, flagged for a future session.
+
 ---
 
 ## 2. Forecasting Lead — 🟢 mostly delivered, wired in (19 Oct)
@@ -88,6 +92,10 @@ Current stub values (what every number is currently defaulting to, for scale):
 **Where this plugs in, so you can see it's not vaporware:** `optimisation/recommender_v2.py::preference_overrides_from_file()` already reads this exact schema and converts it into the recommender's internal weights — tested against the stub above. Drop in the real file at `optimisation/data/preferences.json` and re-run; **no code change needed on my end** unless your real field names differ from the stub (in which case, tell me the names and I'll extend the mapping, same function).
 
 **If the full conjoint isn't ready in time:** even partial coverage helps — e.g. just `per_km_closer_to_mrt` and `storey_band_premium` would already replace two of my five stubbed weights with real numbers.
+
+**Checked again (19–20 Oct):** still no branch, no `preferences.json`. Two things found while checking, neither changes the blocking status:
+- `Project/Conjoint/` has a real, usable **survey design** (`HDB_Conjoint_Design.xlsx` — 6 attributes, 8 tasks + 1 holdout × 3 alternatives) and a worked **demo analysis** on 200 *synthetic* respondents (`HDB_Conjoint_Demo_Results.xlsx`, and a later `...with_holdout_simulator_elasticity-v2 (1).xlsx` — same underlying synthetic fit, confirmed by matching every coefficient to full floating-point precision, just with extra holdout/simulator/elasticity tabs layered on top). Neither is real respondent data; both are explicitly template/demo material per the file's own README. Useful as a methodology reference for whoever runs the real survey, not usable as a stand-in.
+- A clarification was drafted for `per_year_remaining_lease` specifically: the recommender currently has no priced lease-preference term at all (lease is a hard `min_lease_yrs` floor only — see `recommender_v2.py` lines 104–107). If their conjoint tests lease as discrete levels (like the demo's 50/70/85/95-year bands), a single averaged $/year rate is what's needed, not the raw per-level breakdown.
 
 ---
 
