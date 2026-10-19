@@ -1,0 +1,17 @@
+{
+  "base_price_month": "2026-09",
+  "model_version": "multitype-v2-202609-8eb83b372bad-d41cf5b5",
+  "included_profiles": 1330,
+  "excluded_unsupported_profiles": 498,
+  "pricing_sha256": "dc05b5c3e204614d39525022fed42cb6118a9cdc4a2b21691b6f471d33614bd9",
+  "quantiles": "p10/p50/p90; central 80%; exploratory symmetric errors",
+  "warnings": [
+    "Selected using retrospective validation; later and quarterly periods are not pristine holdouts.",
+    "Static amenities, current block inventory and data vintages limit historical availability claims.",
+    "Supply is completion-cohort proxy, not actual MOP or listings; policy regressors are not causal effects.",
+    "21 overlapping quarterly paths; sign mirroring assumes symmetry; no 90% affordability guarantee.",
+    "All profiles within a regional flat-type segment share growth; individual valuation/availability uncertainty excluded.",
+    "Scenario challenger is separate from selected model; scenarios are assumptions, not probabilities.",
+    "Full-regressor challenger has sign-inconsistent economic responses; named macro scenarios are diagnostic only, not validated interventions."
+  ]
+}

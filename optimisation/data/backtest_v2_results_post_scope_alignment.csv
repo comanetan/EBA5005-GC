@@ -1,0 +1,219 @@
+cutoff,household,strategy,profile,price_at_cutoff,realised_price,realised_cell_cv,matched_sales_in_window,pick_mrt_km,budget,within_budget,matched_sale_seen
+2023-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Mid::Near,405000.0,395000.0,0.12531006248875526,2,0.3275680475824741,550000,1.0,True
+2023-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,358500.0,370000.0,0.06264727447047834,8,0.5523304464338417,550000,1.0,True
+2023-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,347000.0,,,0,0.1254559130306937,550000,,False
+2023-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Low::Mid,440000.0,455000.0,0.06362998634644981,3,0.5820671333221428,550000,1.0,True
+2023-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Mid::Mid,393000.0,,,0,0.4878814470266404,550000,,False
+2023-01-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Mid,552000.0,750000.0,0.1671667177953241,3,0.7334900843631919,750000,1.0,True
+2023-01-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::80+::High::Mid,555000.0,614000.0,0.041112990681914756,8,0.6842961314622543,750000,1.0,True
+2023-01-01,"Family, needs primary school",v2_block_informed_empirical_band,TAMPINES::5ROOM::60-79::Low::Mid,600000.0,659000.0,0.04913553950298795,20,0.5957987794289575,750000,1.0,True
+2023-01-01,"Family, needs primary school",v2_block_informed_empirical_band,PUNGGOL::4ROOM::80+::High::Mid,590000.0,640000.0,0.035634006831967976,8,0.6712455148701858,750000,1.0,True
+2023-01-01,"Family, needs primary school",v2_block_informed_empirical_band,SENGKANG::4ROOM::80+::High::Near,585000.0,661000.0,,1,0.30723322585614987,750000,1.0,True
+2023-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,358500.0,370000.0,0.06264727447047834,8,0.5523304464338417,450000,1.0,True
+2023-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::60-79::Mid::Far,354000.0,,,0,1.174405826356646,450000,,False
+2023-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Far,361500.0,,,0,1.1074207782531507,450000,,False
+2023-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,BUKIT PANJANG::3ROOM::60-79::Mid::Mid,342500.0,411944.0,0.04100403644423574,2,0.6257063631717437,450000,1.0,True
+2023-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Low::Mid,360000.0,,,0,0.4832893040923768,450000,,False
+2023-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Low::Mid,312500.0,340000.0,0.1326853203420877,13,0.4683847456002644,500000,1.0,True
+2023-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,MARINE PARADE::3ROOM::<60::Low::Far,386000.0,425000.0,0.1289203712721003,9,1.8746555812537304,500000,1.0,True
+2023-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Low::Mid,326000.0,330500.0,0.010697530728994667,2,0.6506506564333716,500000,1.0,True
+2023-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Low::Mid,310000.0,341500.0,0.27598191692873997,12,0.565449900989863,500000,1.0,True
+2023-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BISHAN::3ROOM::<60::Low::Near,300000.0,505000.0,0.014002114478941535,2,0.2922514584676077,500000,0.0,True
+2023-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Mid::Near,417500.0,507500.0,0.0626991234549648,2,0.31912695750322834,550000,1.0,True
+2023-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,347000.0,419000.0,0.17213577966832422,2,0.1254559130306937,550000,1.0,True
+2023-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,359500.0,382000.0,0.050717326987608495,5,0.5570516418179858,550000,1.0,True
+2023-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Mid::Mid,390000.0,440888.0,,1,0.4832893040923768,550000,1.0,True
+2023-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Mid::Near,384000.0,395000.0,,1,0.38290287851307947,550000,1.0,True
+2023-04-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Near,563000.0,608000.0,0.030002056378252512,4,0.3096125987385841,750000,1.0,True
+2023-04-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::80+::High::Mid,559000.0,624000.0,0.01789000747920406,4,0.6842961314622543,750000,1.0,True
+2023-04-01,"Family, needs primary school",v2_block_informed_empirical_band,PUNGGOL::4ROOM::80+::High::Mid,600000.0,704444.0,0.08241495412874686,6,0.6386110052811536,750000,1.0,True
+2023-04-01,"Family, needs primary school",v2_block_informed_empirical_band,TAMPINES::5ROOM::60-79::Low::Mid,617000.0,665000.0,0.060350951384495345,20,0.5990544743411526,750000,1.0,True
+2023-04-01,"Family, needs primary school",v2_block_informed_empirical_band,SENGKANG::5ROOM::60-79::Mid::Mid,572944.0,635000.0,0.059315184218742115,27,0.5824405398490345,750000,1.0,True
+2023-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,359500.0,382000.0,0.050717326987608495,5,0.5570516418179858,450000,1.0,True
+2023-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::60-79::Mid::Far,362000.0,385000.0,,1,1.143002872660889,450000,1.0,True
+2023-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Low::Mid,334500.0,354444.0,0.21317054780035083,10,0.5596230495858656,450000,1.0,True
+2023-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,347000.0,419000.0,0.17213577966832422,2,0.1254559130306937,450000,1.0,True
+2023-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,TOA PAYOH::3ROOM::60-79::Low::Far,350000.0,,,0,0.8460494394593127,450000,,False
+2023-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Low::Mid,320000.0,355000.0,0.1058476893521165,5,0.4594427037941332,500000,1.0,True
+2023-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Low::Mid,341500.0,370000.0,0.12868782754195837,11,0.6294455904758474,500000,1.0,True
+2023-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,340000.0,377500.0,0.16251578665088423,14,0.6048718257094822,500000,1.0,True
+2023-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,359500.0,382000.0,0.050717326987608495,5,0.5570516418179858,500000,1.0,True
+2023-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,JURONG WEST::3ROOM::80+::Mid::Far,420000.0,451944.0,0.04016504203549158,8,1.1605001489140003,500000,1.0,True
+2023-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Mid::Near,430000.0,500000.0,,1,0.31912695750322834,550000,1.0,True
+2023-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,350000.0,375000.0,,1,0.1254559130306937,550000,1.0,True
+2023-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Mid::Mid,385000.0,431000.0,,1,0.4832893040923768,550000,1.0,True
+2023-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Mid::Near,388000.0,415000.0,0.09575480408730593,5,0.3757357712632597,550000,1.0,True
+2023-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,370500.0,406000.0,0.04865171462046655,13,0.5617728372021299,550000,1.0,True
+2023-07-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Near,568000.0,610000.0,0.17877953909436714,5,0.3096125987385841,750000,1.0,True
+2023-07-01,"Family, needs primary school",v2_block_informed_empirical_band,SENGKANG::5ROOM::60-79::Mid::Mid,580000.0,650000.0,0.049908641911204955,31,0.5755441748541511,750000,1.0,True
+2023-07-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Mid::Mid,490000.0,532000.0,0.11704572388561875,13,0.582501320284554,750000,1.0,True
+2023-07-01,"Family, needs primary school",v2_block_informed_empirical_band,HOUGANG::4ROOM::60-79::Mid::Mid,535000.0,610888.0,0.08985877250296392,10,0.6035437467622516,750000,1.0,True
+2023-07-01,"Family, needs primary school",v2_block_informed_empirical_band,ANG MO KIO::4ROOM::60-79::Low::Mid,565000.0,,,0,0.5313977576249517,750000,,False
+2023-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Far,360000.0,,,0,0.8136975006073043,450000,,False
+2023-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Far,367000.0,372000.0,0.03087762948838003,10,1.056123972445642,450000,1.0,True
+2023-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::<60::Mid::Far,379000.0,398000.0,0.046298734187483225,15,0.9117969227871721,450000,1.0,True
+2023-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Low::Mid,365000.0,460000.0,,1,0.48239140500877653,450000,0.0,True
+2023-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Mid::Far,377594.0,413000.0,0.044515196878572,2,0.8590728138178089,450000,1.0,True
+2023-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Mid::Mid,342500.0,390000.0,0.10080421674533696,9,0.4773387982651543,500000,1.0,True
+2023-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,340000.0,345500.0,0.15535993177702542,14,0.6048718257094822,500000,1.0,True
+2023-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,MARINE PARADE::3ROOM::<60::Low::Far,418000.0,420000.0,0.12547772114325176,11,1.8674075889129973,500000,1.0,True
+2023-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Mid::Mid,360000.0,381500.0,0.09234763741611293,10,0.5675578346438301,500000,1.0,True
+2023-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Low::Near,397500.0,460000.0,0.05043869855848239,4,0.3106858674239826,500000,1.0,True
+2023-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Mid::Near,440000.0,485000.0,,1,0.3106858674239826,550000,1.0,True
+2023-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,355000.0,411000.0,,1,0.1200955727829972,550000,1.0,True
+2023-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Mid::Mid,384000.0,515000.0,,1,0.4832893040923768,550000,1.0,True
+2023-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Mid::Near,395400.0,441500.0,0.04324322331152159,2,0.35219190513210935,550000,1.0,True
+2023-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Near,368000.0,406000.0,0.07314897736412561,2,0.2665552617458439,550000,1.0,True
+2023-10-01,"Family, needs primary school",v2_block_informed_empirical_band,WOODLANDS::4ROOM::80+::High::Mid,596000.0,675000.0,,1,0.44576866458867,750000,1.0,True
+2023-10-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Near,578500.0,628000.0,0.019663426095487296,4,0.2817384036963404,750000,1.0,True
+2023-10-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Mid::Mid,492500.0,558000.0,0.11711624370715641,9,0.5742474105353673,750000,1.0,True
+2023-10-01,"Family, needs primary school",v2_block_informed_empirical_band,SENGKANG::5ROOM::60-79::Mid::Mid,590000.0,665000.0,0.04767862967221622,19,0.5466034912908095,750000,1.0,True
+2023-10-01,"Family, needs primary school",v2_block_informed_empirical_band,HOUGANG::4ROOM::60-79::Mid::Mid,538000.0,627500.0,0.10997923907378322,18,0.6052111262269237,750000,1.0,True
+2023-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,358000.0,420000.0,0.08565036836216332,9,0.5731563866956267,450000,1.0,True
+2023-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Far,370000.0,420000.0,0.08052195034808597,6,1.0427877262662546,450000,1.0,True
+2023-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Far,374500.0,,,0,0.8136975006073043,450000,,False
+2023-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Far,380000.0,,,0,0.8894855439673068,450000,,False
+2023-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,BUKIT PANJANG::3ROOM::60-79::Mid::Far,380000.0,427444.0,0.036352609371672714,10,0.9855088024409356,450000,1.0,True
+2023-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Mid::Mid,347500.0,367500.0,0.07475109771854255,10,0.5027194588544704,500000,1.0,True
+2023-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,MARINE PARADE::3ROOM::<60::Low::Far,402500.0,431500.0,0.09321294351038899,10,1.8531260438576251,500000,1.0,True
+2023-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,358000.0,420000.0,0.08565036836216332,9,0.5731563866956267,500000,1.0,True
+2023-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Low::Near,404000.0,480888.0,0.04932948535580548,5,0.3106858674239826,500000,1.0,True
+2023-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Mid,391000.0,419000.0,0.04253410407562083,14,0.5833772751273484,500000,1.0,True
+2024-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Low::Near,410000.0,477500.0,0.06663833539977934,2,0.30543745526252614,550000,1.0,True
+2024-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,370000.0,420000.0,,1,0.1665246644065447,550000,1.0,True
+2024-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Low::Near,387500.0,,,0,0.2449410917228239,550000,,False
+2024-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Near,385000.0,,,0,0.0146596487899257,550000,,False
+2024-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,WOODLANDS::3ROOM::80+::Mid::Near,455000.0,523000.0,0.05574012484515296,4,0.3750571548545293,550000,1.0,True
+2024-01-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Near,580000.0,645000.0,0.16597137265140754,5,0.2817384036963404,750000,1.0,True
+2024-01-01,"Family, needs primary school",v2_block_informed_empirical_band,WOODLANDS::4ROOM::80+::High::Mid,615000.0,707500.0,0.024986105342280834,2,0.4249204892574533,750000,1.0,True
+2024-01-01,"Family, needs primary school",v2_block_informed_empirical_band,HOUGANG::4ROOM::60-79::Mid::Mid,541000.0,661000.0,0.07768877584052399,12,0.6048522221573962,750000,1.0,True
+2024-01-01,"Family, needs primary school",v2_block_informed_empirical_band,SENGKANG::5ROOM::60-79::Mid::Mid,605000.0,680000.0,0.034160226231273474,17,0.5755441748541511,750000,1.0,True
+2024-01-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Mid::Mid,505000.0,532000.0,0.0836344841964942,11,0.6440060449472977,750000,1.0,True
+2024-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,365000.0,445000.0,0.1882587453945297,13,0.5822317422316277,450000,1.0,True
+2024-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Far,372888.0,405000.0,0.08704799443216193,11,1.0427877262662546,450000,1.0,True
+2024-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Far,374500.0,,,0,0.8136975006073043,450000,,False
+2024-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::<60::Low::Mid,365000.0,423000.0,0.08535897621097528,33,0.5832092666376081,450000,1.0,True
+2024-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Mid,370000.0,400000.0,0.05786672894221337,11,0.5304613363882421,450000,1.0,True
+2024-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Mid::Mid,350000.0,387500.0,0.16863817658832933,14,0.5027194588544704,500000,1.0,True
+2024-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,365000.0,445000.0,0.1882587453945297,13,0.5822317422316277,500000,1.0,True
+2024-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Mid::Mid,390944.0,424000.0,0.14090714188650122,10,0.5585819276025301,500000,1.0,True
+2024-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Mid,390000.0,432500.0,0.050918955963296916,6,0.5833772751273484,500000,1.0,True
+2024-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Low::Near,410000.0,477500.0,0.06663833539977934,2,0.30543745526252614,500000,1.0,True
+2024-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Mid::Near,450000.0,,,0,0.3106858674239826,550000,,False
+2024-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,370000.0,,,0,0.1200955727829972,550000,,False
+2024-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Low::Near,390000.0,,,0,0.2449410917228239,550000,,False
+2024-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Near,389000.0,460000.0,,1,0.09633588267796846,550000,1.0,True
+2024-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,WOODLANDS::3ROOM::80+::Mid::Near,455000.0,530000.0,,1,0.36241603299733427,550000,1.0,True
+2024-04-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Near,580000.0,631888.0,0.02345848198729795,6,0.2776046939336259,750000,1.0,True
+2024-04-01,"Family, needs primary school",v2_block_informed_empirical_band,WOODLANDS::4ROOM::80+::High::Mid,620000.0,708000.0,,1,0.4249204892574533,750000,1.0,True
+2024-04-01,"Family, needs primary school",v2_block_informed_empirical_band,SENGKANG::5ROOM::60-79::Mid::Mid,620000.0,698000.0,0.05582331495440647,25,0.5819996975515648,750000,1.0,True
+2024-04-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Mid::Mid,515000.0,580000.0,0.10765393106155277,13,0.6446962247321915,750000,1.0,True
+2024-04-01,"Family, needs primary school",v2_block_informed_empirical_band,HOUGANG::4ROOM::60-79::Mid::Mid,560000.0,620294.0,0.09247290243168925,14,0.6025941754366347,750000,1.0,True
+2024-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,369000.0,433000.0,0.3283224907154216,9,0.5537961981818681,450000,1.0,True
+2024-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Far,380000.0,380000.0,0.04061156533926518,4,1.0256224957953195,450000,1.0,True
+2024-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::<60::Low::Far,360000.0,410500.0,0.04651379077895561,14,0.9418412953548276,450000,1.0,True
+2024-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Mid,375000.0,420888.0,0.04838243531075705,9,0.5304613363882421,450000,1.0,True
+2024-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG EAST::3ROOM::60-79::Mid::Far,348000.0,,,0,1.3141170434653535,450000,,False
+2024-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,369000.0,433000.0,0.3283224907154216,9,0.5537961981818681,500000,1.0,True
+2024-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Mid,385000.0,435500.0,0.09288252484907802,8,0.5917236995300647,500000,1.0,True
+2024-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,MARINE PARADE::3ROOM::<60::Low::Far,397444.0,473500.0,0.06337392358183033,8,1.877628497103349,500000,1.0,True
+2024-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Mid::Mid,390944.0,412888.0,0.17569260526543776,9,0.570542784049122,500000,1.0,True
+2024-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Low::Mid,337444.0,364000.0,0.16370354457549388,16,0.44647065502310246,500000,1.0,True
+2024-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,SERANGOON::3ROOM::60-79::Mid::Near,458000.0,,,0,0.3106858674239826,550000,,False
+2024-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,374000.0,,,0,0.0736664811594497,550000,,False
+2024-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Low::Near,407500.0,466500.0,0.05608349604266294,2,0.2449410917228239,550000,1.0,True
+2024-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,391000.0,,,0,0.5570516418179858,550000,,False
+2024-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,CHOA CHU KANG::3ROOM::80+::Mid::Mid,418500.0,516000.0,,1,0.7393474548054818,550000,1.0,True
+2024-07-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Near,585500.0,631000.0,,1,0.2590600955598258,750000,1.0,True
+2024-07-01,"Family, needs primary school",v2_block_informed_empirical_band,WOODLANDS::4ROOM::80+::High::Mid,627000.0,735000.0,,1,0.4353445769230616,750000,1.0,True
+2024-07-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT BATOK::4ROOM::80+::Low::Mid,600000.0,632500.0,0.03912843848463109,2,0.6937000621293947,750000,1.0,True
+2024-07-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Mid::Mid,525000.0,570000.0,0.12712381332249492,11,0.6074495262047686,750000,1.0,True
+2024-07-01,"Family, needs primary school",v2_block_informed_empirical_band,HOUGANG::4ROOM::60-79::Mid::Near,620000.0,592000.0,0.08930372351422675,7,0.2943038369196796,750000,1.0,True
+2024-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Far,373000.0,403000.0,0.05534389369193214,19,1.0057103015651838,450000,1.0,True
+2024-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::<60::Low::Far,365000.0,415000.0,0.06908498003255649,17,0.9240815507820124,450000,1.0,True
+2024-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Far,374000.0,417500.0,0.014770920689548309,4,0.9255704155698921,450000,1.0,True
+2024-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,HOUGANG::3ROOM::<60::Mid::Far,378000.0,442500.0,0.0655327993330366,6,0.8073116497826317,450000,1.0,True
+2024-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG WEST::3ROOM::60-79::Mid::Near,372500.0,,,0,0.3834288569507022,450000,,False
+2024-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,MARINE PARADE::3ROOM::<60::Low::Near,405000.0,450000.0,0.0502398239864195,15,0.2213372340085461,500000,1.0,True
+2024-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,365000.0,442500.0,0.1319006771626789,14,0.6048718257094822,500000,1.0,True
+2024-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Mid,389000.0,438000.0,0.04324363701080915,13,0.6138314715334006,500000,1.0,True
+2024-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Mid::Mid,365000.0,398388.0,0.1484634929412424,12,0.5027194588544704,500000,1.0,True
+2024-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Mid::Mid,391888.0,430000.0,0.08716273521752041,11,0.5735277334544137,500000,1.0,True
+2024-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Low::Near,414000.0,480000.0,,1,0.2449410917228239,550000,1.0,True
+2024-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,380000.0,,,0,0.1665246644065447,550000,,False
+2024-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Mid::Mid,440888.0,,,0,0.4878814470266404,550000,,False
+2024-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,398444.0,,,0,0.5523304464338417,550000,,False
+2024-10-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Near,388000.0,390000.0,0.10878565864408422,2,0.2665552617458439,550000,1.0,True
+2024-10-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Near,608000.0,,,0,0.27967154881498313,750000,,False
+2024-10-01,"Family, needs primary school",v2_block_informed_empirical_band,WOODLANDS::4ROOM::80+::Mid::Near,611000.0,682500.0,0.04115176296479724,4,0.3334465640670475,750000,1.0,True
+2024-10-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Mid::Mid,526000.0,577500.0,0.07864611969734743,8,0.6440060449472977,750000,1.0,True
+2024-10-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT BATOK::4ROOM::80+::Low::Mid,612506.0,632500.0,0.03912843848463109,2,0.6752658406587473,750000,1.0,True
+2024-10-01,"Family, needs primary school",v2_block_informed_empirical_band,SENGKANG::5ROOM::60-79::Low::Mid,587500.0,653500.0,0.06064725037269501,6,0.5550497321664816,750000,1.0,True
+2024-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Far,375000.0,404000.0,0.0889814837483813,14,1.0057103015651838,450000,1.0,True
+2024-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::<60::Low::Far,378000.0,418000.0,0.06980072848934661,11,0.9190092759277853,450000,1.0,True
+2024-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Far,380000.0,407500.0,0.008676156824374816,2,0.887802551217586,450000,1.0,True
+2024-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG EAST::3ROOM::<60::Mid::Far,375000.0,355000.0,,1,0.9521798040635934,450000,1.0,True
+2024-10-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG WEST::3ROOM::60-79::Mid::Mid,373000.0,,,0,0.7178974756122973,450000,,False
+2024-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Mid::Mid,386500.0,461500.0,0.16066111438230418,8,0.6023490147848635,500000,1.0,True
+2024-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Mid::Mid,365000.0,386000.0,0.1639407223498045,9,0.5027194588544704,500000,1.0,True
+2024-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Low::Mid,376500.0,425888.0,0.04477417379344318,11,0.6204054340954892,500000,1.0,True
+2024-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,QUEENSTOWN::3ROOM::<60::Mid::Mid,392000.0,392500.0,0.10082285371273282,12,0.5795927253657968,500000,1.0,True
+2024-10-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Mid::Mid,392500.0,426500.0,0.13126065183217528,10,0.5537961981818681,500000,1.0,True
+2025-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Mid::Mid,440888.0,,,0,0.4832893040923768,550000,,False
+2025-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Low::Near,423944.0,485000.0,0.036205246957228286,4,0.2449410917228239,550000,1.0,True
+2025-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,400000.0,459000.0,,1,0.5728483241335315,550000,1.0,True
+2025-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Near,389000.0,410000.0,0.0060790273556231,4,0.2938707321252346,550000,1.0,True
+2025-01-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,411000.0,,,0,0.0736664811594497,550000,,False
+2025-01-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Mid::Near,615000.0,619000.0,0.020562071181515113,2,0.2776046939336259,750000,1.0,True
+2025-01-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT BATOK::4ROOM::80+::Low::Mid,610000.0,600000.0,,1,0.7121342836000422,750000,1.0,True
+2025-01-01,"Family, needs primary school",v2_block_informed_empirical_band,SEMBAWANG::5ROOM::60-79::Mid::Near,620000.0,675000.0,0.047584225299531824,11,0.32948678661151926,750000,1.0,True
+2025-01-01,"Family, needs primary school",v2_block_informed_empirical_band,CHOA CHU KANG::5ROOM::60-79::Mid::Mid,590000.0,616444.0,0.09123577231415199,18,0.6212575095257669,750000,1.0,True
+2025-01-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Mid::Mid,536500.0,565000.0,0.18305322641800162,9,0.5976174828133626,750000,1.0,True
+2025-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Far,378000.0,387500.0,0.06707569786852972,12,1.0427877262662546,450000,1.0,True
+2025-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG EAST::3ROOM::<60::Mid::Far,380000.0,380500.0,0.07684283431821759,6,0.9521798040635934,450000,1.0,True
+2025-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG WEST::3ROOM::60-79::Mid::Mid,377500.0,,,0,0.6962666153469905,450000,,False
+2025-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Low::Far,370000.0,389500.0,0.07080144920738217,2,0.985044179273588,450000,1.0,True
+2025-01-01,"Budget-first, car owner",v2_block_informed_empirical_band,HOUGANG::3ROOM::<60::Low::Far,379000.0,470000.0,0.06742556711952616,7,0.8505937661842315,450000,0.0,True
+2025-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Mid::Mid,391500.0,381500.0,0.13082182583875998,6,0.6023490147848635,500000,1.0,True
+2025-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Mid,400000.0,422888.0,0.10033110559078633,9,0.6204054340954892,500000,1.0,True
+2025-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Low::Mid,360000.0,388000.0,0.18399429713496454,12,0.4853009559467623,500000,1.0,True
+2025-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Low::Mid,368444.0,399000.0,0.08789364755118827,8,0.5676686542916469,500000,1.0,True
+2025-01-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,SERANGOON::3ROOM::<60::Low::Near,405000.0,482500.0,0.10270512685723833,6,0.31912695750322834,500000,1.0,True
+2025-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Low::Near,423944.0,541000.0,0.19866955774557343,2,0.2449410917228239,550000,1.0,True
+2025-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Mid::Mid,442500.0,,,0,0.4832893040923768,550000,,False
+2025-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,393000.0,,,0,0.1200955727829972,550000,,False
+2025-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,407250.0,,,0,0.5523304464338417,550000,,False
+2025-04-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Near,401888.0,422888.0,0.02877995616195178,3,0.3334486598201181,550000,1.0,True
+2025-04-01,"Family, needs primary school",v2_block_informed_empirical_band,TAMPINES::4ROOM::60-79::Mid::Mid,620000.0,650066.5,0.04102885818776185,20,0.5658757709406408,750000,1.0,True
+2025-04-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT BATOK::4ROOM::80+::Low::Mid,613753.0,633500.0,0.03683429167980437,2,0.7121342836000422,750000,1.0,True
+2025-04-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::Mid::Mid,540000.0,565000.0,0.10572603672667268,7,0.5602107345340686,750000,1.0,True
+2025-04-01,"Family, needs primary school",v2_block_informed_empirical_band,SEMBAWANG::5ROOM::60-79::Mid::Near,627500.0,657500.0,0.07815627042974012,8,0.3218133171869829,750000,1.0,True
+2025-04-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::60-79::Mid::Mid,623000.0,655000.0,0.05488635067045865,15,0.502378012583275,750000,1.0,True
+2025-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Far,380000.0,395000.0,0.11038520323973086,7,1.0694602186250293,450000,1.0,True
+2025-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG EAST::3ROOM::60-79::Mid::Far,365000.0,,,0,1.3141170434653535,450000,,False
+2025-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Low::Far,380000.0,370000.0,0.0,2,0.972164839955613,450000,1.0,True
+2025-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG WEST::3ROOM::<60::Low::Mid,375000.0,375000.0,0.10118726605135911,12,0.6405344732577494,450000,1.0,True
+2025-04-01,"Budget-first, car owner",v2_block_informed_empirical_band,WOODLANDS::3ROOM::<60::Mid::Mid,372888.0,435000.0,,1,0.7183909512468765,450000,1.0,True
+2025-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Mid::Mid,400000.0,409000.0,0.20143366563837156,12,0.6023490147848635,500000,1.0,True
+2025-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Low::Mid,385000.0,416500.0,0.07775587363483985,6,0.6013296795264945,500000,1.0,True
+2025-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Low::Mid,368000.0,423000.0,0.19934929697836629,8,0.565449900989863,500000,1.0,True
+2025-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Mid::Mid,384000.0,390000.0,0.25009575640802145,11,0.4610197630512507,500000,1.0,True
+2025-04-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::<60::Low::Far,390000.0,395000.0,0.06603624088840004,5,0.8994425320585234,500000,1.0,True
+2025-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::60-79::Mid::Mid,445000.0,,,0,0.4832893040923768,550000,,False
+2025-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,GEYLANG::3ROOM::60-79::Low::Near,423944.0,504000.0,0.11628498304478947,4,0.2449410917228239,550000,1.0,True
+2025-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BEDOK::3ROOM::60-79::Mid::Mid,402444.0,454000.0,,1,0.5335831350465398,550000,1.0,True
+2025-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,ANG MO KIO::3ROOM::60-79::Mid::Near,411000.0,,,0,0.1665246644065447,550000,,False
+2025-07-01,"Young couple, transit-reliant",v2_block_informed_empirical_band,BUKIT BATOK::3ROOM::60-79::Mid::Mid,407500.0,408000.0,0.03316999881272621,3,0.5298749886451182,550000,1.0,True
+2025-07-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT BATOK::4ROOM::80+::Low::Mid,615000.0,640000.0,0.0,3,0.7121342836000422,750000,1.0,True
+2025-07-01,"Family, needs primary school",v2_block_informed_empirical_band,JURONG WEST::5ROOM::80+::Low::Near,590000.0,,,0,0.2590600955598258,750000,,False
+2025-07-01,"Family, needs primary school",v2_block_informed_empirical_band,BUKIT PANJANG::4ROOM::60-79::High::Mid,592000.0,634000.0,0.06338624325114893,10,0.5366759307477301,750000,1.0,True
+2025-07-01,"Family, needs primary school",v2_block_informed_empirical_band,WOODLANDS::4ROOM::80+::High::Far,615000.0,,,0,0.963299196726776,750000,,False
+2025-07-01,"Family, needs primary school",v2_block_informed_empirical_band,CHOA CHU KANG::5ROOM::60-79::Mid::Mid,618000.0,647500.0,0.07033341701619211,22,0.6153951803599795,750000,1.0,True
+2025-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,TOA PAYOH::3ROOM::<60::High::Mid,370000.0,,,0,0.6483890698651683,450000,,False
+2025-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,WOODLANDS::3ROOM::60-79::Low::Far,362500.0,,,0,1.0109077006982066,450000,,False
+2025-07-01,"Budget-first, car owner",v2_block_informed_empirical_band,JURONG EAST::3ROOM::<60::Low::Far,365000.0,357500.0,0.14834407996920576,2,1.333761487199131,450000,1.0,True
+2025-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,KALLANG-WHAMPOA::3ROOM::<60::Low::Mid,370500.0,381500.0,0.12345403519921805,12,0.565449900989863,500000,1.0,True
+2025-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,BUKIT MERAH::3ROOM::<60::Mid::Mid,420000.0,417500.0,0.12673929422980182,10,0.6023490147848635,500000,1.0,True
+2025-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,GEYLANG::3ROOM::<60::Mid::Mid,390000.0,398000.0,0.18226238401466144,25,0.463745967479129,500000,1.0,True
+2025-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,CLEMENTI::3ROOM::<60::Mid::Mid,420000.0,425000.0,0.0920666845315508,11,0.6138314715334006,500000,1.0,True
+2025-07-01,"Retiree, downsizing, low storey",v2_block_informed_empirical_band,TOA PAYOH::3ROOM::<60::High::Mid,370000.0,,,0,0.6483890698651683,500000,,False

@@ -27,21 +27,21 @@ Legend: 🟢 delivered & wired in · 🟡 delivered, not yet wired in (action is
 
 ---
 
-## 2. Forecasting Lead — 🟡 delivered, narrower than I need
+## 2. Forecasting Lead — 🟢 mostly delivered, wired in (19 Oct)
 
-**What exists** (`forecasting` branch, last updated **12 Oct** — no newer commits, so my snapshot is current):
+**Updated 19 Oct.** Three new commits on `forecasting` today expanded real coverage from 4-ROOM only to **3-ROOM, 4-ROOM and 5-ROOM, all 26 towns** (`MULTITYPE_HANDOVER.md`). **2-ROOM and EXECUTIVE are now explicitly out of scope on their side** ("the API rejects them") — rather than leave those two running on the flat stub indefinitely with no path to a real forecast, this pipeline's own flat-type universe was aligned to match: **2-ROOM and EXECUTIVE removed entirely** (`housing_profiles_v2.py`, `backtest_v2.py`, `backtest.py` — see `OPTIMISER_METHODOLOGY_REPORT.md` §23 for every touchpoint). Profile count **1,184 → 1,013**.
 
 | File | Columns | Coverage |
 |---|---|---|
-| `outputs/price_paths.csv` | `profile_id, month, p10, p50, p90` (SGD) | **4-ROOM only**, regions North / North-East / East / West / Central |
-| `outputs/price_paths_metadata.json` | base month, model version, source hash, coverage/exclusions | — |
+| `forecasting/evidence/multitype/price_forecast.csv` | `town, flat_type, horizon_months, growth_factor, growth_factor_lower, growth_factor_upper` | **3/4/5-ROOM, all 26 towns** — already pre-aggregated to this pipeline's own grain, no crosswalk needed this time |
+| `forecasting/evidence/multitype/price_paths_metadata.json` | base month (2026-09), model version, coverage | — |
 
-I already wrote `forecasting_adapter.py` against this and it's live: it replaces the 4-ROOM rows of `price_forecast.csv` and leaves every other flat type on the flat 1.00 stub.
+`forecasting_adapter.py` rewritten against this (`build_price_forecast()`) — real coverage confirmed 26/26 towns × 3 types × 2 horizons, median `growth_factor` 1.0201 (6mo) / 1.0405 (12mo) vs. the stub's flat 1.00. Written to `price_forecast_live.csv` only (the live/production path) — deliberately **not** `price_forecast.csv` (the backtest's stub-only, time-invariant file), since their multitype model has one current snapshot, not dated as-of-cutoff snapshots, and using it for a historical cutoff would be look-ahead bias. Full rebuild + re-verification against both the extended backtest and a live-path isolation test — not assumed safe, see §23.
 
-**What I still need from them:**
-1. 🔴 **The same `price_paths.csv` for 2-ROOM, 3-ROOM, 5-ROOM, and EXECUTIVE.** Right now ~80% of my 708 profiles (everything that isn't 4-ROOM) still forecast zero growth. If full coverage isn't realistic by their deadline, even a single blended "all other flat types" series would beat the flat stub.
-2. ✅ **Checked (18 Oct):** their `REGIONAL_HANDOVER.md` warns **"do not independently sample these rows for Monte Carlo… joint simulation remains unimplemented."** Verified `monte_carlo.py`/`chance_constraint.py` don't do this — both only ever use the summary `growth_factor`/`growth_factor_lower`/`growth_factor_upper` columns to parameterise their own per-profile normal approximation (`simulate_price()`); neither loads or draws from their row-level `price_paths.csv` quantile table at all. Clean — no fix needed.
-3. ⚪ Low priority, from their `NEXT_STAGE.md`: MAS SORA rate series and cooling-measure dates are still "to collect" on their side. Doesn't block me today — their current ARIMA(0,1,1)-on-location-index model doesn't need them — but if they add an interest-rate regressor later, my `growth_factor` columns will change meaning and I'll need to re-validate the backtest.
+**What's left:**
+1. ⚪ Low priority, unchanged from before: MAS SORA rate series and cooling-measure dates still "to collect" on their side per their `NEXT_STAGE.md`-equivalent notes. Doesn't block today.
+2. ✅ **Re-checked (19 Oct):** their own `MULTITYPE_HANDOVER.md` flags *"`fcast_override` alone does not recompute deterministic `price_upper`."* Confirmed in `recommender_v2.py`: `assemble()` computes `price_upper` from `load_inputs()`'s forecast file before `_prepare()` ever sees `fcast_override` — so the fix is architectural (write the real file, as already done), not a code change to `_prepare()`/`assemble()`. No action needed beyond what §23 already did.
+3. ⚪ New, low priority: their handover flags **PuLP 4 removes `PULP_CBC_CMD`**, used throughout this pipeline's solver calls. Worth pinning the PuLP version before any environment upgrade; not urgent today.
 
 ---
 

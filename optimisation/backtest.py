@@ -33,8 +33,12 @@ def storey_band(storey_range):
 
 def build_profiles_as_of(raw_df, cutoff_date, lookback_months=12, min_txn=3):
     window_start = cutoff_date - pd.DateOffset(months=lookback_months - 1)
+    # 2026-10-19: 2 ROOM/EXECUTIVE excluded alongside MULTI-GENERATION, matching v2's own
+    # scope-alignment (backtest_v2.EXCLUDED_FLAT_TYPES) -- keeps the v1/naive comparison
+    # baselines apples-to-apples with v2 for archetypes that don't otherwise restrict
+    # flat_types (e.g. "Budget-first, car owner").
     window = raw_df[(raw_df["month"] >= window_start) & (raw_df["month"] <= cutoff_date)
-                     & (raw_df["flat_type"] != "MULTI-GENERATION")]
+                     & (~raw_df["flat_type"].isin(["MULTI-GENERATION", "2 ROOM", "EXECUTIVE"]))]
     grp = window.groupby(["town", "flat_type", "storey_band"]).agg(
         price_today=("resale_price", "median"),
         median_remaining_lease=("remaining_lease_yrs", "median"),

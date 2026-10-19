@@ -62,7 +62,13 @@ def build_profiles_v2(recent_months=12, min_txn=3, as_of=None, write=True, with_
     backtesting). With as_of, MRT distance/band use the rail network open on
     that date (no look-ahead to stations that opened later)."""
     df_all = load_transactions_with_access()
-    df_all = df_all[df_all["flat_type"] != "MULTI-GENERATION"].copy()
+    # 2026-10-19: 2 ROOM and EXECUTIVE dropped alongside MULTI-GENERATION -- the
+    # Forecasting Lead's new multitype model (OPTIMISER_METHODOLOGY_REPORT.md Sec. 23)
+    # only trains/supports 3 ROOM, 4 ROOM and 5 ROOM; keeping profiles the real forecast
+    # can never price would mean silently falling back to the flat stub for them forever,
+    # which is worse than not offering them. 1 ROOM (2 profiles total, negligible) is kept
+    # since it wasn't asked to be removed, though it remains stub-only regardless.
+    df_all = df_all[~df_all["flat_type"].isin(["MULTI-GENERATION", "2 ROOM", "EXECUTIVE"])].copy()
     df = df_all if as_of is None else network_as_of(df_all[df_all["month"] <= pd.Timestamp(as_of)], as_of)
     df["price_psm"] = df["resale_price"] / df["floor_area_sqm"]
     for k, (col, thr) in ESSENTIALS.items():

@@ -24,6 +24,11 @@ from housing_profiles_v2 import build_profiles_v2  # noqa: E402
 import recommender_v2 as rv2  # noqa: E402
 import backtest as bt1  # noqa: E402
 
+# 2026-10-19: 2 ROOM and EXECUTIVE dropped alongside MULTI-GENERATION, aligned to the
+# Forecasting Lead's new multitype model scope (3/4/5 ROOM only) -- see
+# OPTIMISER_METHODOLOGY_REPORT.md Sec. 23.
+EXCLUDED_FLAT_TYPES = ["MULTI-GENERATION", "2 ROOM", "EXECUTIVE"]
+
 CUTOFFS = ["2023-01-01", "2023-07-01", "2024-01-01", "2024-07-01", "2025-01-01", "2025-07-01"]
 
 ARCHETYPES = {
@@ -42,7 +47,9 @@ EXTENDED_CUTOFFS = sorted(CUTOFFS + ["2023-04-01", "2023-10-01", "2024-04-01", "
 
 EXTENDED_ARCHETYPES = {
     **ARCHETYPES,
-    "Retiree, downsizing, low storey": dict(budget=500_000, min_lease_yrs=50, flat_types=["2 ROOM", "3 ROOM"],
+    # 2026-10-19: flat_types was ["2 ROOM", "3 ROOM"] -- 2 ROOM dropped along with the
+    # Forecasting Lead's scope alignment (Sec. 23); downsizing persona kept, now 3-ROOM-only.
+    "Retiree, downsizing, low storey": dict(budget=500_000, min_lease_yrs=50, flat_types=["3 ROOM"],
                                             target_mrt_km=0.8, target_storey="Low", multipliers={"mrt": 0.7}),
 }
 
@@ -79,7 +86,7 @@ def cell_mrt(tx, cutoff, keys_vals, keys):
 
 def run(cutoffs=CUTOFFS, archetypes=ARCHETYPES, k=5, verbose=True):
     tx = load_transactions_with_access()
-    tx = tx[tx["flat_type"] != "MULTI-GENERATION"]
+    tx = tx[~tx["flat_type"].isin(EXCLUDED_FLAT_TYPES)]
     rows = []
     for c in cutoffs:
         C = pd.Timestamp(c)
@@ -124,7 +131,7 @@ def run_v2_variant(label, cutoffs=CUTOFFS, archetypes=ARCHETYPES, k=5, use_empir
     """Re-runs ONLY the v2 recommender under a variant (v1/naive picks don't change)."""
     from empirical_bands import empirical_growth_bands
     tx = load_transactions_with_access()
-    tx = tx[tx["flat_type"] != "MULTI-GENERATION"]
+    tx = tx[~tx["flat_type"].isin(EXCLUDED_FLAT_TYPES)]
     rows = []
     for c in cutoffs:
         C = pd.Timestamp(c)
@@ -155,7 +162,7 @@ def run_v2_chance_variant(label="v2_chance_constraint", alpha=0.90, cutoffs=CUTO
     recommender_v2.solve() since the start (query.alpha / chance_alpha) but never backtested until
     now -- this is the first historical evidence of whether it's worth using over the empirical band."""
     tx = load_transactions_with_access()
-    tx = tx[tx["flat_type"] != "MULTI-GENERATION"]
+    tx = tx[~tx["flat_type"].isin(EXCLUDED_FLAT_TYPES)]
     rows = []
     for c in cutoffs:
         C = pd.Timestamp(c)
