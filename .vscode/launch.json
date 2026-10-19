@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Forecasting: Daniel consumer demo",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "forecasting.demo_consumer",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true,
+      "args": ["--town", "HOUGANG", "--flat-type", "4 ROOM", "--price", "600000", "--horizon", "12"]
+    },
+    {
+      "name": "Forecasting: code freeze checks",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "forecasting.check_freeze",
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "justMyCode": true
+    }
+  ]
+}

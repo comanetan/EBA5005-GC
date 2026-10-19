@@ -1,0 +1,4 @@
+# Minimal consumer runtime, tested with Python 3.12. No fitting or PyTorch.
+numpy==2.5.3
+pandas==2.3.3
+scipy==1.18.1

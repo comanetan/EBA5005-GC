@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "model_version": "multitype-v2-202609-8eb83b372bad-d41cf5b5",
+  "segments": 15,
+  "profile_rows": 36,
+  "town_forecast_rows": 156,
+  "scenario_rows": 600,
+  "fixture": "Synthetic interface checks; does not measure forecast accuracy or final UI integration.",
+  "date": "2026-10-19",
+  "python_version": "3.12.14",
+  "isolation": "Separate inference-only package copy in a fresh venv; no raw data or training modules",
+  "training_libraries_installed": {
+    "torch": false,
+    "statsmodels": false,
+    "geopandas": false
+  },
+  "package_files": {
+    "__init__.py": "0f92455e4c66d5ed389ed10c6fe22c1a2d673b1124ebf2a57725f18f6c8f655f",
+    "regional_api.py": "ef4d6c99dc564e4ecdeaa7965b34a694ddbc90061f61cf82a8a4b8942cc8fcc0",
+    "multitype_api.py": "39623737315ef85170568140b5d7402802002160cccb753823b9efab9e684bc1",
+    "consumer_check.py": "a39223f9016cd79d6a751ccbae8d5a37e2fe0fe3473dfc6b588c37f823b72404",
+    "demo_consumer.py": "83892d9ee3f441f3762318210bb19170d93fe258483cba0d9adab1ae66d76d6f",
+    "requirements-inference.txt": "ba648a0127a3457715033368121501e63648be37db8cf76bf547dacb2a9526cc",
+    "models/multitype/manifest.json": "2f8b31eae26c6a7368e864b88bad40051f1dc8d59ffdad9aa935c8d062c11ce7",
+    "models/multitype/joint_errors.json": "cd3af7f649429241965dec2b88c0a7b0f9bdee8ad46f806c12c0eb81ac230d3d",
+    "models/multitype/forecast_model.pkl": "9b585ef9bde7b7800693c81402c5569edb96120359bd24412bb0223645e46be1"
+  }
+}

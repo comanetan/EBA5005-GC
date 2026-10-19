@@ -13,6 +13,11 @@ from .regional_api import RegionalForecaster
 DEFAULT_BUNDLE=Path(__file__).resolve().parent/'models/multitype/manifest.json'
 
 
+def _validate_draw_request(n_scenarios,horizon_months,seed):
+    for value,label,minimum,maximum in [(n_scenarios,'n_scenarios',1,100000),(horizon_months,'horizon_months',1,12),(seed,'seed',0,2**32-2)]:
+        if isinstance(value,bool) or not isinstance(value,int) or not minimum<=value<=maximum:raise ValueError(f'Invalid {label}')
+
+
 class MultiTypeForecaster(RegionalForecaster):
     def __init__(self,bundle=DEFAULT_BUNDLE):
         bundle_path=Path(bundle);self.metadata=json.loads(bundle_path.read_text())
@@ -40,7 +45,7 @@ class MultiTypeForecaster(RegionalForecaster):
         if isinstance(horizon_months,bool) or not isinstance(horizon_months,int) or not 1<=horizon_months<=12:
             raise ValueError('horizon_months must be an integer from 1 to 12')
         if base_price_sgd is not None:
-            if isinstance(base_price_sgd,bool) or not isinstance(base_price_sgd,(int,float)) or not math.isfinite(base_price_sgd) or base_price_sgd<=0:
+            if isinstance(base_price_sgd,(bool,np.bool_)) or not isinstance(base_price_sgd,(int,float,np.integer,np.floating)) or not math.isfinite(base_price_sgd) or base_price_sgd<=0:
                 raise ValueError('Base price must be positive and finite')
             if base_price_month!=m['origin']:raise ValueError('Base price and forecast origin must match')
         elif base_price_month is not None:raise ValueError('A base-price date requires a base price')
@@ -58,8 +63,7 @@ class MultiTypeForecaster(RegionalForecaster):
             interval_type='central_80_percent_exploratory_symmetric_errors',warnings=m['warnings'],forecasts=rows)
 
     def draw_market_paths(self,n_scenarios=2000,horizon_months=12,seed=42,scenario='selected'):
-        for value,label,minimum,maximum in [(n_scenarios,'n_scenarios',1,100000),(horizon_months,'horizon_months',1,12),(seed,'seed',0,2**32-2)]:
-            if isinstance(value,bool) or not isinstance(value,int) or not minimum<=value<=maximum:raise ValueError(f'Invalid {label}')
+        _validate_draw_request(n_scenarios,horizon_months,seed)
         rng=np.random.default_rng(seed);chosen=rng.integers(len(self.errors),size=n_scenarios)
         signs=rng.choice([-1,1],size=n_scenarios)
         if scenario=='selected':segments=self.metadata['segments'];errors=self.errors
@@ -73,6 +77,7 @@ class MultiTypeForecaster(RegionalForecaster):
             sampled_error_origins=np.asarray(self.scenario_metadata['source_origins'])[chosen],error_signs=signs,growth_factors=growth,warnings=self.metadata['warnings'])
 
     def simulate_paths(self,prices,base_price_month,n_scenarios=2000,horizon_months=12,seed=42,scenario='selected'):
+        _validate_draw_request(n_scenarios,horizon_months,seed)
         self.price_profiles(prices,base_price_month,horizon_months)  # Shared strict validation.
         if len(prices)*n_scenarios*horizon_months>2_000_000:raise ValueError('Request smaller batches: maximum two million rows')
         batch=self.draw_market_paths(n_scenarios,horizon_months,seed,scenario);rows=[]
@@ -100,18 +105,24 @@ class MultiTypeForecaster(RegionalForecaster):
 
 
 def run_joint_monte_carlo(shortlist,n_scenarios=2000,seed=42,base_price_month='2026-09',bundle=DEFAULT_BUNDLE,scenario='selected'):
+    _validate_draw_request(n_scenarios,12,seed)
     required={'profile_id','town','flat_type','price_today','survival_prob_6m','survival_prob_12m'}
     if not required.issubset(shortlist.columns) or shortlist.empty or shortlist.profile_id.duplicated().any():
         raise ValueError('Supply a nonempty unique shortlist with price and cumulative availability probabilities')
+    if shortlist.profile_id.isna().any() or shortlist.profile_id.astype(str).str.strip().eq('').any():
+        raise ValueError('Profile IDs cannot be missing or blank')
     if len(shortlist)*n_scenarios>2_000_000:raise ValueError('Request a smaller batch')
     api=MultiTypeForecaster(bundle)
     if base_price_month!=api.metadata['origin']:raise ValueError('Base prices must match the model origin')
     batch=api.draw_market_paths(n_scenarios,12,seed,scenario);rng=np.random.default_rng(seed+2);tables=[]
     for row in shortlist.itertuples(index=False):
+        if not isinstance(row.town,str):raise ValueError('Town must be a supported name')
         town=row.town.replace('KALLANG-WHAMPOA','KALLANG/WHAMPOA')
         region=api.metadata['town_to_region'].get(town);key=f'{region}::{row.flat_type}'
         if key not in api.segment_ids:raise ValueError(f'Unsupported profile segment {key}')
-        price=float(row.price_today);p6=float(row.survival_prob_6m);p12=float(row.survival_prob_12m)
+        if isinstance(row.price_today,(bool,np.bool_)):raise ValueError('Base price must be numeric, not a boolean')
+        try:price=float(row.price_today);p6=float(row.survival_prob_6m);p12=float(row.survival_prob_12m)
+        except (TypeError,ValueError) as exc:raise ValueError('Invalid price or cumulative availability') from exc
         if not np.isfinite(price) or price<=0 or not 0<=p6<=p12<=1:raise ValueError('Invalid price or cumulative availability')
         j=api.segment_ids.index(key);arrival=rng.random(n_scenarios)
         tables.append(pd.DataFrame(dict(profile_id=row.profile_id,scenario_id=batch['scenario_ids'],regime='joint_multitype_'+scenario,

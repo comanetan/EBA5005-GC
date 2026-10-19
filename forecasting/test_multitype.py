@@ -72,13 +72,16 @@ class ExpandedDeliveryTests(unittest.TestCase):
         for i in range(4):
             j=api.scenario_metadata['source_origins'].index(a['sampled_error_origins'][i])
             np.testing.assert_allclose(np.log(a['growth_factors'][i]/point),a['error_signs'][i]*api.errors[j],atol=1e-12)
-        for bad in [dict(n_scenarios=0),dict(horizon_months=True),dict(seed=-1)]:
+        for bad in [dict(n_scenarios=0),dict(n_scenarios='20'),dict(horizon_months=True),dict(seed=-1)]:
             with self.assertRaises(ValueError):api.draw_market_paths(**bad)
 
     def test_mixed_type_price_contract_and_cumulative_availability(self):
         api=MultiTypeForecaster()
         prices=pd.DataFrame(dict(profile_id=[f'HOUGANG|{ft}|80+|<500m|13+' for ft in ['3 ROOM','4 ROOM','5 ROOM']],price=[400000,500000,600000]))
         self.assertEqual(len(api.price_profiles(prices,'2026-09')),36)
+        bad=prices.copy();bad['price']=True
+        with self.assertRaises(ValueError):api.price_profiles(bad,'2026-09')
+        self.assertEqual(len(api.predict('NORTH','3 ROOM',base_price_sgd=np.int64(400000),base_price_month='2026-09')['forecasts']),12)
         paths=api.simulate_paths(prices,'2026-09',20);self.assertEqual(len(paths),720)
         shortlist=pd.DataFrame(dict(profile_id=['A','B','C'],town='HOUGANG',flat_type=['3 ROOM','4 ROOM','5 ROOM'],
             price_today=[400000,500000,600000],survival_prob_6m=.5,survival_prob_12m=.8))

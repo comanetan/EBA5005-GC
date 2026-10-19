@@ -73,8 +73,14 @@ class RegionalForecaster:
             parts = str(row.profile_id).split('|')
             if len(parts) != 5 or parts[0] not in self.metadata['town_to_region']:
                 raise ValueError(f'Invalid profile_id: {row.profile_id}')
+            if isinstance(row.price,(bool,np.bool_)):
+                raise ValueError('Profile price must be numeric, not a boolean')
+            try:
+                price=float(row.price)
+            except (TypeError,ValueError) as exc:
+                raise ValueError('Profile price must be a finite positive number') from exc
             result = self.predict(self.metadata['town_to_region'][parts[0]], parts[1],
-                                  horizon_months, float(row.price), base_price_month)
+                                  horizon_months, price, base_price_month)
             rows.extend(dict(profile_id=row.profile_id, month=r['month'],
                              p10=r['p10'], p50=r['p50'], p90=r['p90']) for r in result['forecasts'])
         return pd.DataFrame(rows, columns=['profile_id','month','p10','p50','p90'])

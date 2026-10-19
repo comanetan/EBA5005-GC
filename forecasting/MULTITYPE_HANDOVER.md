@@ -162,6 +162,35 @@ branch supplies the callable component, contracts, dated evidence and local test
 
 ## Reproduction
 
+For a quick consumer check without raw data or training libraries:
+
+```powershell
+python -m pip install -r forecasting/requirements-inference.txt
+python -m forecasting.consumer_check
+python -m forecasting.demo_consumer --town HOUGANG --flat-type "4 ROOM" --price 600000 --horizon 12
+```
+
+For the forecasting owner's full checks, using the existing training/test
+environment:
+
+```powershell
+python -m forecasting.check_freeze --with-optimiser
+```
+
+This runs the tests, checks the actual current pricing handover and calls the real
+solver/summarizer with a controlled synthetic fixture. It saves its reports under
+ignored `forecasting/outputs/freeze_check/`. It does not retrain the model. The
+optional solver check needs the isolated optimiser snapshot described below;
+omit `--with-optimiser` on a checkout without that snapshot.
+
+`prepare_consumer_package` copies only the consumer code and three runtime bundle
+files to `forecasting/outputs/consumer_package/`. Run `consumer_check` from that
+folder in a fresh environment with `requirements-inference.txt` to verify that
+the handover does not depend on raw data, PyTorch or statistical-model audit PKLs.
+
+VS Code includes run configurations for the consumer demo and freeze checks.
+Select your actual Python interpreter; older shared tasks use Unix paths.
+
 For training/evaluation, also install `requirements-lstm.txt`; raw team inputs and
 the local feature build are needed. Run from repository root:
 

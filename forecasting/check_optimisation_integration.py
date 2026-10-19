@@ -24,7 +24,7 @@ def load_module(name,path):
     return module
 
 
-def main(multitype=False):
+def main(multitype=False,report_path=None):
     ref=BASE/'outputs/team_replay/Project/notebooks/optimization_lead'
     rv=load_module('daniel_recommender',ref/'recommender_v2.py')
     mc=load_module('daniel_monte_carlo',ref/'monte_carlo.py')
@@ -91,10 +91,12 @@ def main(multitype=False):
             'Real-data replay needs the additional shared-folder sources listed in replay_sources.json; it is separate from this synthetic contract check.',
             'PuLP 3.3.0 tested; PuLP 4 removes PULP_CBC_CMD used by current optimiser.'])
     destination=BASE/('evidence/multitype' if multitype else 'evidence/final')
-    (destination/'optimisation_contract_check.json').write_text(json.dumps(report,indent=2),encoding='utf-8')
+    path=Path(report_path) if report_path else destination/'optimisation_contract_check.json'
+    path.parent.mkdir(parents=True,exist_ok=True)
+    path.write_text(json.dumps(report,indent=2),encoding='utf-8')
     print(json.dumps(report,indent=2))
 
 
 if __name__=='__main__':
-    parser=argparse.ArgumentParser();parser.add_argument('--multitype',action='store_true')
-    main(parser.parse_args().multitype)
+    parser=argparse.ArgumentParser();parser.add_argument('--multitype',action='store_true');parser.add_argument('--report-path',type=Path)
+    args=parser.parse_args();main(args.multitype,args.report_path)
