@@ -21,7 +21,7 @@ Legend: 🟢 delivered & wired in · 🟡 delivered, not yet wired in (action is
 
 **Done (18 Oct):**
 1. ✅ `pricing_availability_adapter.py` now has `build_from_native()`, a pass-through (not a crosswalk) that reads `outputs/optimisation/{pricing_today,availability}.csv` straight off the 17 Oct `main` snapshot. Re-ran it: coverage went from **682/708 (96.2%, 12 Oct crosswalk)** to **706/708 (99.7%, 17 Oct native)**. The old crosswalk functions are kept in the file for historical/backtest reproduction only.
-2. ⚠️ Still open: `price_today_se` in their new file is documented as `price × 0.052` (hold-out log-RMSE on unseen blocks) — a different definition from my old adapter's percentile-based approximation. Need to re-check `shrink_k` / anywhere I treat `price_today_se` as a profile-mean SE against this new definition.
+2. ✅ Resolved: `price_today_se` in their new file is documented as `price × 0.052` (hold-out log-RMSE on unseen blocks) — a different definition from my old adapter's percentile-based approximation. Audited every consumer; see the resolution table below — no live computation actually uses this column.
 
 **One optional ask, not blocking:** their hedonic is fit against a different price basis than mine, which is why I currently suppress my own "bargain" signal (`shrunk_value_gap`) to $0 for every real-priced profile (see Finding 2 in `OPTIMISER_METHODOLOGY_REPORT.md`). If they're willing to share **block-level predicted price** (not just the profile aggregate), I could re-fit my own hedonic against their target and re-enable that signal instead of suppressing it. Not urgent — flagging for later.
 
