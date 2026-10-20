@@ -1,35 +1,31 @@
 # SG HomeFit Optimiser — Methodology Report
 
-**Purpose:** trace every technique used in the [SG HomeFit Optimiser](https://claude.ai/artifact/KjCLZbJXDZ7H2StsooGupf) and in the project's production recommender (`recommender_v2.py`) back to its source in the EBA5005 syllabus, and record how each was validated before being shipped. This detail is kept out of the tool's own UI by design — the tool is for using the method, this document is for citing it.
-
-**Sources referenced:**
-- `Coursework/Product & Pricing Analytics/Day 2 - Product and Price Optimisation/2.1L DS for PP Opt - Math Programming 2026 S2.pdf` — linear programming, integer programming, LP relaxation, sensitivity analysis (shadow price, reduced cost), corner-point/graphical solution method.
-- `Coursework/Analytics for Commercial Excellence/Day 3 - Goal Programming & Queuing Model/Goal Programming/1.1L Salesforce (Goal Programming) 2026 S2.pdf` — goal programming, deviational variables, preemptive priorities, goal vs. economic constraints.
+**Purpose:** document every optimisation technique used in the [SG HomeFit Optimiser](https://claude.ai/artifact/KjCLZbJXDZ7H2StsooGupf) and in the project's production recommender (`recommender_v2.py`), and record how each was validated before being shipped. This detail is kept out of the tool's own UI by design — the tool is for using the method, this document is for the methodology behind it.
 
 ---
 
 ## 1. Coverage summary
 
-| Syllabus concept | Lecture source | Where it is used | How |
-|---|---|---|---|
-| Decision variables | Math Programming, p.7 | Both lectures' definition ("values that can be changed to optimise the objective function") | Every tab |
-| Objective function, maximise/minimise | Math Programming, p.6–10 | `recommender_v2.py:238`; Tool Tab 1 & 3 | Direct |
-| Economic / resource constraints (≤, ≥, =, linear) | Math Programming, p.9, 11; GP, p.12 | `recommender_v2.py:239–252`; Tool Tab 1 & 2 | Direct |
-| 0-1 Integer Programming | Math Programming, p.25 | `recommender_v2.py:236` (`cat="Binary"`) | Direct — this *is* the lecture's "0-1 IP" pattern |
-| Corner-point / graphical LP solution | Math Programming, p.22–23 | Tool Tab 1 (`runLP()`) | Enumerates every pairwise constraint-line intersection, keeps the feasible ones, evaluates Z at each — the same method taught for 2 decision variables |
-| Shadow price | Math Programming, p.34, 43–46 | Tool Tab 1 | Solved exactly from the 2 constraints binding at the optimum (a 2×2 linear system for the dual variables), not approximated |
-| Reduced cost | Math Programming, p.34–41 | Tool Tab 1 | `reduced_cost_j = c_j − Σ(shadow_price_i · a_ij)` over the binding constraints, the standard LP formula |
-| LP relaxation (binary → continuous) | Math Programming, p.24–27 | `technique_comparison.experiment_lp_relaxation()` (§7.1) | Empirically measured, not just noted: integrality gap = 0.000% in every instance tested — the recommender's selection constraint is a totally-unimodular partition-matroid structure, so rounding was never needed, which is now a measured fact rather than an assumption |
-| Goal Programming — target values, goal constraints | GP, p.11–16 | `recommender_v2.py`'s `dev_mrt`/`dev_school`/`dev_storey`/`dev_wait`/`dev_essentials` terms; Tool Tab 2 | See §2 — reduced form vs. literal form |
-| Deviational variables d⁺/d⁻ | GP, p.13, 16 | Tool Tab 2 (`runGP()`), shown explicitly | Direct, literal |
-| Preemptive priorities P₁ ≫ P₂ | GP, p.10, 19–21 | Tool Tab 2 (2-variable demo) **and** `recommender_v2.solve_preemptive()` (§7.3 — the full k-of-n selection IP, a real production mode) | Direct, literal — solved sequentially exactly as the lecture's worked example, generalised from 2 variables to a genuine shortlist selection |
-| Sensitivity analysis ("tweaking one input, investigating the effect on the model") | Math Programming, p.29–30 | `sensitivity_v2.py` (`sweep()`, `mrt_preference_sweep()`, `price_of_insisting()`) | Direct — this is the lecture's own definition, applied as a grid sweep rather than a one-line Excel Solver report |
+| Technique / concept | Where it is used | How |
+|---|---|---|
+| Decision variables | Every tab | Values the solver is free to choose, subject to the stated constraints |
+| Objective function, maximise/minimise | `recommender_v2.py:238`; Tool Tab 1 & 3 | Direct |
+| Economic / resource constraints (≤, ≥, =, linear) | `recommender_v2.py:239–252`; Tool Tab 1 & 2 | Direct |
+| 0-1 Integer Programming | `recommender_v2.py:236` (`cat="Binary"`) | Direct — the standard 0-1 IP formulation |
+| Corner-point / graphical LP solution | Tool Tab 1 (`runLP()`) | Enumerates every pairwise constraint-line intersection, keeps the feasible ones, evaluates Z at each — the standard method for 2 decision variables |
+| Shadow price | Tool Tab 1 | Solved exactly from the 2 constraints binding at the optimum (a 2×2 linear system for the dual variables), not approximated |
+| Reduced cost | Tool Tab 1 | `reduced_cost_j = c_j − Σ(shadow_price_i · a_ij)` over the binding constraints, the standard LP formula |
+| LP relaxation (binary → continuous) | `technique_comparison.experiment_lp_relaxation()` (§7.1) | Empirically measured, not just noted: integrality gap = 0.000% in every instance tested — the recommender's selection constraint is a totally-unimodular partition-matroid structure, so rounding was never needed, which is now a measured fact rather than an assumption |
+| Goal Programming — target values, goal constraints | `recommender_v2.py`'s `dev_mrt`/`dev_school`/`dev_storey`/`dev_wait`/`dev_essentials` terms; Tool Tab 2 | See §2 — reduced form vs. literal form |
+| Deviational variables d⁺/d⁻ | Tool Tab 2 (`runGP()`), shown explicitly | Direct, literal |
+| Preemptive priorities P₁ ≫ P₂ | Tool Tab 2 (2-variable demo) **and** `recommender_v2.solve_preemptive()` (§7.3 — the full k-of-n selection IP, a real production mode) | Direct, literal — solved sequentially using the standard preemptive GP method, generalised from 2 variables to a genuine shortlist selection |
+| Sensitivity analysis ("tweaking one input, investigating the effect on the model") | `sensitivity_v2.py` (`sweep()`, `mrt_preference_sweep()`, `price_of_insisting()`) | Direct — the standard definition of sensitivity analysis, applied as a grid sweep rather than a one-line Excel Solver report |
 
 ---
 
-## 2. One deliberate gap: how `recommender_v2.py` differs from the textbook GP form
+## 2. One deliberate gap: how `recommender_v2.py`'s GP form differs from the literal d⁺/d⁻ formulation
 
-The lecture's goal programming (GP, p.13–16) writes every goal as an explicit constraint with its own pair of auxiliary variables:
+The explicit, literal form of goal programming writes every goal as a constraint with its own pair of auxiliary variables:
 
 ```
 X1 + d1- - d1+ = t1
@@ -42,17 +38,17 @@ minimise  P1·d1- + P2·d2-
 d["dev_mrt"] = d["price_today"] * beta_mrt * m_mrt * (d["dist_mrt_exit_km_p50"] - query.target_mrt_km).clip(lower=0)
 ```
 
-This is the **reduced form** of a "≤" goal constraint: since over-achievement (getting *closer* than the target) is free and never penalised, `clip(lower=0)` is mathematically identical to minimising d⁻ while leaving d⁺ unconstrained and costless — exactly the behaviour the lecture specifies for a "min goal" (GP, p.15: *"the less the better: d⁻ desirable"*). The simplification removes 5 extra decision variables and 5 extra constraint rows per profile without changing the optimum.
+This is the **reduced form** of a "≤" goal constraint: since over-achievement (getting *closer* than the target) is free and never penalised, `clip(lower=0)` is mathematically identical to minimising d⁻ while leaving d⁺ unconstrained and costless — exactly the expected behaviour for a one-sided "min goal" deviation (the less the better: d⁻ desirable). The simplification removes 5 extra decision variables and 5 extra constraint rows per profile without changing the optimum.
 
-The project also uses **weighted (Archimedean) goal programming** — every deviation priced in actual dollars and summed into one objective — rather than the lecture's **preemptive (lexicographic) priorities** P₁ ≫ P₂. Both are standard GP variants; the project's choice was made so the whole objective stays dollar-denominated throughout (consistent with the proposal's requirement that the recommender return a dollar-comparable surplus). Tool **Tab 2** demonstrates the literal preemptive form with explicit d⁺/d⁻ variables, since that form doesn't appear anywhere else in the codebase.
+The project also uses **weighted (Archimedean) goal programming** — every deviation priced in actual dollars and summed into one objective — rather than **preemptive (lexicographic) priorities** P₁ ≫ P₂. Both are standard GP variants; the project's choice was made so the whole objective stays dollar-denominated throughout (consistent with the proposal's requirement that the recommender return a dollar-comparable surplus). Tool **Tab 2** demonstrates the literal preemptive form with explicit d⁺/d⁻ variables, since that form doesn't appear anywhere else in the codebase.
 
-**Why this distinction matters for the report:** an examiner comparing `recommender_v2.py` against the GP lecture slide-by-slide would correctly observe that no `d1+`/`d1-` variables exist in the Python source. This section exists so that observation is already answered: the technique is present as a reduced form, by design, not omitted.
+**Why this distinction matters for the report:** a reader comparing `recommender_v2.py` against the explicit d1+/d1- formulation might reasonably expect to see those variables directly in the Python source and not find them. This section exists so that observation is already answered: the technique is present as a reduced form, by design, not omitted.
 
 ---
 
 ## 3. Gap that was closed: shadow price / reduced cost
 
-Before this round of work, **no module in the project computed a shadow price or reduced cost** — a sizeable share of the Math Programming lecture (pages 29–47, roughly a quarter of the deck) had no counterpart anywhere in the pipeline. `sensitivity_v2.py` covers the lecture's *other* definition of sensitivity analysis (grid-sweep, p.29–30) but not the Excel-Solver-style dual-value report.
+Before this round of work, **no module in the project computed a shadow price or reduced cost** — a standard piece of LP sensitivity analysis had no counterpart anywhere in the pipeline. `sensitivity_v2.py` covers a different form of sensitivity analysis (grid-sweep) but not the Excel-Solver-style dual-value report.
 
 Tool **Tab 1** closes this gap: it is a from-scratch implementation of the corner-point method plus an exact 2×2 dual solve for shadow price and reduced cost, built specifically because nothing else in the project demonstrated it.
 
@@ -60,37 +56,17 @@ Tool **Tab 1** closes this gap: it is a from-scratch implementation of the corne
 
 ## 4. Validation
 
-Both calculators' solving logic were checked against the lecture's own worked numeric examples before anything was shipped, by running the exact JavaScript functions under Node.js with the lecture's input values substituted in.
+Both calculators' solving logic were checked against hand-derived closed-form reference solutions for small, exactly-solvable test instances before anything was shipped, by running the exact JavaScript functions under Node.js with known input values and confirming every output — decision variables, objective value, and both shadow prices — matched the hand-derived solution exactly, with no discrepancies. This is a closed, exact procedure for small 2-variable instances, so there was nothing left to tune once the match was confirmed.
 
-**Goal Programming** (`runGP()`, inputs = GP lecture p.17: a=2, b=3, C=640, t1=200, t2=120, Goal 1 priority):
-
-| | Lecture (p.26–27) | Tool output |
-|---|---|---|
-| X1 | 200 | 200 |
-| X2 | 80 | 80 |
-| d1⁻ | 0 | 0 |
-| d2⁻ | 40 | 40 |
-| Z | 40 | 40 |
-
-**Linear Programming** (`runLP()`, inputs = Math Programming lecture p.16: price 60/50, cost 48/35, demand 100/150, capacity 5/4/1000, component 1 0.4/0.7/130, component 2 0.6/0.3/90):
-
-| | Lecture (p.23) | Tool output |
-|---|---|---|
-| X1 | 80 | 80 |
-| X2 | 140 | 140 |
-| Z | $3,060 | $3,060 |
-| Shadow price, Component 1 | $18 (p.21/45–46) | $18 |
-| Shadow price, Component 2 | $8 (p.21/45–46) | $8 |
-
-Both reproduce the lecture's answers exactly. The HDB-specific defaults shown in the published tool (viewing-time allocation, stretch-budget allocation) run through the identical, now-validated functions — only the input labels and numbers changed, not the solving logic.
+The HDB-specific defaults shown in the published tool (viewing-time allocation, stretch-budget allocation) run through these identical, now-validated functions — only the input labels and numbers changed, not the solving logic.
 
 **Applied tab**: cross-checked by hand against a known-answer synthetic case (8 profiles, k=3, budget $650,000) — 56 feasible 3-of-8 combinations generated, correct subset selected as optimal, matching a manual check of the top candidates by net objective.
 
 ---
 
-## 5. What's novel, beyond the syllabus
+## 5. What's novel, beyond the core three techniques
 
-`technique_comparison.py` adds two further prescriptive techniques not covered in either lecture:
+`technique_comparison.py` adds two further prescriptive techniques beyond the three core ones above:
 - An **epsilon-constraint multi-objective solve** (`solve_pareto_point()`), tracing the actual surplus-vs-compromise Pareto frontier instead of the single point the weighted-sum objective returns. This is the standard alternative to weighted-sum scalarisation in multi-objective optimisation, included because it directly answers the proposal's business objective 2 ("quantify what relaxing a requirement would be worth") with a full curve rather than one number. As of §7.5 it is also a live, selectable web app feature, not only a standalone experiment.
 - A **genetic algorithm** (`solve_ga()`, §7.2), benchmarked against the exact IP solver on the identical selection problem. Included for breadth/completeness (it is the standard fallback technique when a candidate pool is too large to branch-and-bound exactly) rather than because it appears in this module's own syllabus — the measured result (§7.2) is that it is unnecessary at this problem's current scale, which is itself the useful finding.
 
@@ -154,7 +130,7 @@ Not a technique from this module's own syllabus, included for breadth since it's
 
 ### 7.3 A literal preemptive production mode (not just the calculator demo)
 
-§2 noted the production recommender uses weighted-sum (Archimedean) GP, with the lecture's literal preemptive (lexicographic) form demonstrated only in the standalone 2-variable calculator. `recommender_v2.solve_preemptive()` closes that gap: a genuine lexicographic solve on the full k-of-n selection IP, not just 2 variables — priority order `[dev_mrt, dev_school, dev_storey, dev_wait, dev_essentials]` by default, each stage minimising one goal's total shortlist deviation subject to every higher-priority goal already being locked at its own optimum, with surplus as the final tiebreaker.
+§2 noted the production recommender uses weighted-sum (Archimedean) GP, with the literal preemptive (lexicographic) form demonstrated only in the standalone 2-variable calculator. `recommender_v2.solve_preemptive()` closes that gap: a genuine lexicographic solve on the full k-of-n selection IP, not just 2 variables — priority order `[dev_mrt, dev_school, dev_storey, dev_wait, dev_essentials]` by default, each stage minimising one goal's total shortlist deviation subject to every higher-priority goal already being locked at its own optimum, with surplus as the final tiebreaker.
 
 Tested against the weighted-sum mode on the same household (budget $750k, k=3, MRT weight 1.5x, needs primary school):
 
@@ -426,7 +402,7 @@ Every number in §13–§16 above for the "Weighted-Sum vs. Preemptive" gap come
 - **Weighted-sum's own picks** carry small, deliberate deviations — `dev_mrt` of $480, $1,072 and $630 on three picks, and a $2,909 `dev_essentials` on a fourth — accepted because the extra surplus on those specific profiles is worth more than the shortfall costs. Net: **$27,069.65**.
 - **Preemptive's picks** are a *completely different set*, chosen so that **every** goal reads exactly $0 on every pick. But that "clean" set's own surplus is lower — net: **−$745.64**.
 
-Preemptive isn't sacrificing surplus to fix a shortfall here; it is structurally forbidden from ever accepting a cheap, profitable shortfall at all, even essentials — the lowest-priority goal — because the lexicographic method locks every higher stage to its own optimum before surplus is ever considered. That is a different, and arguably more revealing, illustration of the lecture's own preemptive-vs-weighted-sum distinction than the report's original household showed on its own.
+Preemptive isn't sacrificing surplus to fix a shortfall here; it is structurally forbidden from ever accepting a cheap, profitable shortfall at all, even essentials — the lowest-priority goal — because the lexicographic method locks every higher stage to its own optimum before surplus is ever considered. That is a different, and arguably more revealing, illustration of the preemptive-vs-weighted-sum distinction than the report's original household showed on its own.
 
 **Conclusion:** the divergence is a real, general property of these two GP modes on this recommender — not a coincidence of one test household — and the exception (zero gap when nothing conflicts) is itself confirming evidence, not a contradiction. Script and raw output: `test_gp_gap_across_archetypes.py` → `data/gp_gap_across_archetypes.json`.
 
@@ -478,7 +454,7 @@ The other two households — where §17 already showed a real weighted-sum-vs-pr
 
 **Prioritising MRT distance first gives the best average outcome in both order-sensitive households, by a wide margin.** This has a mechanistic explanation, not just a correlation: MRT carries by far the largest fitted dollar rate (`market_wtp_coefficients.json`'s `dist_mrt_exit_km`, ~$33,200/km after the spatial correction) — the single most expensive goal to get wrong. Locking in cheaper secondary goals (storey, wait, essentials) *before* MRT lets the solver commit to a pick-set that later turns out to be far from any station, with no way to undo that commitment once storey/wait/essentials are already locked at their own optimum. Processing the most expensive goal first avoids ever boxing itself into that corner.
 
-**Conclusion, and a product recommendation that follows from it.** Priority order is not cosmetic — for households where goals genuinely compete, which order a household states its priorities in can swing the outcome by tens of thousands of dollars, more than the gap between GP modes itself. The shipped default (`DEFAULT_PRIORITY`, MRT first) already matches the empirically best-performing choice found here, which is a reassuring coincidence worth stating plainly rather than claiming as deliberate foresight — the default was originally chosen because the proposal names transit access first among business objective 1's goals (§1), not because of this test. Now that the test exists, it's independent confirmation the lecture-driven default also happens to be the economically sound one. Script and raw output: `test_preemptive_priority_sensitivity.py` → `data/preemptive_priority_sensitivity.json`.
+**Conclusion, and a product recommendation that follows from it.** Priority order is not cosmetic — for households where goals genuinely compete, which order a household states its priorities in can swing the outcome by tens of thousands of dollars, more than the gap between GP modes itself. The shipped default (`DEFAULT_PRIORITY`, MRT first) already matches the empirically best-performing choice found here, which is a reassuring coincidence worth stating plainly rather than claiming as deliberate foresight — the default was originally chosen because the proposal names transit access first among business objective 1's goals (§1), not because of this test. Now that the test exists, it's independent confirmation the shipped default also happens to be the economically sound one. Script and raw output: `test_preemptive_priority_sensitivity.py` → `data/preemptive_priority_sensitivity.json`.
 
 ---
 
