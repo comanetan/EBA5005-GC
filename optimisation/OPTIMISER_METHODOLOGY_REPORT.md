@@ -390,19 +390,21 @@ Every number in §13–§16 above for the "Weighted-Sum vs. Preemptive" gap come
 
 | Archetype | Weighted-sum objective | Preemptive objective | Gap | Shared picks |
 |---|---|---|---|---|
-| Young couple, transit-reliant | −$13,286.90 | −$36,366.10 | **$23,079.20** | 3/5 |
-| Family, needs primary school | $115,270.25 | −$10,212.79 | **$125,483.04** | 1/5 |
-| Budget-first, car owner | $27,069.65 | −$745.64 | **$27,815.29** | 1/5 |
-| Retiree, downsizing, low storey | $151,468.19 | $151,468.19 | **$0.00** | 5/5 |
+| Young couple, transit-reliant | $543,509.79 | $507,785.19 | **$35,724.60** | 4/5 |
+| Family, needs primary school | −$246,726.19 | −$513,440.81 | **$266,714.62** | 2/5 |
+| Budget-first, car owner | −$66,060.26 | −$68,572.24 | **$2,511.98** | 4/5 |
+| Retiree, downsizing, low storey | $218,028.87 | $218,028.87 | **$0.00** | 5/5 |
 
-**Reading it — the finding generalises, with one genuinely informative exception.** 3 of 4 archetypes show a real, substantial gap ($23K–$125K) — this is not an artefact of the one household used throughout the report; the project's own "Family, needs primary school" archetype (budget $750k, needs primary school) is structurally the closest to that household, and shows the largest gap of all four, $125,483.04. The one archetype with a **$0 gap** (Retiree, downsizing, low storey) is itself the expected, correct behaviour: this household's constraints are loose enough that every goal is simultaneously satisfiable, so there is nothing for the two GP modes to disagree about — consistent with §13–§16's own repeated finding that the gap only exists when a real trade-off exists.
+*(Re-run 2026-10-23 after the archetypes' `mrt` multipliers — and, for the matching archetypes, `storey_step_sgd` / `w_school_sgd` — were recalibrated from hand-picked placeholders to the real conjoint's own matching-segment WTP, used without distinction between the file's real and synthetic respondents; see §28. The objective values above supersede the first version of this table.)*
 
-**A second, subtler mechanism found while checking *why* each gap exists — not every divergence is "preemptive sacrifices surplus for a shortfall."** Pulling the goal-deviation breakdown for "Budget-first, car owner":
+**Reading it — the finding generalises, with one genuinely informative exception.** 3 of 4 archetypes show a real, substantial gap ($2,512–$266,715) — this is not an artefact of the one household used throughout the report; the project's own "Family, needs primary school" archetype (budget $750k, needs primary school) is structurally the closest to that household, and shows the largest gap of all four, $266,714.62. The one archetype with a **$0 gap** (Retiree, downsizing, low storey) is itself the expected, correct behaviour: this household's constraints are loose enough that every goal is simultaneously satisfiable, so there is nothing for the two GP modes to disagree about — consistent with §13–§16's own repeated finding that the gap only exists when a real trade-off exists.
 
-- **Weighted-sum's own picks** carry small, deliberate deviations — `dev_mrt` of $480, $1,072 and $630 on three picks, and a $2,909 `dev_essentials` on a fourth — accepted because the extra surplus on those specific profiles is worth more than the shortfall costs. Net: **$27,069.65**.
-- **Preemptive's picks** are a *completely different set*, chosen so that **every** goal reads exactly $0 on every pick. But that "clean" set's own surplus is lower — net: **−$745.64**.
+**A second, subtler mechanism found while checking *why* each gap exists — not every divergence is "preemptive sacrifices surplus for a shortfall."** Pulling the goal-deviation breakdown for "Budget-first, car owner" (re-run 2026-10-23):
 
-Preemptive isn't sacrificing surplus to fix a shortfall here; it is structurally forbidden from ever accepting a cheap, profitable shortfall at all, even essentials — the lowest-priority goal — because the lexicographic method locks every higher stage to its own optimum before surplus is ever considered. That is a different, and arguably more revealing, illustration of the preemptive-vs-weighted-sum distinction than the report's original household showed on its own.
+- **Weighted-sum's Jurong East pick** carries one small, deliberate `dev_mrt` deviation of **$1,098.28** — accepted because that specific profile's surplus (−$1,162.33, net −$2,260.61) beats the alternative with no shortfall at all.
+- **Preemptive's Jurong East pick** is a *different profile*, chosen so `dev_mrt` reads exactly $0. But that "clean" pick's own surplus is lower (−$4,772.59, net −$4,772.59) — worse than weighted-sum's shortfall-accepting choice by **$2,511.98**, which is exactly this archetype's overall gap.
+
+Preemptive isn't sacrificing surplus to fix a shortfall here; it is structurally forbidden from ever accepting a cheap, profitable shortfall at all, because the lexicographic method locks every higher stage to its own optimum before surplus is ever considered. That is a different, and arguably more revealing, illustration of the preemptive-vs-weighted-sum distinction than the report's original household showed on its own.
 
 **Conclusion:** the divergence is a real, general property of these two GP modes on this recommender — not a coincidence of one test household — and the exception (zero gap when nothing conflicts) is itself confirming evidence, not a contradiction. Script and raw output: `test_gp_gap_across_archetypes.py` → `data/gp_gap_across_archetypes.json`.
 
@@ -433,28 +435,30 @@ The hedonic-to-real-price calibration (§13, re-fit in §15 and §16) has been r
 | Household | Distinct pick-sets (of 120) | Objective spread | Orderings matching weighted-sum |
 |---|---|---|---|
 | Report test household | 1 | $0.00 | 0/120 |
-| Young couple, transit-reliant | **11** | **$87,935.10** | 0/120 |
-| Family, needs primary school | **19** | **$82,761.57** | 0/120 |
+| Young couple, transit-reliant | **2** | **$35,724.60** | 80/120 |
+| Family, needs primary school | **8** | **$299,167.05** | 0/120 |
 | Budget-first, car owner | 1 | $0.00 | 0/120 |
 | Retiree, downsizing, low storey | 1 | $0.00 | 120/120 |
 
-**Reading it — order matters conditionally, and the condition is exactly what theory predicts.** Three of five households are **completely order-invariant** — every one of the 120 permutations produces the identical pick-set. Checked why, for the report's own household: all 5 goals read exactly $0 simultaneously (`stage_values = {dev_mrt: 0, dev_school: 0, dev_storey: 0, dev_wait: 0, dev_essentials: 0}`) — when one candidate set dominates on *every* goal at once, there is no conflict for the processing order to arbitrate, so every ordering finds the same dominant set. "Budget-first, car owner" and "Retiree" are order-invariant for the same reason (confirmed against §17's own per-pick deviation breakdown).
+*(Re-run 2026-10-23 after the archetypes' `mrt` multipliers and, where relevant, `storey_step_sgd` / `w_school_sgd` were recalibrated to the real conjoint's matching-segment WTP — see §28. The numbers and the conclusion below both changed from the first version of this test.)*
 
-The other two households — where §17 already showed a real weighted-sum-vs-preemptive gap — are genuinely **order-sensitive**: 11 and 19 distinct pick-sets out of 120, with the objective swinging by **$87,935** and **$82,761** respectively depending purely on which goal is processed first. That is not a small effect — it is larger than the weighted-sum-vs-preemptive gap itself for these households.
+**Reading it — order matters conditionally, and the condition is exactly what theory predicts.** Three of five households are **completely order-invariant** — every one of the 120 permutations produces the identical pick-set. Checked why, for the report's own household: all 5 goals read exactly $0 simultaneously (`stage_values = {dev_mrt: 0, dev_school: 0, dev_storey: 0, dev_wait: 0, dev_essentials: 0}`) — when one candidate set dominates on *every* goal at once, there is no conflict for the processing order to arbitrate, so every ordering finds the same dominant set. "Budget-first, car owner" and "Retiree" are order-invariant for the same reason.
+
+The other two households — where §17 already showed a real weighted-sum-vs-preemptive gap — are genuinely **order-sensitive**: 2 and 8 distinct pick-sets out of 120, with the objective swinging by **$35,725** and **$299,167** respectively depending purely on which goal is processed first.
 
 **What drives the swing, checked rather than left as "it varies":** grouping all 120 orderings by which goal is given top priority —
 
 | Top priority | Young couple: mean objective | Family: mean objective |
 |---|---|---|
-| **dev_mrt first** | **−$41,674** (best) | **−$13,655** (best) |
-| dev_school first | −$56,839 | −$30,016 |
-| dev_storey first | −$57,423 | −$36,608 |
-| dev_wait first | −$70,243 (worst) | −$24,193 |
-| dev_essentials first | −$58,016 | −$34,330 |
+| dev_mrt first | −$36,214 below best (worst) | −$258,772 below best (worst) |
+| dev_school first | −$12,398 below best | **best** |
+| dev_storey first | **best** | −$170,146 below best |
+| dev_wait first | **best** (tied with storey) | −$138,610 below best |
+| dev_essentials first | −$12,398 below best | −$221,409 below best |
 
-**Prioritising MRT distance first gives the best average outcome in both order-sensitive households, by a wide margin.** This has a mechanistic explanation, not just a correlation: MRT carries by far the largest fitted dollar rate (`market_wtp_coefficients.json`'s `dist_mrt_exit_km`, ~$33,200/km after the spatial correction) — the single most expensive goal to get wrong. Locking in cheaper secondary goals (storey, wait, essentials) *before* MRT lets the solver commit to a pick-set that later turns out to be far from any station, with no way to undo that commitment once storey/wait/essentials are already locked at their own optimum. Processing the most expensive goal first avoids ever boxing itself into that corner.
+**This reverses the previous version of this test's conclusion, and the reversal is itself informative.** Before the archetypes' `mrt` multipliers were recalibrated to real conjoint WTP, MRT carried the largest dollar rate of any goal, and prioritising it first gave the best average outcome in both order-sensitive households (the market-fitted ~$33,200/km rate dominated the hand-picked storey/essentials placeholders). Once the household's own stated MRT preference is priced at its real, conjoint-measured rate (7.62× market for this archetype) **and** storey/school are *also* priced at their own real conjoint rates rather than small placeholders, MRT is no longer uniquely the most expensive goal to get wrong — and locking it first now means the solver commits to a very tight MRT constraint before it has seen how expensive the *other*, now-also-real goals are, which can box it into a worse overall outcome. **MRT-first is now the worst choice in both order-sensitive households, not the best.**
 
-**Conclusion, and a product recommendation that follows from it.** Priority order is not cosmetic — for households where goals genuinely compete, which order a household states its priorities in can swing the outcome by tens of thousands of dollars, more than the gap between GP modes itself. The shipped default (`DEFAULT_PRIORITY`, MRT first) already matches the empirically best-performing choice found here, which is a reassuring coincidence worth stating plainly rather than claiming as deliberate foresight — the default was originally chosen because the proposal names transit access first among business objective 1's goals (§1), not because of this test. Now that the test exists, it's independent confirmation the shipped default also happens to be the economically sound one. Script and raw output: `test_preemptive_priority_sensitivity.py` → `data/preemptive_priority_sensitivity.json`.
+**Conclusion, and a product recommendation that follows from it.** Priority order remains not cosmetic — for households where goals genuinely compete, which order a household states its priorities in can swing the outcome by tens to hundreds of thousands of dollars. But the earlier, reassuring finding that the shipped default (`DEFAULT_PRIORITY`, MRT first) happened to match the empirically best-performing order no longer holds now that every goal is priced at a real, comparable rate — it was itself a product of placeholder values that understated storey and school's true cost. **This is flagged as an open question for the shipped default, not yet resolved**: `DEFAULT_PRIORITY` still ships as MRT-first (chosen originally because the proposal names transit access first among business objective 1's goals, §1, not because of this test), while the evidence here suggests a household-specific or goal-agnostic default may now serve households better than a fixed MRT-first order. Script and raw output: `test_preemptive_priority_sensitivity.py` → `data/preemptive_priority_sensitivity.json`.
 
 ---
 
@@ -698,6 +702,34 @@ The candidate-count drop (103 to 94) is entirely attributable to the pricing ref
 ### What's still open
 
 The file is 82% synthetic by respondent count -- segment-specific numbers (n=26-70) should be read as indicative, not confirmatory, until a fully-real re-run exists. per_amenity_count and a priced lease-preference term remain genuinely untested or unmodelled respectively. If the team runs a fully-real survey later, the same file (data/preferences.json) and the same, already-tested code path (preference_overrides_from_file()) take it with no code changes -- exactly as designed when this function was first written, months before any real data existed to feed it.
+
+### Update 2026-10-23: all 200 respondents treated as real, and the segment-specific figures adopted
+
+The caution above -- discounting segment-level findings for sample size and significance -- was a judgement call, not a data requirement, and it has been superseded on explicit instruction: **all 200 conjoint respondents, real and synthetic alike, are now used without distinction, and every segment point estimate is used as given regardless of statistical significance or subsample size.**
+
+This changes two of the three "No" rows in the table above, for the three archetypes with a clean conceptual match to a conjoint segment (Retiree<->Retirees, Family<->Young family with school kids, Young couple<->Young DINKs; "Budget-first, car owner" still has no clean match and keeps its original hand-picked value, since the "treat as real" instruction is about respondent provenance, not about forcing a conceptual mapping that does not fit):
+
+| Archetype | mrt multiplier | storey_step_sgd | w_school_sgd | Source |
+|---|---|---|---|---|
+| Young couple, transit-reliant | 1.5x -> **7.62x** | $41,500 (aggregate default) -> **$58,000** | n/a (no school goal) | Young DINKs segment |
+| Family, needs primary school | 1.0 (implicit) -> **2.04x** | $41,500 (aggregate default) -> **$25,500** | market-rate default -> **$201,000** | Young family with school kids segment |
+| Retiree, downsizing, low storey | 0.7 -> **2.41x** | $41,500 -> **-$28,500** (no effect -- see note) | n/a (no school goal) | Retirees segment |
+| Budget-first, car owner | 0.5 (unchanged) | $41,500 (aggregate default, unchanged) | n/a | no clean match; left as-is |
+
+The Retiree archetype's storey_step_sgd is recorded as the segment's own real, measured figure (both Mid and High read negative vs. Low in this segment) but has **no effect** on this archetype's own solve: `target_storey="Low"` means `rank(target)=0`, so `dev_storey`'s `max(0, 0 - rank(pick))` is always 0 regardless of storey_step's sign or size -- a pre-existing formula characteristic, not something this update changed or fixed.
+
+Implemented in `backtest_v2.py`'s `ARCHETYPES`/`EXTENDED_ARCHETYPES` dict literals directly (not a new code path -- `HouseholdQuery2` already accepted all of these as explicit per-call overrides).
+
+**Re-verification, and one finding that reverses itself:**
+
+| | Before this update | After |
+|---|---|---|
+| Extended backtest reliability | 98.2% [94.9%, 99.4%] | **97.1% [93.5%, 98.8%]** |
+| GP-mode gap range (Sec. 17) | $2,512-$266,715 (3 of 4 archetypes) | unchanged by this update (already re-run above) |
+| Order-sensitivity spread (Sec. 19) | $35,725 / $299,167 | unchanged by this update (already re-run above) |
+| Best first-priority goal (Sec. 19) | dev_mrt (both order-sensitive households) | **dev_storey or dev_wait (Young couple); dev_school (Family) -- MRT-first is now the worst choice in both** |
+
+Reliability moved down slightly (98.2% to 97.1%, overlapping confidence intervals -- not a significant change) as the two archetypes' MRT multipliers became much larger, pulling some picks toward tighter MRT bands at a cost elsewhere. The priority-order reversal is the more substantive finding, written up in full in Section 19 above: it is a direct, mechanistic consequence of pricing every goal at its own real rate instead of leaving most of them on small placeholders, and it means the shipped `DEFAULT_PRIORITY` (MRT first) is no longer empirically supported as the best general choice -- flagged as an open product question, not yet resolved, rather than silently left on the old reasoning.
 
 ## 29. An independent, self-collected cross-check: 99.co listing turnover against the availability model (2026-10-22)
 

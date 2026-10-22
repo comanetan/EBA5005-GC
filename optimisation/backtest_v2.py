@@ -31,11 +31,19 @@ EXCLUDED_FLAT_TYPES = ["MULTI-GENERATION", "2 ROOM", "EXECUTIVE"]
 
 CUTOFFS = ["2023-01-01", "2023-07-01", "2024-01-01", "2024-07-01", "2025-01-01", "2025-07-01"]
 
+# 2026-10-23: mrt multipliers (and, where relevant, storey_step_sgd / w_school_sgd) for the
+# three archetypes with a clean match to a real conjoint segment are now that segment's own
+# fitted figure, not a hand-picked placeholder (DINKs<->"Young couple", Family<->"Family, needs
+# primary school", Retirees<->"Retiree, downsizing" below). All 200 conjoint respondents (36
+# real + 164 synthetic) are used without distinction -- see data/conjoint_wtp.json for the
+# underlying per-segment WTP this was fit from. "Budget-first, car owner" has no clean segment
+# match ("Upgraders with cash" doesn't fit this persona) and keeps its original hand-picked value.
 ARCHETYPES = {
     "Young couple, transit-reliant": dict(budget=550_000, min_lease_yrs=60, flat_types=["3 ROOM", "4 ROOM"],
-                                           target_mrt_km=0.4, multipliers={"mrt": 1.5}),
+                                           target_mrt_km=0.4, multipliers={"mrt": 7.62}, storey_step_sgd=58_000),
     "Family, needs primary school": dict(budget=750_000, min_lease_yrs=65, flat_types=["4 ROOM", "5 ROOM"],
-                                          target_mrt_km=0.6, needs_primary_school=True),
+                                          target_mrt_km=0.6, needs_primary_school=True,
+                                          multipliers={"mrt": 2.04}, storey_step_sgd=25_500, w_school_sgd=201_000),
     "Budget-first, car owner": dict(budget=450_000, min_lease_yrs=55, flat_types=None,
                                      target_mrt_km=1.0, multipliers={"mrt": 0.5}, target_essentials=3.0),
 }
@@ -49,8 +57,14 @@ EXTENDED_ARCHETYPES = {
     **ARCHETYPES,
     # 2026-10-19: flat_types was ["2 ROOM", "3 ROOM"] -- 2 ROOM dropped along with the
     # Forecasting Lead's scope alignment (Sec. 23); downsizing persona kept, now 3-ROOM-only.
+    # mrt multiplier and storey_step from the real conjoint's "Retirees" segment (2026-10-23).
+    # storey_step_sgd=-28,500 here is a real, measured number (this segment's point estimates for
+    # Mid/High storey are both negative vs. Low) but has NO effect on this archetype's own solve:
+    # target_storey="Low" means rank(target)=0, so dev_storey's max(0, 0-rank(pick)) is always 0
+    # regardless of storey_step's sign or magnitude. Recorded for completeness, not because it binds.
     "Retiree, downsizing, low storey": dict(budget=500_000, min_lease_yrs=50, flat_types=["3 ROOM"],
-                                            target_mrt_km=0.8, target_storey="Low", multipliers={"mrt": 0.7}),
+                                            target_mrt_km=0.8, target_storey="Low",
+                                            multipliers={"mrt": 2.41}, storey_step_sgd=-28_500),
 }
 
 

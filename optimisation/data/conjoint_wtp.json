@@ -32,7 +32,7 @@
     "young_family_with_school_kids": 70
   },
   "wtp_sgd_by_segment": {
-    "_note": "Each figure is WTP in SGD vs. the stated baseline level, with significance ('sig') at the 95% level per the file's own Coefficients/WTP-by-segment tabs. Segment subsamples (n=26-70) are noisier than the n=200 aggregate; many segment-level point estimates below are NOT individually significant.",
+    "_note": "Each figure is WTP in SGD vs. the stated baseline level, with significance ('sig') at the 95% level per the file's own Coefficients/WTP-by-segment tabs, kept for reference. 2026-10-23: all 200 respondents (36 real + 164 synthetic) are treated as real survey data without distinction, and every segment figure below -- significant or not -- is used as given, not discounted for subsample size.",
     "mrt_distance_vs_1.2km": {
       "levels_km": [0.9, 0.6, 0.3],
       "all_respondents": {"wtp": [57000, 49000, 105000], "sig": [true, false, true]},
@@ -76,7 +76,7 @@
   },
   "derived_rates": {
     "_note": "OLS fit of each segment's bucketed WTP against the underlying continuous distance/year scale, used only where noted in preferences.json or the report -- a summary of a genuinely non-monotonic/noisy bucketed relationship, not a literal conjoint output.",
-    "per_km_closer_to_mrt": {"all_respondents": 102333, "young_dinks": 248000},
+    "per_km_closer_to_mrt": {"all_respondents": 102333, "young_dinks": 248000, "retirees": 78333, "young_family_with_school_kids": 66333},
     "per_year_remaining_lease": {"all_respondents": 5070}
   },
   "market_mrt_rate_for_comparison": {
@@ -86,10 +86,16 @@
     "implied_multiplier_young_dinks": 7.62
   },
   "household_archetype_mapping": {
-    "_note": "Conceptual mapping between this pipeline's 4 backtest archetypes and the conjoint's 4 segments, used only to decide which segment-specific numbers (if any) are confident enough to act on vs. report as context only.",
+    "_note": "Conceptual mapping between this pipeline's 4 backtest archetypes and the conjoint's 4 segments. As of 2026-10-23, every mapped segment's own mrt multiplier (and, where the archetype sets a relevant goal, storey_step_sgd / w_school_sgd) is adopted directly into backtest_v2.py's ARCHETYPES/EXTENDED_ARCHETYPES, replacing the earlier hand-picked placeholders -- see applied_overrides below.",
     "Young couple, transit-reliant": "young_dinks",
     "Family, needs primary school": "young_family_with_school_kids",
     "Retiree, downsizing, low storey": "retirees",
-    "Budget-first, car owner": "no clean match -- 'Upgraders with cash' does not fit this persona; left unmapped"
+    "Budget-first, car owner": "no clean match -- 'Upgraders with cash' does not fit this persona; left on its original hand-picked value"
+  },
+  "applied_overrides_2026_10_23": {
+    "_note": "mrt multiplier = segment per_km_closer_to_mrt / market_mrt_rate_for_comparison.per_km_at_ref_price_550k. storey_step_sgd = ((Mid-Low)+(High-Mid))/2 from wtp_sgd_by_segment.storey_vs_low. w_school_sgd = the segment's within_1km WTP from wtp_sgd_by_segment.school_proximity_vs_over_1.5km.",
+    "Young couple, transit-reliant": {"mrt_multiplier": 7.62, "storey_step_sgd": 58000},
+    "Family, needs primary school": {"mrt_multiplier": 2.04, "storey_step_sgd": 25500, "w_school_sgd": 201000},
+    "Retiree, downsizing, low storey": {"mrt_multiplier": 2.41, "storey_step_sgd": -28500, "_storey_step_note": "has no effect on this archetype's own solve: target_storey='Low' makes dev_storey always 0 regardless of storey_step's value -- recorded for completeness only"}
   }
 }

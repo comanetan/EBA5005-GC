@@ -3,17 +3,17 @@
     "archetype": "Young couple, transit-reliant",
     "status_ws": "Optimal",
     "status_pe": "Optimal",
-    "ws_objective": -13286.9,
-    "pe_objective": -36366.1,
-    "gap": 23079.2,
+    "ws_objective": 543509.79,
+    "pe_objective": 507785.19,
+    "gap": 35724.6,
     "n_picks": 5,
-    "shared_picks": 3,
+    "shared_picks": 4,
     "ws_picks": [
+      "BEDOK::3ROOM::60-79::Mid::Near",
       "BUKIT BATOK::3ROOM::60-79::Mid::Near",
-      "BUKIT PANJANG::3ROOM::60-79::Mid::Mid",
-      "HOUGANG::3ROOM::60-79::Low::Near",
+      "CHOA CHU KANG::3ROOM::80+::Mid::Mid",
       "WOODLANDS::3ROOM::60-79::Mid::Near",
-      "YISHUN::3ROOM::60-79::Mid::Mid"
+      "YISHUN::3ROOM::60-79::Mid::Near"
     ],
     "pe_picks": [
       "BEDOK::3ROOM::60-79::Mid::Near",
@@ -27,56 +27,56 @@
     "archetype": "Family, needs primary school",
     "status_ws": "Optimal",
     "status_pe": "Optimal",
-    "ws_objective": 115270.25,
-    "pe_objective": -10212.79,
-    "gap": 125483.04,
+    "ws_objective": -246726.19,
+    "pe_objective": -513440.81,
+    "gap": 266714.62,
     "n_picks": 5,
-    "shared_picks": 1,
+    "shared_picks": 2,
     "ws_picks": [
-      "BUKIT PANJANG::4ROOM::60-79::Mid::Mid",
-      "GEYLANG::4ROOM::60-79::Low::Mid",
-      "JURONG WEST::5ROOM::80+::Low::Mid",
-      "WOODLANDS::4ROOM::80+::High::Mid",
-      "YISHUN::4ROOM::80+::Mid::Mid"
+      "CENTRAL AREA::4ROOM::60-79::Mid::Near",
+      "HOUGANG::4ROOM::60-79::Mid::Mid",
+      "SEMBAWANG::5ROOM::60-79::Mid::Near",
+      "SERANGOON::4ROOM::60-79::Low::Far",
+      "TAMPINES::4ROOM::60-79::Mid::Far"
     ],
     "pe_picks": [
-      "BEDOK::4ROOM::60-79::Low::Mid",
       "CENTRAL AREA::4ROOM::60-79::Mid::Near",
-      "GEYLANG::4ROOM::60-79::Low::Mid",
-      "TAMPINES::4ROOM::60-79::Low::Mid",
-      "TOA PAYOH::4ROOM::60-79::Low::Mid"
+      "JURONG WEST::5ROOM::60-79::High::Mid",
+      "SEMBAWANG::5ROOM::60-79::Mid::Near",
+      "SENGKANG::4ROOM::60-79::Mid::Near",
+      "TAMPINES::4ROOM::60-79::Low::Mid"
     ]
   },
   {
     "archetype": "Budget-first, car owner",
     "status_ws": "Optimal",
     "status_pe": "Optimal",
-    "ws_objective": 27069.65,
-    "pe_objective": -745.64,
-    "gap": 27815.29,
+    "ws_objective": -66060.26,
+    "pe_objective": -68572.24,
+    "gap": 2511.98,
     "n_picks": 5,
-    "shared_picks": 1,
+    "shared_picks": 4,
     "ws_picks": [
-      "BUKIT BATOK::2ROOM::80+::High::Far",
+      "BUKIT BATOK::3ROOM::60-79::Mid::Mid",
       "JURONG EAST::3ROOM::<60::Mid::Far",
       "JURONG WEST::3ROOM::<60::Mid::Mid",
-      "PUNGGOL::2ROOM::80+::High::Far",
-      "SEMBAWANG::2ROOM::80+::Mid::Far"
+      "WOODLANDS::3ROOM::<60::Mid::Mid",
+      "YISHUN::3ROOM::<60::Low::Far"
     ],
     "pe_picks": [
       "BUKIT BATOK::3ROOM::60-79::Mid::Mid",
       "JURONG EAST::3ROOM::<60::Mid::Mid",
       "JURONG WEST::3ROOM::<60::Mid::Mid",
-      "SEMBAWANG::2ROOM::80+::High::Far",
-      "WOODLANDS::3ROOM::<60::Mid::Mid"
+      "WOODLANDS::3ROOM::<60::Mid::Mid",
+      "YISHUN::3ROOM::<60::Low::Far"
     ]
   },
   {
     "archetype": "Retiree, downsizing, low storey",
     "status_ws": "Optimal",
     "status_pe": "Optimal",
-    "ws_objective": 151468.19,
-    "pe_objective": 151468.19,
+    "ws_objective": 218028.87,
+    "pe_objective": 218028.87,
     "gap": 0.0,
     "n_picks": 5,
     "shared_picks": 5,
