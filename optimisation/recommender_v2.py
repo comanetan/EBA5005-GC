@@ -34,6 +34,23 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 DATA = os.path.join(HERE, "data")
 ROOT = os.path.dirname(os.path.dirname(HERE))  # .../Project, portable across machines
 
+
+def _default_storey_step_sgd():
+    """Low->Mid->High storey premium, averaged from the Preference Lead's real conjoint
+    WTP (data/preferences.json) if present, else the old $15,000 placeholder. Unlike
+    school pricing (which already falls back to a real hedonic-derived %-of-price rate,
+    see dev_school below), storey has no existing market-based alternative to fall back
+    on, so the conjoint figure becomes the module default outright rather than an
+    opt-in override."""
+    try:
+        sbp = json.load(open(os.path.join(DATA, "preferences.json")))["wtp_sgd"]["storey_band_premium"]
+        return ((sbp["Mid"] - sbp["Low"]) + (sbp["High"] - sbp["Mid"])) / 2
+    except (FileNotFoundError, KeyError):
+        return 15_000
+
+
+DEFAULT_STOREY_STEP_SGD = _default_storey_step_sgd()
+
 # 2026-10-20 (OPTIMISER_METHODOLOGY_REPORT.md Sec. 26): polyclinic added here, not just to
 # ESSENTIALS -- it passed the same sign+significance test every other tilt attribute here did
 # (unlike expressway, a disamenity, which is a GOAL only -- see hedonic_value.py's WTP_ATTRS).
@@ -51,13 +68,15 @@ class HouseholdQuery2:
                  target_mrt_km=0.5, max_mrt_band=None, target_essentials=4.0,
                  needs_primary_school=False, school_goal=None, target_storey="Mid", target_wait_months=6,
                  multipliers=None, flat_types=None, towns_exclude=None, alpha=None,
-                 w_school_sgd=None, w_essential_sgd=8_000, storey_step_sgd=15_000, shrink_k=10,
+                 w_school_sgd=None, w_essential_sgd=8_000, storey_step_sgd=None, shrink_k=10,
                  max_per_mrt_band=None, max_per_flat_type=None, target_expressway_km=None, name="household"):
         self.__dict__.update(locals())
         self.__dict__.pop("self")
         self.multipliers = {"mrt": 1.0, "hawker": 1.0, "supermarket": 1.0, "clinic": 1.0, "park": 1.0,
                             "polyclinic": 1.0,
                             **(multipliers or {})}
+        if self.storey_step_sgd is None:
+            self.storey_step_sgd = DEFAULT_STOREY_STEP_SGD
         self.towns_exclude = towns_exclude or []
 
 

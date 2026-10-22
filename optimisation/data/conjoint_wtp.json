@@ -1,0 +1,95 @@
+{
+  "_source": "HDB_Conjoint_Results_noEA_200_with_holdout_simulator_elasticity (2).xlsx, Preference Lead (Malur Seshadri Shridhar), received 22 Oct 2026",
+  "_sample": "200 respondents, 36 real + 164 synthetic; 1,600 choice tasks; MNL with part-worths",
+  "model_fit": {
+    "log_likelihood": -1229.3,
+    "log_likelihood_random_choice": -1757.78,
+    "mcfadden_pseudo_r2": 0.301,
+    "holdout_hit_rate": 0.38,
+    "holdout_hit_rate_chance": 0.33,
+    "holdout_mean_abs_share_error_pts": 2.9
+  },
+  "relative_importance": {
+    "price": 0.5933,
+    "flat_type": 0.1724,
+    "remaining_lease": 0.1112,
+    "distance_to_mrt": 0.0501,
+    "storey": 0.0398,
+    "primary_school_proximity": 0.0331
+  },
+  "price_coefficient_per_100k": {
+    "all_respondents": -0.351968956390485,
+    "retirees": -0.743,
+    "upgraders_with_cash": -0.199,
+    "young_dinks": -0.504,
+    "young_family_with_school_kids": -0.485
+  },
+  "segment_n": {
+    "all_respondents": 200,
+    "retirees": 26,
+    "upgraders_with_cash": 56,
+    "young_dinks": 48,
+    "young_family_with_school_kids": 70
+  },
+  "wtp_sgd_by_segment": {
+    "_note": "Each figure is WTP in SGD vs. the stated baseline level, with significance ('sig') at the 95% level per the file's own Coefficients/WTP-by-segment tabs. Segment subsamples (n=26-70) are noisier than the n=200 aggregate; many segment-level point estimates below are NOT individually significant.",
+    "mrt_distance_vs_1.2km": {
+      "levels_km": [0.9, 0.6, 0.3],
+      "all_respondents": {"wtp": [57000, 49000, 105000], "sig": [true, false, true]},
+      "retirees": {"wtp": [36000, 28000, 81000], "sig": [false, false, false]},
+      "upgraders_with_cash": {"wtp": [60000, -25000, 25000], "sig": [false, false, false]},
+      "young_dinks": {"wtp": [135000, 165000, 238000], "sig": [true, true, true]},
+      "young_family_with_school_kids": {"wtp": [6000, 19000, 62000], "sig": [false, false, false]}
+    },
+    "remaining_lease_vs_50yr": {
+      "levels_yr": [70, 85, 95],
+      "all_respondents": {"wtp": [110000, 174000, 232000], "sig": [true, true, true]},
+      "retirees": {"wtp": [58000, 130000, 90000], "sig": [false, true, false]},
+      "upgraders_with_cash": {"wtp": [74000, 283000, 344000], "sig": [false, true, true]},
+      "young_dinks": {"wtp": [96000, 243000, 293000], "sig": [true, true, true]},
+      "young_family_with_school_kids": {"wtp": [121000, 129000, 208000], "sig": [true, true, true]}
+    },
+    "storey_vs_low": {
+      "levels": ["Mid", "High"],
+      "all_respondents": {"wtp": [26000, 83000], "sig": [false, true]},
+      "retirees": {"wtp": [-48000, -57000], "sig": [false, false]},
+      "upgraders_with_cash": {"wtp": [16000, 185000], "sig": [false, true]},
+      "young_dinks": {"wtp": [83000, 116000], "sig": [true, true]},
+      "young_family_with_school_kids": {"wtp": [48000, 51000], "sig": [false, false]}
+    },
+    "school_proximity_vs_over_1.5km": {
+      "levels": ["1-1.5km", "within_1km"],
+      "all_respondents": {"wtp": [23000, 69000], "sig": [false, true]},
+      "retirees": {"wtp": [3000, -11000], "sig": [false, false]},
+      "upgraders_with_cash": {"wtp": [51000, 36000], "sig": [false, false]},
+      "young_dinks": {"wtp": [-9000, -22000], "sig": [false, false]},
+      "young_family_with_school_kids": {"wtp": [70000, 201000], "sig": [true, true]}
+    },
+    "flat_type_vs_3room": {
+      "levels": ["4-room", "5-room"],
+      "all_respondents": {"wtp": [220000, 360000], "sig": [true, true]},
+      "retirees": {"wtp": [51000, 127000], "sig": [false, true]},
+      "upgraders_with_cash": {"wtp": [171000, 619000], "sig": [true, true]},
+      "young_dinks": {"wtp": [178000, 155000], "sig": [true, true]},
+      "young_family_with_school_kids": {"wtp": [337000, 412000], "sig": [true, true]}
+    }
+  },
+  "derived_rates": {
+    "_note": "OLS fit of each segment's bucketed WTP against the underlying continuous distance/year scale, used only where noted in preferences.json or the report -- a summary of a genuinely non-monotonic/noisy bucketed relationship, not a literal conjoint output.",
+    "per_km_closer_to_mrt": {"all_respondents": 102333, "young_dinks": 248000},
+    "per_year_remaining_lease": {"all_respondents": 5070}
+  },
+  "market_mrt_rate_for_comparison": {
+    "per_km_at_ref_price_550k": 32564,
+    "_note": "From this pipeline's own fitted hedonic (market_wtp_coefficients.json, dist_mrt_exit_km), not from the conjoint. Used only to express conjoint WTP as a multiplier of the market-revealed rate.",
+    "implied_multiplier_all_respondents": 3.14,
+    "implied_multiplier_young_dinks": 7.62
+  },
+  "household_archetype_mapping": {
+    "_note": "Conceptual mapping between this pipeline's 4 backtest archetypes and the conjoint's 4 segments, used only to decide which segment-specific numbers (if any) are confident enough to act on vs. report as context only.",
+    "Young couple, transit-reliant": "young_dinks",
+    "Family, needs primary school": "young_family_with_school_kids",
+    "Retiree, downsizing, low storey": "retirees",
+    "Budget-first, car owner": "no clean match -- 'Upgraders with cash' does not fit this persona; left unmapped"
+  }
+}

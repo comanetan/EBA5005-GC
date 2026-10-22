@@ -60,7 +60,12 @@ EMPIRICAL_BANDS = eb_mod.empirical_growth_bands(_TX_ALL, horizon=12)
 @app.get("/api/meta")
 def meta():
     mrt_rate_per_km = REF_PRICE * (np.exp(-MARKET_RATES["dist_mrt_exit_km"]) - 1)
-    lease_rate_per_year = 3000  # not in the hedonic (lease is a hard floor, not priced) -- carried from preferences.json's stub
+    # Not in the hedonic (lease is a hard floor, not priced) -- this is the Preference Lead's
+    # real conjoint WTP for an additional year of remaining lease, not a market/hedonic rate.
+    try:
+        lease_rate_per_year = json.load(open(os.path.join(DATA, "preferences.json")))["wtp_sgd"]["per_year_remaining_lease"]
+    except (FileNotFoundError, KeyError):
+        lease_rate_per_year = 3000
     return {
         "towns": sorted(PROFILES_DF["town"].str.title().unique().tolist()),
         "flat_types": sorted(PROFILES_DF["flat_type"].unique().tolist()),

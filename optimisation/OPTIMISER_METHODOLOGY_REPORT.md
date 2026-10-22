@@ -617,3 +617,84 @@ The Forecasting Lead (Chua Yi Ling) pushed three commits today expanding real pr
 **Full rebuild + re-verification, not assumed safe.** `rebuild_v2.py` end to end — profile count unchanged (1,013; this attribute doesn't affect which transactions/profiles exist, only how they're priced and scored). Extended backtest (11×4): **97.7% [94.3%, 99.1%]**, down from 98.3% [95.2%, 99.4%] — a small, not statistically significant move (the two CIs overlap almost entirely), consistent with a correctly-signed but small-magnitude attribute (≈0.57%/km vs. MRT's ≈5%/km) nudging picks slightly without materially changing reliability. `essentials_score`'s own scale moved from a 5-component to a 6-component sum — `target_essentials`'s default (4.0) stays a sensible, achievable threshold either way, not re-tuned, since nothing about its meaning as "most, not all, essentials nearby" actually changed.
 
 **Live check**: `HouseholdQuery2(..., multipliers={"polyclinic": 1.3})` solves correctly end-to-end, shortlist `essentials_score` now reaching up to the new 6-component maximum. Confirms the wiring works, not just that it was added. Market rate: `market_wtp_coefficients.json`'s `dist_polyclinic_km` = −0.0057 log-points/km, in the same file and used the same way as every other WTP attribute, no special-casing needed.
+
+## 27. Pricing & Availability Lead's native export gains a lease band, un-sticking the pass-through path (2026-10-22)
+
+Section 16 added a lease-band dimension to this pipeline's own profile ID (TOWN::FLATTYPE::LeaseBand::StoreyBand::MRTBand, 5-part), which broke pricing_availability_adapter.py::build_from_native() the same day: their 17 Oct native export was still 4-part, so no profile_id could ever match again. That was documented as a scheme mismatch to retire, not a bug to fix, with the crosswalk-based build_pricing_today()/build_availability() functions reinstated as the primary path in the meantime.
+
+main commit 35ab9bb (22 Oct) adds the lease band to their export, matching this pipeline's scheme exactly ("Add lease band to the Optimisation Lead's profile IDs"). This un-sticks the native pass-through path outright.
+
+Action: re-pulled outputs/optimisation/{pricing_today,availability}.csv from origin/main into data/external_handovers/{pricing_today,availability}_main_native.csv (1,829 rows each, matching their own commit message), re-ran build_from_native().
+
+| | Crosswalk (previous) | Native pass-through (now) |
+|---|---|---|
+| Coverage | 958/1,013 (94.6%) | 1,006/1,013 (99.3%) |
+| Method | Median across their lease-band/storey/MRT cells landing on one of my profile_ids | Direct 1:1 -- their profile_id already equals mine |
+
+Exactly their claimed 1,006/1,013 (99.3%). The remaining 7 profiles are genuine boundary disagreements in distance-band cutoffs, not an adapter bug (build_from_native() reports these explicitly rather than silently dropping them).
+
+Downstream re-verification: build_price_calibration.py and the calibration R-squared bootstrap were re-run against the refreshed pricing_today.csv (real per-profile values now, not a median-of-crosswalk approximation):
+
+| | Before (crosswalk) | After (native) |
+|---|---|---|
+| Overlap n | 1,119 | 1,006 |
+| R-squared | 0.9601 | 0.9591 |
+| Bootstrap 95% CI (2,000 resamples) | [0.9457, 0.9694] | [0.9416, 0.9696] |
+
+Still stable, still a tight CI -- Section 18's conclusion ("not a fragile point estimate") is unchanged.
+
+The backtest itself never reads live pricing (live=False always during a backtest -- see Section 14), so this refresh affects only the live recommender's picks and the calibration fit, not backtest reliability directly. Its effect on the canonical live example is isolated and reported in Section 28, alongside the same-day Preference Lead integration, since both landed together and both move the same worked example.
+
+## 28. Integrating the Preference Lead's real conjoint WTP, and what changed as a result (2026-10-22)
+
+preference_overrides_from_file() (Section 3 of this report / INTEGRATION_PROGRESS.md) was built and tested against a stub months ago, anticipating exactly this file. The real one landed today: HDB_Conjoint_Results_noEA_200_with_holdout_simulator_elasticity (2).xlsx, Project/Conjoint/. 200 respondents, but mixed -- 36 real + 164 synthetic per the companion design file's name, not yet a fully-real survey. Choice-based MNL with part-worths, 1,600 choice tasks, McFadden pseudo R-squared=0.301, holdout hit rate 38% against a 33% chance baseline. Four segments: Retirees (n=26), Upgraders with cash (n=56), Young DINKs (n=48), Young family with primary school kids (n=70) -- three of which map cleanly onto this pipeline's own four backtest archetypes (Retiree to Retirees, Family-needs-school to Young family with school kids, Young-couple-transit-reliant to Young DINKs; "Budget-first, car owner" has no clean match to "Upgraders with cash" and was left unmapped).
+
+### What was parsed and where it lives
+
+data/preferences.json (the exact schema preference_overrides_from_file() already expects) and data/conjoint_wtp.json (the full aggregate-plus-per-segment breakdown, with significance flags, for anything the report needs beyond the four mapped fields). per_km_closer_to_mrt and per_year_remaining_lease are an OLS fit of the file's bucketed WTP across its 4 distance/lease levels against the continuous km/year scale -- the conjoint tests discrete levels, not a slope, so this is a summary of a mildly non-monotonic, noisy relationship (one level, 600m, is not individually significant), not a literal conjoint output. storey_band_premium and the school figure are direct level-vs-baseline WTP numbers, no fitting needed.
+
+### What actually changed, and what deliberately didn't
+
+| Parameter | Conjoint figure | Adopted as the new default? | Why |
+|---|---|---|---|
+| storey_step_sgd | $41,500/band (averaged Low-to-Mid $26,000 [not sig.] and Mid-to-High $57,000) | Yes -- module default changed from the $15,000 placeholder | No existing market-based alternative existed for this parameter; real data replaces a guess outright. recommender_v2.py::DEFAULT_STOREY_STEP_SGD now reads this live from preferences.json. |
+| w_school_sgd | $69,000 (aggregate, "within 1km" vs. "over 1.5km") | No -- left None (its existing default) | The live default already prices the school goal from the hedonic's own ~3%-of-price market rate (elite_primary_1_2km), which scales with price; a flat conjoint figure would be a downgrade for cheap or expensive profiles alike. Kept as a reported cross-check instead (below). |
+| mrt multiplier | 3.14x market (aggregate); 7.62x market (Young DINKs segment, all 3 distance levels significant) | No -- no code change | The live web app already lets the household set its own MRT weight directly (#ap_weight); a blanket default here would double-apply on top of that. See the substantiation below for how this was used instead. |
+| w_essential_sgd | n/a -- not tested | No change | This conjoint doesn't test a walkable-essentials attribute at all. Deliberately not overwritten by an unrelated number; the $8,000 placeholder stands until a real one is tested. |
+| per_year_remaining_lease | $5,070/year | Not wired into the objective (as flagged since the stub) | Lease remains a hard floor only (min_lease_yrs); adding a priced lease goal is a real objective-function change, out of scope for this pass. Now surfaces live in /api/meta's market_rate_lease_per_year (was a hardcoded 3000), so the GP tab's displayed default is at least the real figure even though it isn't priced into any solve. |
+
+### Substantiation: does the conjoint corroborate this project's own hand-picked numbers?
+
+Two deliberately-chosen assumptions elsewhere in this pipeline can now be checked against independent, if noisy, stated-preference data:
+
+MRT multiplier for "Young couple, transit-reliant" (hand-picked: 1.5x). The matching segment, Young DINKs, is the one segment whose MRT distance-WTP is monotonic and significant at all three levels (900m/600m/300m, n=48) -- the only segment confident enough to act on. Its implied multiplier is 7.62x market, well above the hand-picked 1.5x. Rather than overriding the shipped value with this one noisy-but-significant point estimate, the finding is reported as-is: if anything, this project's own 1.5x choice is conservative relative to stated preference, not inflated. The other three archetypes' matching segments (Retirees, Upgraders with cash, Young family with school kids) show mostly non-significant MRT point estimates at n=26-70, too underpowered to responsibly calibrate anything from.
+
+School value for "Family, needs primary school." The matching segment, Young family with primary school kids (n=70), shows the largest and most significant school-proximity WTP of any segment: $201,000 for "within 1km" vs. "over 1.5km" (both levels significant), nearly 3x the aggregate's $69,000 -- exactly the direction this persona's name predicts. At this pipeline's reference price, the existing hedonic-market school rate (~3% of price) and the conjoint's aggregate figure land in a broadly similar range, a reassuring stated-vs-revealed cross-check, even though the market-based rate remains the live default for the reason given above.
+
+### Re-verification
+
+The storey_step_sgd default change required a full backtest re-run (it's a core objective parameter, used in every solve regardless of live/backtest). Pricing coverage from Section 27 landed the same day and is isolated separately below.
+
+Extended backtest (11 cutoffs x 4 archetypes), storey default only, pricing unchanged:
+
+| | Before | After |
+|---|---|---|
+| Reliability | 97.7% [94.3%, 99.1%] | 98.2% [94.9%, 99.4%] |
+| Picks | 218 | 218 |
+| Matched-sale-seen | 81.7% | 78.0% |
+
+CIs overlap almost entirely -- not a statistically significant move, consistent with storey being one of five priced goals, not the dominant one.
+
+Canonical live example (budget $600,000, 60yr lease, MRT 0.4km, school required, MRT weight 1.5x, k=5), decomposed to isolate each of today's two changes:
+
+| | Candidates | Objective |
+|---|---|---|
+| Previous (crosswalk pricing, $15,000 storey) | 103 | $44,380 |
+| + Section 27's native pricing refresh alone (storey still $15,000) | 94 | $27,786 |
+| + this section's storey recalibration (both changes) | 94 | $20,534 |
+
+The candidate-count drop (103 to 94) is entirely attributable to the pricing refresh (confirmed by holding storey fixed at its old value and re-running): more precise, real per-profile prices tightened this household's budget-feasibility filter, which is the fresh data doing its job, not a regression. The further objective drop (about $7,252) with storey unchanged is attributable to the storey recalibration alone: several of this household's picks fall outside its Mid-storey target, and the real, conjoint-measured cost of that mismatch ($41,500/band) is higher than the old $15,000 placeholder assumed. Both effects are individually small and well-understood; neither is a bug.
+
+### What's still open
+
+The file is 82% synthetic by respondent count -- segment-specific numbers (n=26-70) should be read as indicative, not confirmatory, until a fully-real re-run exists. per_amenity_count and a priced lease-preference term remain genuinely untested or unmodelled respectively. If the team runs a fully-real survey later, the same file (data/preferences.json) and the same, already-tested code path (preference_overrides_from_file()) take it with no code changes -- exactly as designed when this function was first written, months before any real data existed to feed it.
