@@ -27,7 +27,7 @@ prices.to_csv(out_dir / name, index=False)
 if as_of == latest:
     model.save_model(str(C.PROCESSED / "hedonic_model.txt"))
 
-# Optimisation Lead's profile IDs (town x flat type x storey x MRT, no lease band), schema from optimisation/INTERFACE_SPEC.md.
+# Optimisation Lead's profile IDs (town x flat type x lease x storey x MRT), schema from optimisation/INTERFACE_SPEC.md v2.9.
 # price_today_se = typical error of a single-flat prediction on unseen blocks (hold-out RMSE of log price) x price.
 rmse = float(pd.read_csv(val_path, index_col=0).loc["lightgbm", "RMSE_log"])
 opt, _ = H.price_profiles(model, as_of, scheme="optimisation")

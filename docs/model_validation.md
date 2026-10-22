@@ -87,13 +87,14 @@ The same method on the Optimisation Lead's profiles had a rank correlation of 0.
 **How to describe this in the report.** The survival model is the explanatory layer: it shows what drives availability and gives a prior for profiles with few sales. On its own it ranks profiles worse than recent sales history does, and saying so is part of the evaluation. The production estimate combines the two and beats both.
 
 ## 3b · Files keyed to the Optimisation Lead's profiles (`outputs/optimisation/`)
-The Optimisation Lead's profile is town × flat type × storey band × MRT band, with no lease band:
+The Optimisation Lead's profile (his `INTERFACE_SPEC.md` v2.9, 18 Oct) is town × flat type × lease band × storey band × MRT band:
 
+- **Lease bands:** <60, 60–79, 80+ years remaining, the same bands as `config.LEASE_BANDS`, worked out at the as-of month.
 - **Storey bands:** Low 1–6, Mid 7–15, High 16+, by the lower floor of the storey range.
 - **MRT bands:** Near <400m, Mid 400–800m, Far >800m.
-- **ID format:** `TAMPINES::4ROOM::Mid::Near`.
+- **ID format:** `TAMPINES::4ROOM::60-79::Mid::Near`.
 
-Steps 6 and 7 price and time these profiles **directly**, using the same models, rather than crosswalking the 5-part IDs. Lease therefore enters each profile's price through its actual mix of blocks, weighted by units, rather than through a median across lease bands. There are 952 profiles in his format today. 713 of them have 3+ sales in the last 12 months, against his 712, so his list should be fully covered; any ID missing from these files is a boundary case where his distance data and ours differ.
+Steps 6 and 7 price and time these profiles **directly**, using the same models, rather than crosswalking the homefit IDs. There are 1,829 profiles in his format today (was 952 before the lease band was added on 22 Oct). They cover 1,006 of the 1,013 profiles in his `housing_profiles_v2_full.csv` (99.3%). The 7 not covered are 2 one-room profiles (out of our scope) and 5 boundary cases, where his lease band (at the sale date) or distance data differ from ours (lease at the as-of month).
 
 | File | Columns |
 |---|---|
