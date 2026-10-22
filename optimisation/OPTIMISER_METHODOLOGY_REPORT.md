@@ -698,3 +698,39 @@ The candidate-count drop (103 to 94) is entirely attributable to the pricing ref
 ### What's still open
 
 The file is 82% synthetic by respondent count -- segment-specific numbers (n=26-70) should be read as indicative, not confirmatory, until a fully-real re-run exists. per_amenity_count and a priced lease-preference term remain genuinely untested or unmodelled respectively. If the team runs a fully-real survey later, the same file (data/preferences.json) and the same, already-tested code path (preference_overrides_from_file()) take it with no code changes -- exactly as designed when this function was first written, months before any real data existed to feed it.
+
+## 29. An independent, self-collected cross-check: 99.co listing turnover against the availability model (2026-10-22)
+
+scrape_99co.py (Project/notebooks/) has been collecting live 99.co search-result snapshots since 5 October 2026, specifically to give the availability model something independent to be checked against -- the proposal's third business objective ("how readily each shortlisted profile comes up for sale") was, at the time that script was written, backed only by a stub, so a self-collected cross-check seemed worth building regardless of whether the real model landed first. It did (Section 23 onward); this section uses the accumulated scrape to check it anyway, since the two data sources were built independently of each other.
+
+**What's accumulated**: 6 runs, 5-17 October 2026, de-duplicated into a listings_master.csv tracking each listing's first-seen/last-seen dates. 3,336 HDB 3/4/5-room sale listings after restricting to this pipeline's current flat-type scope.
+
+**Why this is a limited, not a full, validation**: the scrape has only been running for 12 days. The availability model's own headline figures (expected_wait_months, survival_prob_6m, survival_prob_12m) describe 6- and 12-month horizons -- outcomes this scrape cannot observe directly at any point in its current history. What IS observable in 12 days is relative turnover speed: whether cells the model expects a LONGER wait for also show up as listings that stick around LONGER in the live scrape. That is a directional claim, not an exact-value one, and is treated as such throughout.
+
+**Method** (cross_validate_99co_listings.py):
+1. Filtered to segment=hdb_sale, sub_category in {3-room, 4-room, 5-room}, matching this pipeline's scope.
+2. town was derived from a substring match of each listing's formatted_address against the pipeline's 26 known town names (HDB street names conventionally lead with the town name) -- 62.9% matched; the remainder are addresses whose street name doesn't literally contain a town name (e.g. some Central Area streets), a genuine coverage gap, not an adapter bug.
+3. lease_band was derived from the listing's "Built: YYYY" field, assuming a 99-year original lease (true for every sampled listing's lease_type) and the same <60/60-79/80+ cut block_analysis.py uses elsewhere in this pipeline -- 99.9% resolved.
+4. Restricted to listings first seen at least 5 days before the latest scrape run (78.0% of the filtered set), so every included listing has had a comparable chance to be observed disappearing -- otherwise a listing first seen yesterday looks artificially "still listed" next to one first seen 12 days ago.
+5. Aggregated to flat_type x lease_band cells (town dropped at this stage: 26 towns x 3 x 3 is too sparse at n=3,336 total listings for a meaningful per-cell share). Cells with fewer than 15 comparable listings were dropped.
+6. Per cell: delisted_share = count(no longer listed) / count(total) -- a turnover-speed proxy, not a survival estimate. The real availability.csv's expected_wait_months was aggregated to the same cells (median across town/storey/MRT bands) for comparison.
+
+**Result** (9 cells, all with n >= 15):
+
+| flat_type | lease_band | n | delisted_share | model expected_wait_months |
+|---|---|---|---|---|
+| 3 ROOM | 60-79 | 31 | 0.452 | 1.675 |
+| 3 ROOM | 80+ | 102 | 0.569 | 1.560 |
+| 3 ROOM | <60 | 476 | 0.494 | 0.400 |
+| 4 ROOM | 60-79 | 489 | 0.544 | 0.780 |
+| 4 ROOM | 80+ | 431 | 0.555 | 0.825 |
+| 4 ROOM | <60 | 343 | 0.531 | 0.640 |
+| 5 ROOM | 60-79 | 443 | 0.519 | 1.080 |
+| 5 ROOM | 80+ | 129 | 0.504 | 1.620 |
+| 5 ROOM | <60 | 155 | 0.406 | 1.600 |
+
+Spearman correlation between delisted_share and the model's expected_wait_months: **rho = -0.350, p = 0.356** (n=9 cells). The sign is in the expected direction -- cells with faster-disappearing live listings tend to have a shorter modelled expected wait -- but is not statistically significant at this cell count, which is itself unsurprising: 9 cells is a small sample for a correlation test, and 12 days is a short window to measure turnover speed precisely.
+
+**Conclusion**: directionally consistent with the real availability model, not an independent confirmation of its 6-/12-month calibration. The scrape continues running (scrape_99co.py's own instructions call for repeated runs over several weeks); re-running this cross-check after a longer accumulation period, when individual cells' empirical survival curves can be estimated with lifelines' Kaplan-Meier fitter rather than a single-point turnover share, would be a natural follow-up, not attempted here given the current 12-day window's limits.
+
+**What this is not**: a replacement for, or a challenge to, the real Kaplan-Meier/Cox PH availability model this pipeline already uses (Section 6.3, wired in since Section 23 onward). It is an independently-collected, independently-built signal that happens to point the same direction, collected for exactly this purpose before the real model had even landed.

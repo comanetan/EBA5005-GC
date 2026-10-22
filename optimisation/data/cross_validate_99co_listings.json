@@ -1,0 +1,81 @@
+{
+  "scrape_window_days": 12,
+  "n_scraped_hdb_3_4_5_room": 2602,
+  "cells_compared": [
+    {
+      "flat_type": "3 ROOM",
+      "lease_band": "60-79",
+      "n": 31,
+      "n_delisted": 14,
+      "delisted_share": 0.45161290322580644,
+      "expected_wait_months": 1.675
+    },
+    {
+      "flat_type": "3 ROOM",
+      "lease_band": "80+",
+      "n": 102,
+      "n_delisted": 58,
+      "delisted_share": 0.5686274509803921,
+      "expected_wait_months": 1.56
+    },
+    {
+      "flat_type": "3 ROOM",
+      "lease_band": "<60",
+      "n": 476,
+      "n_delisted": 235,
+      "delisted_share": 0.49369747899159666,
+      "expected_wait_months": 0.4
+    },
+    {
+      "flat_type": "4 ROOM",
+      "lease_band": "60-79",
+      "n": 489,
+      "n_delisted": 266,
+      "delisted_share": 0.5439672801635992,
+      "expected_wait_months": 0.78
+    },
+    {
+      "flat_type": "4 ROOM",
+      "lease_band": "80+",
+      "n": 431,
+      "n_delisted": 239,
+      "delisted_share": 0.5545243619489559,
+      "expected_wait_months": 0.825
+    },
+    {
+      "flat_type": "4 ROOM",
+      "lease_band": "<60",
+      "n": 343,
+      "n_delisted": 182,
+      "delisted_share": 0.5306122448979592,
+      "expected_wait_months": 0.64
+    },
+    {
+      "flat_type": "5 ROOM",
+      "lease_band": "60-79",
+      "n": 443,
+      "n_delisted": 230,
+      "delisted_share": 0.5191873589164786,
+      "expected_wait_months": 1.08
+    },
+    {
+      "flat_type": "5 ROOM",
+      "lease_band": "80+",
+      "n": 129,
+      "n_delisted": 65,
+      "delisted_share": 0.5038759689922481,
+      "expected_wait_months": 1.62
+    },
+    {
+      "flat_type": "5 ROOM",
+      "lease_band": "<60",
+      "n": 155,
+      "n_delisted": 63,
+      "delisted_share": 0.4064516129032258,
+      "expected_wait_months": 1.6
+    }
+  ],
+  "spearman_rho": -0.35,
+  "spearman_p": 0.356,
+  "_note": "A short-horizon (12-day), cell-level directional cross-check, not a validation of the model's 6-/12-month survival horizons, which the scrape has not run long enough to observe directly. delisted_share is a turnover-speed proxy (share of listings, first seen >=5 days before the latest scrape run, no longer listed by that run), not a survival estimate."
+}
