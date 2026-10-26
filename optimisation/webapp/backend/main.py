@@ -147,6 +147,12 @@ class RecommendRequest(BaseModel):
     target_expressway_km: Optional[float] = None  # None (default) = goal inactive; else "at least this far
                                                     # from an expressway" -- priced at the real hedonic rate
                                                     # (market_wtp_coefficients.json, verified significant & correctly signed)
+    storey_step_sgd: Optional[float] = None  # None (default) = DEFAULT_STOREY_STEP_SGD (the aggregate
+                                               # conjoint figure, $41,500); pass an archetype's own real,
+                                               # segment-specific figure to reproduce its backtest result exactly
+    w_school_sgd: Optional[float] = None      # None (default) = the hedonic's own market-rate school pricing;
+                                               # pass an archetype's own real conjoint figure (e.g. $201,000 for
+                                               # "Family, needs primary school") to reproduce its backtest result
 
 
 @app.post("/api/recommend")
@@ -156,6 +162,7 @@ def recommend(req: RecommendRequest):
             budget=req.budget, min_lease_yrs=req.min_lease_yrs, k=req.k, target_mrt_km=req.target_mrt_km,
             multipliers={"mrt": req.mrt_weight}, needs_primary_school=req.needs_primary_school,
             target_storey=req.target_storey, flat_types=req.flat_types, target_expressway_km=req.target_expressway_km,
+            storey_step_sgd=req.storey_step_sgd, w_school_sgd=req.w_school_sgd,
             name="api",
         )
         if req.mode == "preemptive":

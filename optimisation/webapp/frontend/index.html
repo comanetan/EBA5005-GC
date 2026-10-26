@@ -187,6 +187,14 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
       <span class="methodbadge">Methodology — 0-1 Integer Programming + weighted goal programming (the real solver)</span>
       <div class="titlerow"><h2>The final shortlist recommender</h2><button class="infobtn" data-info="applied-overview" aria-label="More info"></button></div>
       <div class="grid">
+        <div class="field"><label>Archetype (optional)</label><select id="ap_archetype">
+          <option value="">— custom household —</option>
+          <option value="Young couple, transit-reliant">Young couple, transit-reliant</option>
+          <option value="Family, needs primary school">Family, needs primary school</option>
+          <option value="Budget-first, car owner">Budget-first, car owner</option>
+          <option value="Retiree, downsizing, low storey">Retiree, downsizing, low storey</option>
+        </select>
+          <span class="hint">fills the fields below, and — in preemptive mode — sets the priority order this archetype was measured to do best with</span></div>
         <div class="field"><label>Budget ($)</label><input type="number" id="ap_budget" value="750000" step="1000"></div>
         <div class="field"><label>Min lease (yrs)</label><input type="number" id="ap_lease" value="60"></div>
         <div class="field"><label>Target MRT (km)</label><input type="number" id="ap_mrt" value="0.5" step="0.1"></div>
@@ -504,6 +512,58 @@ $("s_run").addEventListener("click", runSearch);
 const GOAL_LABEL = {dev_mrt:"MRT distance", dev_school:"School access", dev_storey:"Storey", dev_wait:"Wait time", dev_essentials:"Essentials nearby", dev_expressway:"Expressway distance"};
 $("ap_mode").addEventListener("change", ()=>{ $("ap_priority_wrap").hidden = $("ap_mode").value!=="preemptive"; });
 
+/* Backtest archetypes (recommender_v2.py::backtest_v2.EXTENDED_ARCHETYPES) and each one's
+   own empirically-best preemptive priority order (recommender_v2.py::ARCHETYPE_BEST_PRIORITY,
+   measured by the exhaustive 120-ordering sweep in test_preemptive_priority_sensitivity.py --
+   not assumed). Archetypes not listed under bestPriority were found to be order-invariant,
+   so DEFAULT_PRIORITY (MRT first) already gives their true-best result. */
+const DEFAULT_PRIORITY = ["dev_mrt","dev_school","dev_storey","dev_wait","dev_essentials"];
+const ARCHETYPES = {
+  "Young couple, transit-reliant": {
+    budget: 550000, min_lease_yrs: 60, target_mrt_km: 0.4, k: 5, mrt_weight: 7.62, needs_primary_school: false,
+    flat_types: ["3 ROOM","4 ROOM"], storey_step_sgd: 58000, w_school_sgd: null,
+    bestPriority: ["dev_storey","dev_mrt","dev_school","dev_wait","dev_essentials"]
+  },
+  "Family, needs primary school": {
+    budget: 750000, min_lease_yrs: 65, target_mrt_km: 0.6, k: 5, mrt_weight: 2.04, needs_primary_school: true,
+    flat_types: ["4 ROOM","5 ROOM"], storey_step_sgd: 25500, w_school_sgd: 201000,
+    bestPriority: ["dev_school","dev_storey","dev_mrt","dev_wait","dev_essentials"]
+  },
+  "Budget-first, car owner": {
+    budget: 450000, min_lease_yrs: 55, target_mrt_km: 1.0, k: 5, mrt_weight: 0.5, needs_primary_school: false,
+    flat_types: null, storey_step_sgd: null, w_school_sgd: null,
+    bestPriority: null  // order-invariant -- DEFAULT_PRIORITY already optimal
+  },
+  "Retiree, downsizing, low storey": {
+    budget: 500000, min_lease_yrs: 50, target_mrt_km: 0.8, k: 5, mrt_weight: 2.41, needs_primary_school: false,
+    flat_types: ["3 ROOM"], storey_step_sgd: -28500, w_school_sgd: null,
+    bestPriority: null  // order-invariant -- DEFAULT_PRIORITY already optimal
+  },
+};
+// Not visible fields -- the UI form has no inputs for these, but the archetype definitions
+// do carry their own real, segment-specific pricing, so they're carried silently into the
+// request body to actually reproduce each archetype's real backtest result, not just its
+// budget/lease/MRT fields.
+let selectedArchetypeExtras = {flat_types: null, storey_step_sgd: null, w_school_sgd: null};
+$("ap_archetype").addEventListener("change", ()=>{
+  const name = $("ap_archetype").value;
+  if (!name) { selectedArchetypeExtras = {flat_types: null, storey_step_sgd: null, w_school_sgd: null}; return; }
+  const a = ARCHETYPES[name];
+  $("ap_budget").value = a.budget;
+  $("ap_lease").value = a.min_lease_yrs;
+  $("ap_mrt").value = a.target_mrt_km;
+  $("ap_k").value = a.k;
+  $("ap_weight").value = a.mrt_weight;
+  $("ap_school").value = a.needs_primary_school ? "true" : "false";
+  selectedArchetypeExtras = {flat_types: a.flat_types, storey_step_sgd: a.storey_step_sgd, w_school_sgd: a.w_school_sgd};
+  // Selecting an archetype is specifically about seeing its own best priority order in
+  // action, so switch to preemptive mode and reveal the priority picker.
+  $("ap_mode").value = "preemptive";
+  $("ap_priority_wrap").hidden = false;
+  const order = a.bestPriority || DEFAULT_PRIORITY;
+  document.querySelectorAll(".ap_pri").forEach((sel, i)=>{ sel.value = order[i]; });
+});
+
 async function runApplied(){
   const mode = $("ap_mode").value;
   const alphaRaw = $("ap_alpha").value;
@@ -512,6 +572,9 @@ async function runApplied(){
     k:+$("ap_k").value, mrt_weight:+$("ap_weight").value, needs_primary_school: $("ap_school").value==="true",
     mode, chance_alpha: alphaRaw===""?null:+alphaRaw,
     target_expressway_km: $("ap_expwy").value===""?null:+$("ap_expwy").value,
+    flat_types: selectedArchetypeExtras.flat_types,
+    storey_step_sgd: selectedArchetypeExtras.storey_step_sgd,
+    w_school_sgd: selectedArchetypeExtras.w_school_sgd,
   };
   if (mode==="preemptive") body.priority = Array.from(document.querySelectorAll(".ap_pri")).map(s=>s.value);
   let r; try{ r = await api("/api/recommend", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}); }

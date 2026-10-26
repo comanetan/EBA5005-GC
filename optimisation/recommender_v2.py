@@ -402,6 +402,32 @@ def solve(query, profiles=None, fcast_override=None, chance_alpha=None, upper_fa
 
 DEFAULT_PRIORITY = ["dev_mrt", "dev_school", "dev_storey", "dev_wait", "dev_essentials"]
 
+# Household-specific priority overrides, from the exhaustive 120-ordering sweep in
+# test_preemptive_priority_sensitivity.py (see OPTIMISER_METHODOLOGY_REPORT.md Sec. 19).
+# Only the two archetypes found to be order-sensitive need an override here -- the other
+# two backtest archetypes (and the report's own test household) were found to be fully
+# order-invariant, so DEFAULT_PRIORITY already gives their true-best result and needs no
+# special-casing. Each list is one of several orderings tied for that archetype's true
+# best objective across all 120 permutations tested, chosen to start with the specific
+# goal already named as "best" in the report and deck (storey for Young couple, school
+# for Family) for consistency with what's presented elsewhere.
+ARCHETYPE_BEST_PRIORITY = {
+    "Young couple, transit-reliant": ["dev_storey", "dev_mrt", "dev_school", "dev_wait", "dev_essentials"],
+    "Family, needs primary school": ["dev_school", "dev_storey", "dev_mrt", "dev_wait", "dev_essentials"],
+}
+
+
+def best_priority_for_archetype(archetype_name):
+    """Returns the archetype's own empirically-best preemptive priority order, measured
+    directly (not assumed) by the exhaustive 120-ordering sweep -- or DEFAULT_PRIORITY for
+    any archetype/household not in ARCHETYPE_BEST_PRIORITY, since those were measured to be
+    order-invariant (every ordering gives the identical result, so the default is already
+    optimal). This is what makes the priority order "household-specific" rather than the
+    single fixed MRT-first default: selecting a known archetype now prioritises whichever
+    goal was actually measured to work best for that household, instead of always
+    defaulting to the order named in the original proposal."""
+    return list(ARCHETYPE_BEST_PRIORITY.get(archetype_name, DEFAULT_PRIORITY))
+
 
 def solve_preemptive(query, priority=None, profiles=None, fcast_override=None, chance_alpha=None, upper_factors=None):
     """Production mode #2: LITERAL preemptive (lexicographic) goal programming,
