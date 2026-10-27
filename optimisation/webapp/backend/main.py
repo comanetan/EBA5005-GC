@@ -72,6 +72,7 @@ def meta():
         "n_profiles": len(PROFILES_DF),
         "market_rate_mrt_per_km": round(mrt_rate_per_km, -2),
         "market_rate_lease_per_year": lease_rate_per_year,
+        "market_rate_storey_per_band": round(rv2.DEFAULT_STOREY_STEP_SGD, -2),
         "as_of": MARKET_RATES if False else None,  # placeholder: expose the raw hedonic coefficients if a client wants them
     }
 
@@ -349,6 +350,51 @@ def gp_stretch_budget(req: GPRequest):
     d1, d2 = (dev_first, dev_second) if first_is_1 else (dev_second, dev_first)
     return {"X1": round(X1, 3), "X2": round(X2, 3), "d1_minus": round(d1, 3), "d2_minus": round(d2, 3),
             "budget_used": round(req.a * X1 + req.b * X2, 2)}
+
+
+# =====================================================================================
+# /api/gp/stretch-budget-v2 -- generalises the 2-variable form above to a household-
+# selectable 2-or-3-goal pool (MRT proximity, Lease length, Storey). All three have a real
+# $/unit rate already used elsewhere in the pipeline (beta_mrt-derived, the Preference
+# Lead's conjoint lease-year WTP, storey_step_sgd), so the same closed-form sequential-
+# funding logic as the literal two-variable form (Sec. 7.2.1) extends directly: fund the
+# top-priority goal up to its own target or the remaining budget, whichever binds first,
+# then carry whatever is left to the next goal, and so on. No new algorithm is needed --
+# a loop over an arbitrary priority-ordered goal list is the N-goal closed form.
+# =====================================================================================
+GP_GOAL_KEYS = {"mrt", "lease", "storey"}
+
+
+class GPGoal(BaseModel):
+    key: str     # "mrt" | "lease" | "storey"
+    rate: float  # $ per unit of this goal
+    target: float  # units of this goal wanted
+
+
+class GPRequestV2(BaseModel):
+    C: float
+    goals: List[GPGoal]  # 2 or 3 goals, already ordered: index 0 = top priority
+
+
+@app.post("/api/gp/stretch-budget-v2")
+def gp_stretch_budget_v2(req: GPRequestV2):
+    if not (2 <= len(req.goals) <= 3):
+        raise HTTPException(400, "choose 2 or 3 goals")
+    keys = [g.key for g in req.goals]
+    if len(set(keys)) != len(keys) or any(k not in GP_GOAL_KEYS for k in keys):
+        raise HTTPException(400, "each goal must be one of mrt/lease/storey, chosen at most once")
+
+    left = req.C
+    results = []
+    for g in req.goals:
+        max_buy = left / g.rate if g.rate else 0.0
+        bought = min(g.target, max_buy)
+        shortfall = max(0.0, g.target - bought)
+        spend = g.rate * bought
+        left = max(0.0, left - spend)
+        results.append({"key": g.key, "bought": round(bought, 3), "shortfall": round(shortfall, 3),
+                         "spend": round(spend, 2)})
+    return {"results": results, "budget_used": round(req.C - left, 2), "leftover": round(left, 2)}
 
 
 # serve the frontend (index.html + assets) at the root

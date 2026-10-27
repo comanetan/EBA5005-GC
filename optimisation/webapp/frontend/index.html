@@ -165,16 +165,34 @@ code{font-family:var(--font-mono);background:var(--bg);border:1px solid var(--bo
   <section class="panel" id="panel-gp" hidden>
     <div class="card">
       <span class="methodbadge">Methodology — Goal Programming (preemptive priorities, d&#8314;/d&#8315;)</span>
-      <div class="titlerow"><h2>Spending a stretch budget on two competing goals</h2><button class="infobtn" data-info="gp-overview" aria-label="More info"></button></div>
+      <div class="titlerow"><h2>Spending a stretch budget on competing goals</h2><button class="infobtn" data-info="gp-overview" aria-label="More info"></button></div>
+      <div class="field"><label>Stretch budget ($)</label><input type="number" id="gp_c" value="50000" step="1000"></div>
+
+      <div class="sectionhead"><h3 style="margin:0">Goals to fund (pick 2 or 3)</h3></div>
       <div class="grid">
-        <div class="field"><label>$/km closer to MRT</label><input type="number" id="gp_a" value="60000" step="1000">
-          <span class="hint" id="gp_a_hint">loading market rate…</span></div>
-        <div class="field"><label>$/extra lease-year</label><input type="number" id="gp_b" value="3000" step="100"></div>
-        <div class="field"><label>Stretch budget ($)</label><input type="number" id="gp_c" value="50000" step="1000"></div>
-        <div class="field"><label>Target: km closer wanted</label><input type="number" id="gp_t1" value="0.5" step="0.1"></div>
-        <div class="field"><label>Target: extra lease-yrs wanted</label><input type="number" id="gp_t2" value="15"></div>
-        <div class="field"><label>Top priority</label><select id="gp_priority"><option value="1">MRT proximity</option><option value="2">Lease length</option></select></div>
+        <div class="field"><label><input type="checkbox" class="gp_goal_toggle" data-key="mrt" checked> MRT proximity -- $/km closer</label>
+          <input type="number" id="gp_mrt_rate" value="60000" step="1000">
+          <span class="hint" id="gp_mrt_hint">loading market rate…</span></div>
+        <div class="field"><label>Target: km closer wanted</label><input type="number" id="gp_mrt_target" value="0.5" step="0.1"></div>
+
+        <div class="field"><label><input type="checkbox" class="gp_goal_toggle" data-key="lease" checked> Lease length -- $/extra lease-year</label>
+          <input type="number" id="gp_lease_rate" value="3000" step="100">
+          <span class="hint" id="gp_lease_hint">loading conjoint rate…</span></div>
+        <div class="field"><label>Target: extra lease-yrs wanted</label><input type="number" id="gp_lease_target" value="15"></div>
+
+        <div class="field"><label><input type="checkbox" class="gp_goal_toggle" data-key="storey"> Storey -- $/storey-band</label>
+          <input type="number" id="gp_storey_rate" value="41500" step="500">
+          <span class="hint" id="gp_storey_hint">loading storey rate…</span></div>
+        <div class="field"><label>Target: storey-bands closer wanted</label><input type="number" id="gp_storey_target" value="1" step="1" min="0"></div>
       </div>
+
+      <div class="sectionhead"><h3 style="margin:0">Priority order (selected goals only)</h3><button class="infobtn" data-info="gp-priority" aria-label="More info"></button></div>
+      <div class="grid">
+        <div class="field"><label>1st priority</label><select id="gp_pri_1"></select></div>
+        <div class="field"><label>2nd priority</label><select id="gp_pri_2"></select></div>
+        <div class="field" id="gp_pri_3_wrap"><label>3rd priority</label><select id="gp_pri_3"></select></div>
+      </div>
+
       <div class="flex-end" style="margin-top:10px"><button class="run" id="gp_run">Solve</button></div>
       <div class="sectionhead"><h3 style="margin:0">Result</h3><button class="infobtn" data-info="gp-result" aria-label="More info"></button></div>
       <div class="kpi-row" id="gp_kpis"></div>
@@ -323,15 +341,18 @@ const INFO = {
     <p><b>Value captured</b> — the total expected $ benefit of that split, net of your own time cost. This is the number Z the solver maximised.</p>` },
 
   "gp-overview": { title: "Stretch-Budget Allocation — what this solves", html: `
-    <p>You have one lump-sum stretch budget and two competing goals (getting closer to MRT, or buying extra remaining lease). This is <b>literal preemptive Goal Programming</b>: your top-priority goal is funded first, up to its own target or until the budget runs out — then whatever is left over funds the second goal.</p>
-    <p>This mirrors the course's own lecture example exactly (same equations, same method) — just with your own $ rates and targets.</p>
-    <p>The "$/km closer to MRT" field is pre-filled from the project's real, fitted hedonic model — not a guess, and corrected for a known spatial bias (a naive estimate overstates the MRT premium by roughly 2× because nearby blocks share unmeasured neighbourhood quality; this uses the Pricing Lead's spatially- and causally-validated ~3%-per-halving figure instead of the naive ~5-6%).</p>` },
+    <p>You have one lump-sum stretch budget and a choice of 2 or 3 competing goals (getting closer to MRT, buying extra remaining lease, moving up a storey band). This is <b>literal preemptive Goal Programming</b>: your top-priority goal is funded first, up to its own target or until the budget runs out — then whatever is left over funds the next goal, in order, down your chosen priority list.</p>
+    <p>This generalises the course's own two-variable lecture example (same equations, same method, same closed-form "fund in priority order" logic) to however many of the three goals you pick, with your own $ rates and targets.</p>
+    <p>Each goal's $ rate is pre-filled from a real project source, not a guess: MRT from the project's fitted hedonic model (corrected for a known spatial bias — a naive estimate overstates the MRT premium by roughly 2×, since nearby blocks share unmeasured neighbourhood quality), lease-years from the Preference Lead's real conjoint willingness-to-pay survey, and storey from the same conjoint-calibrated premium used by the production recommender.</p>` },
+  "gp-priority": { title: "Priority order", html: `
+    <p>Only the goals you've ticked above appear here. The order you set is strict (lexicographic), not a weighted trade-off: the 1st-priority goal is funded to its own target or the full budget, whichever comes first, before a single dollar is spent on the 2nd — and the 2nd is fully funded (if the budget allows) before anything is spent on the 3rd.</p>
+    <p>Changing which goal is 1st can change the result even with the exact same budget and targets — that's the same priority-order sensitivity the Final Recommender tab's own 5-goal priority list demonstrates, just on 2-3 goals here.</p>` },
   "gp-result": { title: "Result", html: `
-    <p><b>MRT bought</b> / <b>Lease bought</b> — how much of each goal your stretch budget actually funds.</p>
+    <p>One pair of cards per goal you picked — <b>bought</b> (how much of that goal your stretch budget actually funded) and <b>shortfall</b> (how much of the target was missed).</p>
     <p>A <b>shortfall &gt; 0</b> on a goal means it wasn't fully reachable — the budget ran out before that target was met.</p>
     <ul>
       <li>If the <b>top-priority</b> goal has a shortfall, your stretch budget can't even fully cover it alone.</li>
-      <li>If only the <b>second</b> goal has a shortfall, that's the deliberate trade-off of giving the first goal priority — exactly as preemptive GP is supposed to behave.</li>
+      <li>If only a <b>lower-priority</b> goal has a shortfall, that's the deliberate trade-off of giving the goals above it priority — exactly as preemptive GP is supposed to behave.</li>
     </ul>
     <p>To close a shortfall: raise the stretch budget, lower that goal's target, or accept the gap.</p>` },
 
@@ -431,8 +452,12 @@ async function boot(){
     $("api_status").className = "apistatus ok";
     $("s_town").innerHTML = '<option value="">Any</option>' + meta.towns.map(t=>`<option>${t}</option>`).join("");
     $("s_flat").innerHTML = '<option value="">Any</option>' + meta.flat_types.map(t=>`<option>${t}</option>`).join("");
-    $("gp_a").value = meta.market_rate_mrt_per_km;
-    $("gp_a_hint").textContent = `from the project's hedonic model (as of ${new Date().toDateString()})`;
+    $("gp_mrt_rate").value = meta.market_rate_mrt_per_km;
+    $("gp_mrt_hint").textContent = `from the project's hedonic model (as of ${new Date().toDateString()})`;
+    $("gp_lease_rate").value = meta.market_rate_lease_per_year;
+    $("gp_lease_hint").textContent = "from the Preference Lead's real conjoint WTP";
+    $("gp_storey_rate").value = meta.market_rate_storey_per_band;
+    $("gp_storey_hint").textContent = "from the project's conjoint-calibrated storey premium";
   }catch(e){
     $("api_status").textContent = "Could not reach the API at "+API+" — is the backend running? (uvicorn main:app --reload)";
     $("api_status").className = "apistatus err";
@@ -474,16 +499,58 @@ async function runLP(){
 }
 $("lp_run").addEventListener("click", runLP);
 
-/* ---- GP: calls /api/gp/stretch-budget ---- */
+/* ---- GP: calls /api/gp/stretch-budget-v2 (household-selectable 2-or-3-goal pool) ---- */
+const GP_GOAL_META = {
+  mrt:    {label:"MRT proximity",  unit:"km",  rateEl:"gp_mrt_rate",    targetEl:"gp_mrt_target"},
+  lease:  {label:"Lease length",   unit:"yrs", rateEl:"gp_lease_rate",  targetEl:"gp_lease_target"},
+  storey: {label:"Storey",         unit:"bands", rateEl:"gp_storey_rate", targetEl:"gp_storey_target"},
+};
+
+function gpCheckedKeys(){
+  return Array.from(document.querySelectorAll(".gp_goal_toggle")).filter(c=>c.checked).map(c=>c.dataset.key);
+}
+
+function rebuildGPPriorityOptions(){
+  const keys = gpCheckedKeys();
+  const sels = [$("gp_pri_1"), $("gp_pri_2"), $("gp_pri_3")];
+  $("gp_pri_3_wrap").style.display = keys.length >= 3 ? "" : "none";
+  const used = new Set();
+  sels.forEach((sel, i)=>{
+    if (i >= keys.length) { sel.innerHTML = ""; return; }
+    const prevValue = sel.value;
+    sel.innerHTML = keys.map(k=>`<option value="${k}">${GP_GOAL_META[k].label}</option>`).join("");
+    // keep each select's own previous choice if it's still valid and not already claimed
+    // by an earlier select in this same rebuild pass; otherwise take the first free key
+    const keep = keys.includes(prevValue) && !used.has(prevValue);
+    const value = keep ? prevValue : keys.find(k=>!used.has(k));
+    sel.value = value;
+    used.add(value);
+  });
+}
+document.querySelectorAll(".gp_goal_toggle").forEach(c=>c.addEventListener("change", ()=>{
+  const checked = gpCheckedKeys();
+  if (checked.length < 2) { c.checked = true; return; } // at least 2 goals required
+  rebuildGPPriorityOptions();
+}));
+rebuildGPPriorityOptions();
+
 async function runGP(){
-  const body = {a:+$("gp_a").value, b:+$("gp_b").value, C:+$("gp_c").value, t1:+$("gp_t1").value, t2:+$("gp_t2").value, priority:+$("gp_priority").value};
-  let r; try{ r = await api("/api/gp/stretch-budget", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}); }
+  const keys = gpCheckedKeys();
+  if (keys.length < 2) { $("gp_kpis").innerHTML = `<div class="kpi"><div class="v">—</div><div class="k">pick at least 2 goals</div></div>`; return; }
+  const prioritySels = keys.length >= 3 ? [$("gp_pri_1"), $("gp_pri_2"), $("gp_pri_3")] : [$("gp_pri_1"), $("gp_pri_2")];
+  const orderedKeys = prioritySels.map(s=>s.value);
+  if (new Set(orderedKeys).size !== orderedKeys.length) {
+    $("gp_kpis").innerHTML = `<div class="kpi"><div class="v">—</div><div class="k">each priority slot must be a different goal</div></div>`; return;
+  }
+  const goals = orderedKeys.map(k=>({key:k, rate:+$(GP_GOAL_META[k].rateEl).value, target:+$(GP_GOAL_META[k].targetEl).value}));
+  const body = {C:+$("gp_c").value, goals};
+  let r; try{ r = await api("/api/gp/stretch-budget-v2", {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(body)}); }
   catch(e){ $("gp_kpis").innerHTML = `<div class="kpi"><div class="v">—</div><div class="k">API error: ${e.message}</div></div>`; return; }
-  $("gp_kpis").innerHTML = `<div class="kpi"><div class="v">${fmt(r.X1,2)} km</div><div class="k">MRT bought</div></div>
-    <div class="kpi"><div class="v">${fmt(r.X2,2)} yrs</div><div class="k">Lease bought</div></div>
-    <div class="kpi"><div class="v">${money(r.budget_used)}</div><div class="k">Budget used</div></div>
-    <div class="kpi"><div class="v">${fmt(r.d1_minus,2)} km</div><div class="k">MRT shortfall</div></div>
-    <div class="kpi"><div class="v">${fmt(r.d2_minus,2)} yrs</div><div class="k">Lease shortfall</div></div>`;
+  $("gp_kpis").innerHTML = r.results.map(res=>{
+    const m = GP_GOAL_META[res.key];
+    return `<div class="kpi"><div class="v">${fmt(res.bought,2)} ${m.unit}</div><div class="k">${m.label} bought</div></div>
+      <div class="kpi"><div class="v">${fmt(res.shortfall,2)} ${m.unit}</div><div class="k">${m.label} shortfall</div></div>`;
+  }).join("") + `<div class="kpi"><div class="v">${money(r.budget_used)}</div><div class="k">Budget used</div></div>`;
 }
 $("gp_run").addEventListener("click", runGP);
 
