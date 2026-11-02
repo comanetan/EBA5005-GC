@@ -13,7 +13,7 @@ As of last Monday, the optimisation branch had a working pipeline, recommender, 
 
 1. **A UI overhaul** (17 Oct) — replaced dense inline explanations with contextual pop-ups, fixed layout/icon issues, renamed "Deviation" to "Shortfall" per earlier feedback.
 2. **Three real bugs found and fixed by reviewing teammates' branches**, not assumed safe: an MRT-premium spatial bias (~2× overstated), a native-schema update from the Pricing Lead that needed re-wiring, and a profile-granularity gap (no lease-band dimension) — each investigated, fixed, and **re-verified against the full walk-forward backtest** rather than taken on faith.
-3. **A methodology rigor pass** — the three core optimisation techniques (LP, GP, 0-1 IP) documented down to decision variables and constraints with their full trial-and-error history, then **three further substantiation tests** run against specific claims (does a finding generalise across households, is a reported R² fragile, does a design choice actually matter) — all now in the Word report, a 19-slide deck, and a tracked log.
+3. **A methodology rigor pass** — the three core optimisation techniques (LP, GP, 0-1 IP) documented down to decision variables and constraints with their full trial-and-error history, then **five further substantiation tests** run against specific claims (does a finding generalise across households, is a reported R² fragile, does a design choice actually matter, does the IP still work at scale, did a fix actually fix the thing it was meant to fix) — all now in the Word report, a 19-slide deck, and a tracked log.
 
 **Headline numbers, then vs. now:**
 
@@ -46,11 +46,13 @@ As of last Monday, the optimisation branch had a working pipeline, recommender, 
 
 ### 2c. Substantiating the findings, not just reporting them (18–19 Oct)
 
-Six further tests were identified to strengthen specific claims; **three are done**, tracked in `OTHER_TESTS_LOG.md`:
+Six further tests were identified to strengthen specific claims; **five are done**, tracked in `OTHER_TESTS_LOG.md`:
 
 1. **Does the GP weighted-sum-vs-preemptive divergence generalise, or was it one cherry-picked household?** Tested across all 4 backtest archetypes: 3/4 show a real gap ($23K–$125K); the household used throughout the report is structurally closest to the one with the *largest* gap, not a small one. The one $0-gap case is itself confirming evidence (every goal simultaneously satisfiable there). Bonus finding: a second divergence mechanism where preemptive gets forced into a negative-surplus "clean" shortlist, rejecting a cheap, profitable shortfall weighted-sum would take.
 2. **Is the calibration's R²=0.960 a fragile point estimate?** Bootstrapped (2,000 resamples): 95% CI [0.9457, 0.9694], point estimate sits almost exactly on the bootstrap mean. Stable, not lucky.
 3. **Does the preemptive priority order itself matter?** Tested all 120 permutations of the 5-goal order, again across all 4 archetypes. 3/5 households are completely order-invariant; the other 2 swing by **$82K–$88K** purely by priority order — bigger than the GP-mode gap itself. Mechanistically explained: prioritising MRT first (the shipped default) gives the best outcome in both order-sensitive cases, because MRT carries the largest fitted dollar rate.
+4. **Does the 0.000% IP integrality gap survive a 400× scale-up?** Expanded the real ~1,184-candidate pool to 20,000 synthetic candidates (same-town duplicates, jittered values) and re-solved with a faithful copy of the production solver's own construction. Gap stayed exactly 0.000% at every scale, and CBC's solve time stayed trivial (sub-second even at 20,000) — confirms the earlier small-scale finding was structural, not a small-instance coincidence.
+5. **Did switching the hedonic from town to subzone fixed effects actually fix the spatial-autocorrelation problem, or just reduce it?** Ran Moran's I (the Pricing Lead's own published method) on both the production subzone-FE model's residuals and the pre-fix town-FE model's, on identical rows. Real but partial fix: spatial clustering in the residuals fell ~39% (Moran's I 0.59→0.36), but 0.36 is still far from zero (p=0.001) — the same "genuine improvement, not fully solved" honesty already applied to the MRT coefficient, now confirmed directly in the residuals.
 
 ---
 
@@ -58,8 +60,8 @@ Six further tests were identified to strengthen specific claims; **three are don
 
 | Item | Status |
 |---|---|
-| IP scaling/stress test at 1,000+ candidates | Not started |
-| Residual diagnostics (incl. Moran's I) on the subzone-FE hedonic specifically | Not started |
+| IP scaling/stress test at 1,000+ candidates | ✅ Done — see §2c, item 4 |
+| Residual diagnostics (incl. Moran's I) on the subzone-FE hedonic specifically | ✅ Done — see §2c, item 5 |
 | Out-of-time holdout beyond the current latest cutoff (2025-07) | Not started |
 | `price_today_se`'s definition mismatch, data-layout portability, hedonic basis mismatch | ✅ Closed — see `INTEGRATION_PROGRESS.md` §6 |
 | Re-run `build_shortlist.py` once Preference Lead's real file lands | Blocked on them (see §4) |
